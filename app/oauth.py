@@ -29,12 +29,12 @@ class StravaOauth():
 
     def callback(self):
         code = request.args.get('code')
-        access_token = self.get_token(code)
+        self.get_token(code)
         # Note: In most cases, you'll want to store the access token, in, say,
         # a session for use in other parts of your web app.
         # return get_username(access_token)
-        id = self.get_athlete_id(access_token)
-        return id
+        self.id = self.get_athlete_id()
+        return
 
 
     def get_token(self, code):
@@ -48,11 +48,15 @@ class StravaOauth():
                                  headers=headers,
                                  data=post_data)
         token_json = response.json()
-        return token_json["access_token"]
+        self.access_token = token_json["access_token"]
+        self.expires_at = token_json['expires_at']
+        self.refresh_token = token_json['refresh_token']
+        self.social_id = token_json['athlete']['id']
+        return 
 
-    def get_athlete_id(self, access_token):
+    def get_athlete_id(self):
         headers = self.base_headers()
-        headers.update({'Authorization': 'Bearer ' + access_token})
+        headers.update({'Authorization': 'Bearer ' + self.access_token})
         url = "https://www.strava.com/api/v3/athlete"
         results = requests.get(url, headers=headers).json()
         id = results['id']
@@ -60,12 +64,7 @@ class StravaOauth():
         return id
 
     def user_agent(self):
-        '''reddit API clients should each have their own, unique user-agent
-        Ideally, with contact info included.
-        e.g.,
-        '''
         user_age = request.headers.get('User-Agent')
-
         return "oauth2-sample-app by /u/%s" % user_age
 
     def base_headers(self):

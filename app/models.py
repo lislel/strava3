@@ -12,6 +12,8 @@ class User(UserMixin, db.Model):
 	refresh_token = db.Column(db.String(128))
 	mountains = db.relationship('Mountain', backref='hiker', secondary = 'link')
 	social_id = db.Column(db.Integer)
+	access_token = db.Column(db.String(128))
+	expires_at = db.Column(db.Integer)
 
 	def __repr__(self):
 		return '<User {}>'.format(self.username)

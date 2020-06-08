@@ -37,11 +37,14 @@ def login():
             return redirect(url_for('login'))
         else:
             oauth = StravaOauth()
-            social_id = oauth.callback()
-            if social_id is None:
+            oauth.callback()
+            if oauth.social_id is None:
                 flash('Authentication failed.')
                 return redirect(url_for('login'))
-            user.social_id = social_id
+            user.social_id = oauth.social_id
+            user.access_token = oauth.access_token
+            user.refresh_token = oauth.refresh_token
+            user.expires_at = oauth.expires_at
             db.session.commit()
         login_user(user, remember=form.remember_me.data)
         next_page = request.args.get('next')
