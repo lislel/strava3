@@ -4,6 +4,7 @@ from werkzeug.urls import url_parse
 from app import app, db
 from app.forms import LoginForm, RegistrationForm
 from app.models import User
+from app.oauth import StravaOauth
 
 
 @app.route('/')
@@ -34,6 +35,14 @@ def login():
         if user is None or not user.check_password(form.password.data):
             flash('Invalid username or password')
             return redirect(url_for('login'))
+        else:
+            oauth = StravaOauth()
+            social_id = oauth.callback()
+            if social_id is None:
+                flash('Authentication failed.')
+                return redirect(url_for('login'))
+            user.social_id = social_id
+            db.session.commit()
         login_user(user, remember=form.remember_me.data)
         next_page = request.args.get('next')
         if not next_page or url_parse(next_page).netloc != '':
@@ -60,5 +69,8 @@ def register():
         db.session.add(user)
         db.session.commit()
         flash('Congratulations, you are now a registered user!')
-        return redirect(url_for('login'))
+        oauth = StravaOauth()
+        return oauth.authorize()
+        # return redirect(url_for('login'))
+
     return render_template('register.html', title='Register', form=form)

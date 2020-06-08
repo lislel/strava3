@@ -1,8 +1,8 @@
-"""users table and mountains
+"""social id
 
-Revision ID: 87358544d1da
+Revision ID: 99aef733233a
 Revises: 
-Create Date: 2020-06-07 16:10:38.302476
+Create Date: 2020-06-07 17:45:44.978859
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '87358544d1da'
+revision = '99aef733233a'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -21,9 +21,10 @@ def upgrade():
     op.create_table('mountain',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(length=128), nullable=True),
-    sa.Column('lat', sa.String(length=128), nullable=True),
-    sa.Column('lon', sa.String(length=128), nullable=True),
-    sa.PrimaryKeyConstraint('id')
+    sa.Column('lat', sa.Integer(), nullable=True),
+    sa.Column('lon', sa.Integer(), nullable=True),
+    sa.PrimaryKeyConstraint('id'),
+    sa.UniqueConstraint('name')
     )
     op.create_table('user',
     sa.Column('id', sa.Integer(), nullable=False),
@@ -31,6 +32,7 @@ def upgrade():
     sa.Column('email', sa.String(length=120), nullable=True),
     sa.Column('password_hash', sa.String(length=128), nullable=True),
     sa.Column('refresh_token', sa.String(length=128), nullable=True),
+    sa.Column('social_id', sa.Integer(), nullable=True),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_index(op.f('ix_user_email'), 'user', ['email'], unique=True)

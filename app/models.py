@@ -11,6 +11,7 @@ class User(UserMixin, db.Model):
 	password_hash = db.Column(db.String(128))
 	refresh_token = db.Column(db.String(128))
 	mountains = db.relationship('Mountain', backref='hiker', secondary = 'link')
+	social_id = db.Column(db.Integer)
 
 	def __repr__(self):
 		return '<User {}>'.format(self.username)
@@ -29,8 +30,8 @@ class Mountain(db.Model):
 	__tablename__ = 'mountain'
 	id = db.Column(db.Integer, primary_key=True)
 	name = db.Column(db.String(128), unique=True)
-	lat = db.Column(db.String(128))
-	lon = db.Column(db.String(128))
+	lat = db.Column(db.Integer)
+	lon = db.Column(db.Integer)
 	users = db.relationship('User', secondary='link')
 
 def __repr__(self):
