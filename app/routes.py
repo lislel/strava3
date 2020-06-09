@@ -6,6 +6,9 @@ from app.forms import LoginForm, RegistrationForm
 from app.models import User
 from app.oauth import StravaOauth
 
+import time
+import requests
+
 
 @app.route('/')
 @app.route('/index')
@@ -37,15 +40,33 @@ def login():
             return redirect(url_for('login'))
         else:
             oauth = StravaOauth()
-            oauth.callback()
-            if oauth.social_id is None:
-                flash('Authentication failed.')
-                return redirect(url_for('login'))
-            user.social_id = oauth.social_id
-            user.access_token = oauth.access_token
-            user.refresh_token = oauth.refresh_token
-            user.expires_at = oauth.expires_at
-            db.session.commit()
+            print(f'user refresh {user.refresh_token}')
+
+            if user.refresh_token is None:
+                # User has never been authenticated with Strava, get authentication information
+                oauth.callback()
+                if oauth.social_id is None:
+                    flash('Authentication failed.')
+                    return redirect(url_for('login'))
+                else:
+                    user.social_id = oauth.social_id
+                    user.access_token = oauth.access_token
+                    user.refresh_token = oauth.refresh_token
+                    user.expires_at = oauth.expires_at
+                    db.session.commit()
+
+            elif user.expires_at < time.time():
+                #get new access_token and refresh_token
+                print(f'Expires {user.expires_at}, now {time.time()}')
+                oauth.get_refresh_token()
+                user.access_token = oauth.access_token
+                user.refresh_token = oauth.refresh_token
+                user.expires_at = oauth.expires_at
+                db.session.commit()
+
+            else:
+                pass
+
         login_user(user, remember=form.remember_me.data)
         next_page = request.args.get('next')
         if not next_page or url_parse(next_page).netloc != '':
