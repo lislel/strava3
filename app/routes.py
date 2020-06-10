@@ -42,7 +42,7 @@ def login():
             oauth = StravaOauth()
             print(f'User {user} has a refresh_token {user.refresh_token}')
             if user.refresh_token is None:
-            # User has never been authenticated with Strava, get authentication information
+                # User has never been authenticated with Strava, get authentication information
                 oauth.callback()
                 if oauth.social_id is None:
                     flash('Authentication failed.')
@@ -55,8 +55,8 @@ def login():
                 oauth.get_refresh_token(user.refresh_token)
                 update_access(user, oauth)
             else:
-                pass
-
+                pages = get_pages(user, oauth)
+                print(f'Pages: {pages}')
         login_user(user, remember=form.remember_me.data)
         next_page = request.args.get('next')
         if not next_page or url_parse(next_page).netloc != '':
@@ -71,8 +71,19 @@ def update_access(user, oauth):
     user.expires_at = oauth.expires_at
     db.session.commit()
     print(f'user {user.username}, social_id: {user.social_id}, access token: {user.access_token}, refresh_token: {user.refresh_token}, expires_at: {user.expires_at}')
-
     return
+
+
+def get_pages(user, oauth):
+    headers = oauth.base_headers()
+    headers.update({'Authorization': 'Bearer ' + user.access_token})
+    url = "https://www.strava.com/api/v3/athletes/%s/stats" % user.social_id
+    results = requests.get(url, headers=headers).json()
+    print(f'Page results: {results}')
+    act_total = int(results['all_run_totals']['count']) +  int(results['all_ride_totals']['count']) + int(results['all_swim_totals']['count'])
+    #  Get total number of known pages
+    page_num = int(act_total/200)
+    return page_num
 
 
 @app.route('/logout')
