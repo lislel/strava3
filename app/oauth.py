@@ -11,7 +11,8 @@ class StravaOauth():
     APPROVAL_PROMPT = "auto"
     SCOPE = "activity:read,profile:read_all"
     AUTHORIZATION_URL = "https://www.strava.com/oauth/authorize?"
-    GRANT_TYPE = "authorization_code"
+    AUTHORIZATION_GRANT = "authorization_code"
+    REFRESH_GRANT = "refresh_token"
     TOKEN_URL = "https://www.strava.com/oauth/token"
 
 
@@ -26,27 +27,28 @@ class StravaOauth():
 
     def get_callback_url(self):
         params = {"client_id": self.consumer_id,
-              "response_type": RESPONSE_TYPE,
-              "redirect_uri": REDIRECT_URI,
-              "approval_prompt": APPROVAL_PROMPT,
-              "scope": SCOPE}
-        url =  AUTHORIZATION_URL + urllib.parse.urlencode(params)
+              "response_type": self.RESPONSE_TYPE,
+              "redirect_uri": self.REDIRECT_URI,
+              "approval_prompt": self.APPROVAL_PROMPT,
+              "scope": self.SCOPE}
+        url =  self.AUTHORIZATION_URL + urllib.parse.urlencode(params)
         return url
 
     def callback(self):
         code = request.args.get('code')
+        print(f'Code = {code}')
         self.get_token(code)
         return
 
 
     def get_token(self, code):
-        post_data = {"grant_type": GRANT_TYPE,
+        post_data = {"grant_type": self.AUTHORIZATION_GRANT,
                      "client_id": self.consumer_id,
                      "client_secret": self.consumer_secret,
-                     "code": RESPONSE_TYPE,
-                     "redirect_uri": REDIRECT_URI}
+                     "code": code,
+                     "redirect_uri": self.REDIRECT_URI}
         headers = self.base_headers()
-        response = requests.post(TOKEN_URL,
+        response = requests.post(self.TOKEN_URL,
                                  headers=headers,
                                  data=post_data)
         token_json = response.json()
@@ -73,16 +75,18 @@ class StravaOauth():
         return {"User-Agent": self.user_agent()}
 
 
-    def get_refresh_token():
-        post_data = {"grant_type": "refresh_token",
-                     "client_id": 28599,
-                     "client_secret": '0b89acaaafd09735ed93707d135ebf3519bfbfd7',
-                     "refresh_token": user.refresh_token}
+    def get_refresh_token(self, refresh_token):
+        post_data = {"grant_type": self.REFRESH_GRANT,
+                     "client_id": self.consumer_id,
+                     "client_secret": self.consumer_secret,
+                     "refresh_token": refresh_token}
         headers = self.base_headers()
         response = requests.post("https://www.strava.com/oauth/token",
                                  headers=headers,
                                  data=post_data)    
 
-        self.access_token = response['access_token']
-        self.refresh_token = response['response_token']
-        self.expires_at = response['expires_at']
+        refresh_json = response.json()
+        print(f'Response: {refresh_json}')
+        self.access_token = refresh_json['access_token']
+        self.refresh_token = refresh_json['refresh_token']
+        self.expires_at = refresh_json['expires_at']

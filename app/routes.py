@@ -40,25 +40,14 @@ def login():
             return redirect(url_for('login'))
         else:
             oauth = StravaOauth()
-            print(f'user refresh {user.refresh_token}')
-
             if user.refresh_token is None:
-                # User has never been authenticated with Strava, get authentication information
-                oauth.callback()
-                if oauth.social_id is None:
-                    flash('Authentication failed.')
-                    return redirect(url_for('login'))
-                else:
-                    user.social_id = oauth.social_id
-                    user.access_token = oauth.access_token
-                    user.refresh_token = oauth.refresh_token
-                    user.expires_at = oauth.expires_at
-                    db.session.commit()
-
+            # User has never been authenticated with Strava, get authentication information
+                if not first_time_login(user, oauth):
+                    redirect(url_for('login'))
             elif user.expires_at < time.time():
-                #get new access_token and refresh_token
+                # Get new access_token and refresh_token
                 print(f'Expires {user.expires_at}, now {time.time()}')
-                oauth.get_refresh_token()
+                oauth.get_refresh_token(user.refresh_token)
                 user.access_token = oauth.access_token
                 user.refresh_token = oauth.refresh_token
                 user.expires_at = oauth.expires_at
@@ -73,6 +62,21 @@ def login():
             next_page = url_for('index')
         return redirect(next_page)
     return render_template('login.html', title='Sign In', form=form)
+
+
+def first_time_login(user, oauth):
+    oauth.callback()
+    if oauth.social_id is None:
+        flash('Authentication failed.')
+        return False
+    else:
+        # Set user authentication
+        user.social_id = oauth.social_id
+        user.access_token = oauth.access_token
+        user.refresh_token = oauth.refresh_token
+        user.expires_at = oauth.expires_at
+        db.session.commit()
+    return True
 
 
 @app.route('/logout')
