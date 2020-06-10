@@ -40,19 +40,20 @@ def login():
             return redirect(url_for('login'))
         else:
             oauth = StravaOauth()
+            print(f'User {user} has a refresh_token {user.refresh_token}')
             if user.refresh_token is None:
             # User has never been authenticated with Strava, get authentication information
-                if not first_time_login(user, oauth):
+                oauth.callback()
+                if oauth.social_id is None:
+                    flash('Authentication failed.')
                     redirect(url_for('login'))
+                user.social_id = oauth.social_id
+                update_access(user, oauth)
             elif user.expires_at < time.time():
                 # Get new access_token and refresh_token
                 print(f'Expires {user.expires_at}, now {time.time()}')
                 oauth.get_refresh_token(user.refresh_token)
-                user.access_token = oauth.access_token
-                user.refresh_token = oauth.refresh_token
-                user.expires_at = oauth.expires_at
-                db.session.commit()
-
+                update_access(user, oauth)
             else:
                 pass
 
@@ -64,26 +65,20 @@ def login():
     return render_template('login.html', title='Sign In', form=form)
 
 
-def first_time_login(user, oauth):
-    oauth.callback()
-    if oauth.social_id is None:
-        flash('Authentication failed.')
-        return False
-    else:
-        # Set user authentication
-        user.social_id = oauth.social_id
-        user.access_token = oauth.access_token
-        user.refresh_token = oauth.refresh_token
-        user.expires_at = oauth.expires_at
-        db.session.commit()
-    return True
+def update_access(user, oauth):
+    user.access_token = oauth.access_token
+    user.refresh_token = oauth.refresh_token
+    user.expires_at = oauth.expires_at
+    db.session.commit()
+    print(f'user {user.username}, social_id: {user.social_id}, access token: {user.access_token}, refresh_token: {user.refresh_token}, expires_at: {user.expires_at}')
+
+    return
 
 
 @app.route('/logout')
 def logout():
     logout_user()
     return redirect(url_for('index'))
-
 
 
 @app.route('/register', methods=['GET', 'POST'])
