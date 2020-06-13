@@ -2,6 +2,75 @@ import json
 from flask import current_app, url_for, request, redirect, session
 import urllib
 import requests
+import polyline
+from app.models import Mountain, Activity, User
+
+
+class DataIngest():
+    PAGE_URL = "https://www.strava.com/api/v3/athletes/%s/stats"
+    ACTIVITES_URL = "https://www.strava.com/api/v3/activities"
+
+    def __init__(self, user, oauth):
+        self.user = user
+        self.oauth = oauth
+        self.headers = self.oauth.update_headers(self.user.access_token)
+
+    def update(self):
+        for page in self.get_activities(1):
+            print(f'page = {page}')
+            self.parse(page)
+
+
+    def get_pages(self):
+        url = self.PAGE_URL % self.user.social_id
+        results = requests.get(url, headers=self.headers).json()
+        print(f'Page results: {results}')
+        act_total = int(results['all_run_totals']['count']) +  int(results['all_ride_totals']['count']) + int(results['all_swim_totals']['count'])
+        #  Get total number of known pages
+        self.page_num = int(act_total/200)
+        return self.page_num
+
+
+    def get_activities(self, page):
+        url = self.ACTIVITES_URL
+        page_result = requests.get(url, headers=self.headers, params={'page': page, 'per_page': 200}).json()
+        while len(page_result) > 0:
+            try:
+                page_result = requests.get(url, headers=self.headers, params={'page': page, 'per_page': 200}).json()
+                yield page_result
+                page += 1
+            except:
+                pass
+
+
+    def parse(self, page):
+        mountains = Mountain.query.all()
+        print(f'page2 = {page}')
+        for item in page:
+            if item['start_latlng'] is not None:
+                if item['type'] != 'Bike' and item['start_latlng'][0] >= 43.82 and item['start_latlng'][0] <= 44.62 and \
+                        item['start_latlng'][1] >= -71.97 and item['start_latlng'][1] <= -71.012:
+                    if item['elev_high'] > 1210:
+                        line = item['map']['summary_polyline']
+                        points = polyline.decode(line)
+                        for mt in mountains:
+                            min_dist = 10000000
+                            for pt in points:
+                                hypot = get_hypot(pt, mt.lat, mt.lon)
+                                if hypot < min_dist:
+                                    min_dist = hypot
+                            if min_dist <= 0.0085:
+                                # add id to list of activities that have touched this mountain
+                                acitivty = Activity()
+                                activity.name = item['name']
+                                acitivty.polyline = item['map']['summary_polyline']
+                                activity.url = item['id']
+                                activity.user_id = user.id
+                                activity.mountains.append(mt)
+                                db.session.commit()
+
+        return
+
 
 
 
@@ -73,6 +142,12 @@ class StravaOauth():
 
     def base_headers(self):
         return {"User-Agent": self.user_agent()}
+
+
+    def update_headers(self, token):
+        headers = self.base_headers()
+        headers.update({'Authorization': 'Bearer ' + token})
+        return headers
 
 
     def get_refresh_token(self, refresh_token):
