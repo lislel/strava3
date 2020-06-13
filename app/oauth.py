@@ -34,7 +34,8 @@ class DataIngest():
     def get_activities(self, page):
         url = self.ACTIVITES_URL
         page_result = requests.get(url, headers=self.headers, params={'page': page, 'per_page': 200}).json()
-        while len(page_result) > 0:
+        while page < 2:
+        # while len(page_result) > 0:
             try:
                 page_result = requests.get(url, headers=self.headers, params={'page': page, 'per_page': 200}).json()
                 yield page_result
@@ -65,8 +66,8 @@ class DataIngest():
                                 activity.name = item['name']
                                 acitivty.polyline = item['map']['summary_polyline']
                                 activity.url = item['id']
-                                activity.user_id = user.id
                                 activity.mountains.append(mt)
+                                self.user.activities.append(acitivty)
                                 db.session.commit()
 
         return
