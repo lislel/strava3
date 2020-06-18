@@ -4,6 +4,9 @@ import urllib
 import requests
 import polyline
 from app.models import Mountain, Activity, User
+from app import db
+import math
+import datetime
 
 
 class DataIngest():
@@ -17,14 +20,20 @@ class DataIngest():
 
     def update(self):
         for page in self.get_activities(1):
-            print(f'page = {page}')
             self.parse(page)
+        self.user.last_seen = datetime.now()
+
+    @staticmethod
+    def get_hypot(pt, lat, lon):
+        x_ind = pt[0] - lat
+        y_ind = pt[1] - lon
+        hypot = math.sqrt(math.pow(x_ind, 2) + math.pow(y_ind, 2))
+        return hypot
 
 
     def get_pages(self):
         url = self.PAGE_URL % self.user.social_id
         results = requests.get(url, headers=self.headers).json()
-        print(f'Page results: {results}')
         act_total = int(results['all_run_totals']['count']) +  int(results['all_ride_totals']['count']) + int(results['all_swim_totals']['count'])
         #  Get total number of known pages
         self.page_num = int(act_total/200)
@@ -34,8 +43,8 @@ class DataIngest():
     def get_activities(self, page):
         url = self.ACTIVITES_URL
         page_result = requests.get(url, headers=self.headers, params={'page': page, 'per_page': 200}).json()
-        while page < 2:
-        # while len(page_result) > 0:
+        # while page < 2:
+        while len(page_result) > 0:
             try:
                 page_result = requests.get(url, headers=self.headers, params={'page': page, 'per_page': 200}).json()
                 yield page_result
@@ -45,32 +54,40 @@ class DataIngest():
 
 
     def parse(self, page):
-        mountains = Mountain.query.all()
-        print(f'page2 = {page}')
         for item in page:
-            if item['start_latlng'] is not None:
-                if item['type'] != 'Bike' and item['start_latlng'][0] >= 43.82 and item['start_latlng'][0] <= 44.62 and \
-                        item['start_latlng'][1] >= -71.97 and item['start_latlng'][1] <= -71.012:
-                    if item['elev_high'] > 1210:
-                        line = item['map']['summary_polyline']
-                        points = polyline.decode(line)
-                        for mt in mountains:
-                            min_dist = 10000000
-                            for pt in points:
-                                hypot = get_hypot(pt, mt.lat, mt.lon)
-                                if hypot < min_dist:
-                                    min_dist = hypot
-                            if min_dist <= 0.0085:
-                                # add id to list of activities that have touched this mountain
-                                acitivty = Activity()
-                                activity.name = item['name']
-                                acitivty.polyline = item['map']['summary_polyline']
-                                activity.url = item['id']
-                                activity.mountains.append(mt)
-                                self.user.activities.append(acitivty)
-                                db.session.commit()
+            if item[time] < self.user.last_seen:
+                return
+            else:
+                if item['start_latlng'] is not None:
+                    if item['type'] != 'Bike' and item['start_latlng'][0] >= 43.82 and item['start_latlng'][0] <= 44.62 and \
+                            item['start_latlng'][1] >= -71.97 and item['start_latlng'][1] <= -71.012:
+                        if item['elev_high'] > 1210:
+                            line = item['map']['summary_polyline']
+                            points = polyline.decode(line)
+                            for mt in Mountain.query.all():
+                                min_dist = 10000000
+                                for pt in points:
+                                    hypot = self.get_hypot(pt, mt.lat, mt.lon)
+                                    if hypot < min_dist:
+                                        min_dist = hypot
+                                if min_dist <= 0.0085:
+                                    exists = db.session.query(db.exists().where(Activity.activity_id == item['id'])).scalar()
+                                    if exists is False:
+                                        # add id to list of activities that have touched this mountain
+                                        act = Activity()
+                                        act.name = item['name']
+                                        act.polyline = item['map']['summary_polyline']
+                                        act.url = item['id']
+                                        act.mountains.append(mt)
+                                        act.activity_id = item['id']
+                                        self.user.activities.append(act)
+                                    else:
+                                        act = db.session.query(Activity).filter_by(activity_id=item['id']).first()
+                                        print(f'act = {act}')
+                                        act.mountains.append(mt)
+                                    db.session.commit()
 
-        return
+            return
 
 
 

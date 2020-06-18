@@ -9,6 +9,12 @@ from app.oauth import StravaOauth, DataIngest
 import time
 import requests
 
+@app.before_request
+def before_request():
+    if current_user.is_authenticated:
+        current_user.last_seen = datetime.utcnow()
+        db.session.commit()
+
 
 @app.route('/')
 @app.route('/index')
@@ -40,9 +46,9 @@ def login():
             return redirect(url_for('login'))
         else:
             oauth = StravaOauth()
-            print(f'User {user} has a refresh_token {user.refresh_token}')
             if user.social_id is None:
                 # User has never been authenticated with Strava, get authentication information
+                print('new user!')
                 oauth.callback()
                 if oauth.social_id is None:
                     flash('Authentication failed.')

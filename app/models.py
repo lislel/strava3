@@ -10,7 +10,7 @@ class User(UserMixin, db.Model):
 	email = db.Column(db.String(120), index=True, unique=True)
 	password_hash = db.Column(db.String(128))
 	refresh_token = db.Column(db.String(128))
-
+	last_seen = db.Column(db.DateTime, default=datetime.utcnow)
 	mountains = db.relationship('Mountain', backref='hiker', secondary = 'user_mountain_link')
 	social_id = db.Column(db.Integer)
 	access_token = db.Column(db.String(128))
@@ -34,7 +34,7 @@ def load_user(id):
 class Mountain(db.Model):
 	__tablename__ = 'mountain'
 	id = db.Column(db.Integer, primary_key=True)
-	name = db.Column(db.String(128), unique=True)
+	name = db.Column(db.String(128), index=True, unique=True)
 	lat = db.Column(db.Integer)
 	lon = db.Column(db.Integer)
 	users = db.relationship('User', secondary='user_mountain_link')
@@ -60,7 +60,7 @@ class Activity(db.Model):
 	__tablename__ = 'activity'
 	id = db.Column(db.Integer, primary_key=True)
 	name = db.Column(db.String(1280))
-	activitie_id = db.Integer
+	activity_id = db.Column(db.Integer, unique=True)
 	url = db.Column(db.String(1280))
 	polyline = db.Column(db.String(1280))
 	user_id = db.Column(db.Integer, db.ForeignKey('user.id'))

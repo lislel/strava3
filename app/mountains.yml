@@ -1,0 +1,288 @@
+washington:
+  mt_name: Washington
+  lat: 44.2706
+  lon: -71.3033
+  act_name: []
+  act_id: []
+adams:
+  mt_name: Adams
+  lat: 44.3202
+  lon: -71.2909
+  act_name: []
+  act_id: []
+jefferson:
+  mt_name: Jefferson
+  lat: 44.3045
+  lon: -71.3176
+  act_name: []
+  act_id: []
+monroe:
+  mt_name: Monroe
+  lat: 44.2556
+  lon: -71.3220
+  act_name: []
+  act_id: []
+madison:
+  mt_name: Madison
+  lat: 44.3284
+  lon: -71.2779
+  act_name: []
+  act_id: []
+lafayette:
+  mt_name: Lafayette
+  lat: 44.1607
+  lon: -71.6445
+  act_name: []
+  act_id: []
+lincoln:
+  mt_name: Lincoln
+  lat: 44.1490
+  lon: -71.6445
+  act_name: []
+  act_id: []
+south twin:
+  mt_name: South Twin
+  lat: 44.1876
+  lon: -71.5548
+  act_name: []
+  act_id: []
+carter dome:
+  mt_name: Carter Dome
+  lat: 44.2673
+  lon: -71.1790
+  act_name: []
+  act_id: []
+moosilauke:
+  mt_name: Moosilauke
+  lat: 44.0245
+  lon: -71.8309
+  act_name: []
+  act_id: []
+eisenhower:
+  mt_name: Eisenhower
+  lat: 44.2403
+  lon: -71.3504
+  act_name: []
+  act_id: []
+north Twin:
+  mt_name: North Twin
+  lat: 44.2026
+  lon: -71.5579
+  act_name: []
+  act_id: []
+carrigan:
+  mt_name: Carrigan
+  lat: 44.0945
+  lon: -71.4474
+  act_name: []
+  act_id: []
+bond:
+  mt_name: Bond
+  lat: 44.1528
+  lon: -71.5312
+  act_name: []
+  act_id: []
+middle carter:
+  mt_name: Middle Carter
+  lat: 44.3031
+  lon: -71.1673
+  act_name: []
+  act_id: []
+west bond:
+  mt_name: West Bond
+  lat: 44.15473
+  lon: -71.54351
+  act_name: []
+  act_id: []
+garfield:
+  mt_name: Garfield
+  lat: 44.1870
+  lon: -71.6109
+  act_name: []
+  act_id: []
+liberty:
+  mt_name: Liberty
+  lat: 44.1159
+  lon: -71.6420
+  act_name: []
+  act_id: []
+south carter:
+  mt_name: South Carter
+  lat: 44.2898
+  lon: -71.1762
+  act_name: []
+  act_id: []
+wildcat a:
+  mt_name: Wildcat A
+  lat: 44.2590
+  lon: -71.2015
+  act_name: []
+  act_id: []
+hancock:
+  mt_name: Hancock
+  lat: 44.0837
+  lon: -71.4937
+  act_name: []
+  act_id: []
+south kinsman:
+  mt_name: South Kinsman
+  lat: 44.12297
+  lon: -71.73655
+  act_name: []
+  act_id: []
+field:
+  mt_name: Field
+  lat: 44.1962
+  lon: -71.4345
+  act_name: []
+  act_id: []
+osceola:
+  mt_name: Osceola
+  lat: 44.0015
+  lon: -71.5359
+  act_name: []
+  act_id: []
+flume:
+  mt_name: Flume
+  lat: 44.1090
+  lon: -71.6279
+  act_name: []
+  act_id: []
+south hancock:
+  mt_name: South Hancock
+  lat: 44.08367
+  lon: -71.49368
+  act_name: []
+  act_id: []
+pierce:
+  mt_name: Pierce
+  lat: 44.2265
+  lon: -71.3659
+  act_name: []
+  act_id: []
+north kinsman:
+  mt_name: North Kinsman
+  lat: 44.13337
+  lon: -71.73691
+  act_name: []
+  act_id: []
+willey:
+  mt_name: Willey
+  lat: 44.1837
+  lon: -71.4215
+  act_name: []
+  act_id: []
+bondcliff:
+  mt_name: Bondcliff
+  lat: 44.14080
+  lon: -71.5409
+  act_name: []
+  act_id: []
+zealand:
+  mt_name: Zealand
+  lat: 44.1797
+  lon: -71.5213
+  act_name: []
+  act_id: []
+north tripyramid:
+  mt_name: North Tripyramid
+  lat: 43.973254
+  lon: -71.442878
+  act_name: []
+  act_id: []
+cabot:
+  mt_name: Cabot
+  lat: 44.5062
+  lon: -71.4156
+  act_name: []
+  act_id: []
+east osceola:
+  mt_name: East Osceola
+  lat: 44.0057
+  lon: -71.5202
+  act_name: []
+  act_id: []
+middle tripyramid:
+  mt_name: Middle Tripyramid
+  lat: 43.960266
+  lon: -71.4414515
+  act_name: []
+  act_id: []
+cannon:
+  mt_name: Cannon
+  lat: 44.1565
+  lon: -71.6984
+  act_name: []
+  act_id: []
+hale:
+  mt_name: Hale
+  lat: 44.2217
+  lon: -71.5120
+  act_name: []
+  act_id: []
+jackson:
+  mt_name: Jackson
+  lat: 44.2031
+  lon: -71.3742
+  act_name: []
+  act_id: []
+tom:
+  mt_name: Tom
+  lat: 44.2103
+  lon: -71.4459
+  act_name: []
+  act_id: []
+wildcat d:
+  mt_name: Wildcat D
+  lat: 44.2492
+  lon: 71.2236
+  act_name: []
+  act_id: []
+moriah:
+  mt_name: Moriah
+  lat: 44.3403
+  lon: -71.1315
+  act_name: []
+  act_id: []
+passaconaway:
+  mt_name: Passaconaway
+  lat: 43.9548
+  lon: -71.3815
+  act_name: []
+  act_id: []
+owl's head:
+  mt_name: Owl's Head
+  lat: 44.1444
+  lon: -71.6050
+  act_name: []
+  act_id: []
+galehead:
+  mt_name: Galehead
+  lat: 44.1853
+  lon: -71.5737
+  act_name: []
+  act_id: []
+whiteface:
+  mt_name: Whiteface
+  lat: 43.9340
+  lon: -71.4059
+  act_name: []
+  act_id: []
+waumbek:
+  mt_name: Waumbek
+  lat: 44.4328
+  lon: -71.4170
+  act_name: []
+  act_id: []
+isolation:
+  mt_name: Isolation
+  lat: 44.2148
+  lon: -71.3092
+  act_name: []
+  act_id: []
+tecumseh:
+  mt_name: Tecumseh
+  lat: 43.9673
+  lon: -71.5581
+  act_name: []
+  act_id: []
