@@ -19,9 +19,18 @@ class DataIngest():
         self.headers = self.oauth.update_headers(self.user.access_token)
 
     def update(self):
-        for page in self.get_activities(1):
-            self.parse(page)
-        self.user.last_seen = datetime.now()
+        done = False
+        self.all_act = []
+        self.get_activities()
+        print('length of all activities ', len(self.all_act))
+        print(' ')
+        for act in self.all_act:
+        # for page in self.get_activities():
+            done = self.parse(act)
+            if done is True:
+                break
+        self.user.last_seen = datetime.datetime.now()
+        db.session.commit()
 
     @staticmethod
     def get_hypot(pt, lat, lon):
@@ -39,55 +48,72 @@ class DataIngest():
         self.page_num = int(act_total/200)
         return self.page_num
 
-
-    def get_activities(self, page):
+    def get_activities(self):
+    # def get_activities(self, page):
+        print(f'user last seen: {self.user.last_seen}')
+        page = 1
         url = self.ACTIVITES_URL
         page_result = requests.get(url, headers=self.headers, params={'page': page, 'per_page': 200}).json()
-        # while page < 2:
         while len(page_result) > 0:
-            try:
-                page_result = requests.get(url, headers=self.headers, params={'page': page, 'per_page': 200}).json()
-                yield page_result
-                page += 1
-            except:
-                pass
+            for a in page_result:
+                act_date = datetime.datetime.strptime(a['start_date'], '%Y-%m-%dT%H:%M:%SZ')
+                if self.user.last_seen is not None and act_date < self.user.last_seen:
+                    return
+                else:
+                    self.all_act.append(a)
+            # yield page_result
+            page += 1
+            page_result = requests.get(url, headers=self.headers, params={'page': page, 'per_page': 200}).json()
+        return
 
 
-    def parse(self, page):
-        for item in page:
-            if item[time] < self.user.last_seen:
-                return
-            else:
-                if item['start_latlng'] is not None:
-                    if item['type'] != 'Bike' and item['start_latlng'][0] >= 43.82 and item['start_latlng'][0] <= 44.62 and \
-                            item['start_latlng'][1] >= -71.97 and item['start_latlng'][1] <= -71.012:
-                        if item['elev_high'] > 1210:
-                            line = item['map']['summary_polyline']
-                            points = polyline.decode(line)
-                            for mt in Mountain.query.all():
-                                min_dist = 10000000
-                                for pt in points:
-                                    hypot = self.get_hypot(pt, mt.lat, mt.lon)
-                                    if hypot < min_dist:
-                                        min_dist = hypot
-                                if min_dist <= 0.0085:
-                                    exists = db.session.query(db.exists().where(Activity.activity_id == item['id'])).scalar()
-                                    if exists is False:
-                                        # add id to list of activities that have touched this mountain
-                                        act = Activity()
-                                        act.name = item['name']
-                                        act.polyline = item['map']['summary_polyline']
-                                        act.url = item['id']
-                                        act.mountains.append(mt)
-                                        act.activity_id = item['id']
-                                        self.user.activities.append(act)
-                                    else:
-                                        act = db.session.query(Activity).filter_by(activity_id=item['id']).first()
-                                        print(f'act = {act}')
-                                        act.mountains.append(mt)
-                                    db.session.commit()
+    # def get_activities(self, page):
+    #     url = self.ACTIVITES_URL
+    #     page_result = requests.get(url, headers=self.headers, params={'page': page, 'per_page': 200}).json()
+    #     # while page < 2:
+    #     while len(page_result) > 0:
+    #         try:
+    #             page_result = requests.get(url, headers=self.headers, params={'page': page, 'per_page': 200}).json()
+    #             # yield page_result
+    #             page += 1
+    #         except:
+    #             pass
 
-            return
+
+    def parse(self, item):
+        if item['start_latlng'] is not None:
+            if item['type'] != 'Bike' and item['start_latlng'][0] >= 43.82 and item['start_latlng'][0] <= 44.62 and \
+                    item['start_latlng'][1] >= -71.97 and item['start_latlng'][1] <= -71.012:
+                if item['elev_high'] > 1210:
+                    line = item['map']['summary_polyline']
+                    points = polyline.decode(line)
+                    for mt in Mountain.query.all():
+                        min_dist = 10000000
+                        for pt in points:
+                            hypot = self.get_hypot(pt, mt.lat, mt.lon)
+                            if hypot < min_dist:
+                                min_dist = hypot
+                        if min_dist <= 0.0085:
+                            print('this one has been found', item['id'])
+                            exists = db.session.query(db.exists().where(Activity.activity_id == item['id'])).scalar()
+                            print('does it exist already? ', exists)
+                            if exists is False:
+                                # add id to list of activities that have touched this mountain
+                                act = Activity()
+                                act.name = item['name']
+                                act.polyline = item['map']['summary_polyline']
+                                act.url = item['id']
+                                act.mountains.append(mt)
+                                act.activity_id = item['id']
+                                print('it doesnt exist, add it ', act.activity_id)
+                                self.user.activities.append(act)
+                            else:
+                                act = db.session.query(Activity).filter_by(activity_id=item['id']).first()
+                                print(f'act already exists {act}, adding mountain {mt}')
+                                act.mountains.append(mt)
+                            db.session.commit()
+
+            return False
 
 
 
