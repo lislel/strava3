@@ -107,11 +107,12 @@ class DataIngest():
                                 act.activity_id = item['id']
                                 print('it doesnt exist, add it ', act.activity_id)
                                 self.user.activities.append(act)
+                                db.session.commit()
                             else:
                                 act = db.session.query(Activity).filter_by(activity_id=item['id']).first()
                                 print(f'act already exists {act}, adding mountain {mt}')
                                 act.mountains.append(mt)
-                            db.session.commit()
+                                db.session.commit()
 
             return False
 

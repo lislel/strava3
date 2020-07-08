@@ -1,8 +1,19 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Hi, {{ current_user.username }}!</h1>
-    {% for post in posts %}
-    <div><p>{{ post.author.username }} says: <b>{{ post.body }}</b></p></div>
+<h1> Finished </h1>
+    {% for mt in finished.keys() %}
+    <ol>{{mt.name}}</ol>
+    <ul>
+    	{% for act in finished[mt] %}
+    	    <li><a href="{{ 'https://www.strava.com/activities/%s'%act.activity_id}}"  target="_blank">{{act.name}}</a></li>
+         {%endfor%}
+    </ul>
     {% endfor %}
+
+<h1> Not finished </h1>>
+	{% for u in unfinished %}
+		<ol>{{u.name}}</ol>
+	{% endfor %}
+	
 {% endblock %}

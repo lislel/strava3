@@ -3,29 +3,29 @@ from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug.urls import url_parse
 from app import app, db
 from app.forms import LoginForm, RegistrationForm
-from app.models import User
+from app.models import User, Mountain
 from app.oauth import StravaOauth, DataIngest
 
 import time
 import requests
+import json
 
 
 @app.route('/')
 @app.route('/index')
 @login_required
 def index():
-    posts = [
-        {
-            'author': {'username': 'John'},
-            'body': 'Beautiful day in Portland!'
-        },
-        {
-            'author': {'username': 'Susan'},
-            'body': 'The Avengers movie was so cool!'
-        }
-    ]
-    return render_template('index.html', title='Home', posts=posts)
+    mts = Mountain.query.all()
+    finished = dict()
+    unfinished = []
+    for mt in mts:
+        acts = [a for a in mt.activities if a.user_id == current_user.id]
+        if len(acts) > 0:
+            finished[mt] = acts
+        else:
+            unfinished.append(mt)
 
+    return render_template('index.html', title='Home', finished=finished, unfinished=unfinished, user_id=current_user.id)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -102,3 +102,31 @@ def register():
         # return redirect(url_for('login'))
 
     return render_template('register.html', title='Register', form=form)
+
+
+@app.route('/map')
+def map():
+    mts = Mountain.query.all()
+    map_markers = []
+    all_polylines = []
+    for mt in mts:
+        mt_dict = {'lat': mt.lat, 'lon': mt.lon, 'name': mt.name}
+        acts = [a for a in mt.activities if a.user_id == current_user.id]
+        polylines = [p.polyline for p in acts]
+        act_ids = [a.activity_id for a in acts]
+        print(act_ids)
+        if len(polylines) > 0:
+            all_polylines.extend(polylines)
+        if len(acts) > 0:
+            mt_dict['act_ids'] = act_ids
+        else:
+            mt_dict['act_ids'] = 'missing'
+        map_markers.append(mt_dict)
+        print(map_markers)
+
+
+
+    #unfinished = json.dumps(unfinished)
+    polylines = json.dumps(polylines)
+    return render_template('map.html', title='Map', all_polylines=all_polylines, map_markers=map_markers)
+
