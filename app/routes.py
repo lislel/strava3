@@ -1,4 +1,4 @@
-from flask import render_template, flash, redirect, url_for, request
+from flask import render_template, flash, redirect, url_for, request, session
 from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug.urls import url_parse
 from app import app, db
@@ -79,7 +79,7 @@ def update_access(user, oauth):
     print(f'user {user.username}, social_id: {user.social_id}, access token: {user.access_token}, refresh_token: {user.refresh_token}, expires_at: {user.expires_at}')
     return
 
-
+@login_required
 @app.route('/logout')
 def logout():
     logout_user()
@@ -88,8 +88,14 @@ def logout():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
+    print(f'1 current user authenitcated? {current_user.is_authenticated}')
+    print(session)
     if current_user.is_authenticated:
-        return redirect(url_for('index'))
+        logout_user()
+        print(f'2 current user authenitcated? {current_user.is_authenticated}')
+
+        # print('current user is authenticated')
+        # return redirect(url_for('index'))
     form = RegistrationForm()
     if form.validate_on_submit():
         user = User(username=form.username.data, email=form.email.data)
@@ -103,7 +109,7 @@ def register():
 
     return render_template('register.html', title='Register', form=form)
 
-
+@login_required
 @app.route('/map')
 def map():
     mts = Mountain.query.all()

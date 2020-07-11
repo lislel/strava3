@@ -33,6 +33,7 @@ visitor==0.1.3
 Werkzeug==0.14.1
 WTForms==2.1
 polyline
+ratelimit
 
 # requirements for Heroku
 psycopg2==2.7.3.1

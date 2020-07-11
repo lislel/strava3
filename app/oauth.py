@@ -1,5 +1,9 @@
 import json
 from flask import current_app, url_for, request, redirect, session
+from flask_login import login_user, logout_user, current_user
+from ratelimit import limits, sleep_and_retry
+from multiprocessing import Manager
+from multiprocessing.pool import ThreadPool
 import urllib
 import requests
 import polyline
@@ -7,6 +11,8 @@ from app.models import Mountain, Activity, User
 from app import db
 import math
 import datetime
+import random
+import time
 
 
 class DataIngest():
@@ -18,12 +24,37 @@ class DataIngest():
         self.oauth = oauth
         self.headers = self.oauth.update_headers(self.user.access_token)
 
+    # def update(self):
+    #     done = False
+    #     self.all_act = []
+    #     self.get_activities()
+    #     print('length of all activities ', len(self.all_act))
+    #     print(' ')
+    #     for act in self.all_act:
+    #     # for page in self.get_activities():
+    #         done = self.parse(act)
+    #         if done is True:
+    #             break
+    #     self.user.last_seen = datetime.datetime.now()
+    #     db.session.commit()
+
     def update(self):
         done = False
-        self.all_act = []
-        self.get_activities()
-        print('length of all activities ', len(self.all_act))
-        print(' ')
+        manager = Manager()
+        self.list_manager = manager.list()
+        page_numbers = self.get_pages()
+        page_param = []
+        for i in range(1, page_numbers+1):
+            page_param.append(i)
+
+        p = ThreadPool(processes=page_numbers)
+        results = p.map(self.get_activities, page_param)
+        self.all_act = list(self.list_manager)
+        print(f'result of multiprocessing: {len(self.all_act)}')
+        #self.get_activities()
+
+
+
         for act in self.all_act:
         # for page in self.get_activities():
             done = self.parse(act)
@@ -31,6 +62,7 @@ class DataIngest():
                 break
         self.user.last_seen = datetime.datetime.now()
         db.session.commit()
+
 
     @staticmethod
     def get_hypot(pt, lat, lon):
@@ -48,36 +80,50 @@ class DataIngest():
         self.page_num = int(act_total/200)
         return self.page_num
 
-    def get_activities(self):
-    # def get_activities(self, page):
-        print(f'user last seen: {self.user.last_seen}')
-        page = 1
-        url = self.ACTIVITES_URL
-        page_result = requests.get(url, headers=self.headers, params={'page': page, 'per_page': 200}).json()
+
+    def get_activities(self, page):
+        time.sleep(random.random())
+        
+        page_result = self.call_api(page)
         while len(page_result) > 0:
             for a in page_result:
                 act_date = datetime.datetime.strptime(a['start_date'], '%Y-%m-%dT%H:%M:%SZ')
                 if self.user.last_seen is not None and act_date < self.user.last_seen:
                     return
                 else:
-                    self.all_act.append(a)
-            # yield page_result
-            page += 1
-            page_result = requests.get(url, headers=self.headers, params={'page': page, 'per_page': 200}).json()
+                    self.list_manager.append(a)
         return
 
-
-    # def get_activities(self, page):
+    # def get_activities(self):
+    # # def get_activities(self, page):
+    #     print(f'user last seen: {self.user.last_seen}')
+    #     page = 1
     #     url = self.ACTIVITES_URL
-    #     page_result = requests.get(url, headers=self.headers, params={'page': page, 'per_page': 200}).json()
-    #     # while page < 2:
+    #     page_result = call_api(page)
     #     while len(page_result) > 0:
-    #         try:
-    #             page_result = requests.get(url, headers=self.headers, params={'page': page, 'per_page': 200}).json()
-    #             # yield page_result
-    #             page += 1
-    #         except:
-    #             pass
+    #         for a in page_result:
+    #             act_date = datetime.datetime.strptime(a['start_date'], '%Y-%m-%dT%H:%M:%SZ')
+    #             if self.user.last_seen is not None and act_date < self.user.last_seen:
+    #                 return
+    #             else:
+    #                 self.all_act.append(a)
+    #         # yield page_result
+    #         page += 1
+    #         page_result = requests.get(url, headers=self.headers, params={'page': page, 'per_page': 200}).json()
+    #     return
+
+
+    @sleep_and_retry
+    @limits(calls=100, period=60)
+    def call_api(self, page):
+        url = self.ACTIVITES_URL
+        response = requests.get(url, headers=self.headers, params={'page': page, 'per_page': 200}).json()
+        print(f'url response: {response}')
+        # if response.status_code == 404:
+        #     return 'Not Found'
+        # if response.status_code != 200:
+        #     raise Exception('API response: {}'.format(response.status_code))
+        return response
 
 
     def parse(self, item):
@@ -146,6 +192,8 @@ class StravaOauth():
               "approval_prompt": self.APPROVAL_PROMPT,
               "scope": self.SCOPE}
         url =  self.AUTHORIZATION_URL + urllib.parse.urlencode(params)
+        print(f'3 current user authenitcated? {current_user.is_authenticated}')
+        print(session)
         return url
 
     def callback(self):
