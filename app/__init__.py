@@ -6,6 +6,7 @@ from flask_login import LoginManager
 from config import Config
 import logging
 from logging.handlers import SMTPHandler
+from flask_mail import Mail
 
 app = Flask(__name__)
 app.config.from_object(Config)
@@ -13,6 +14,7 @@ db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 login = LoginManager(app)
 login.login_view = 'login'
+mail = Mail(app)
 
 # setup for email error notifications
 """

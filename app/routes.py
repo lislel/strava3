@@ -5,6 +5,8 @@ from app import app, db
 from app.forms import LoginForm, RegistrationForm
 from app.models import User, Mountain
 from app.oauth import StravaOauth, DataIngest
+from app.forms import ResetPasswordRequestForm, ResetPasswordForm
+from app.email import send_password_reset_email
 
 import time
 import requests
@@ -136,3 +138,33 @@ def map():
     polylines = json.dumps(polylines)
     return render_template('map.html', title='Map', all_polylines=all_polylines, map_markers=map_markers)
 
+
+@app.route('/reset_password_request', methods=['GET', 'POST'])
+def reset_password_request():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    form = ResetPasswordRequestForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(email=form.email.data).first()
+        if user:
+            send_password_reset_email(user)
+        flash('Check your email for the instructions to reset your password')
+        return redirect(url_for('login'))
+    return render_template('reset_password_request.html',
+                           title='Reset Password', form=form)
+
+
+@app.route('/reset_password/<token>', methods=['GET', 'POST'])
+def reset_password(token):
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+    user = User.verify_reset_password_token(token)
+    if not user:
+        return redirect(url_for('index'))
+    form = ResetPasswordForm()
+    if form.validate_on_submit():
+        user.set_password(form.password.data)
+        db.session.commit()
+        flash('Your password has been reset.')
+        return redirect(url_for('login'))
+    return render_template('reset_password.html', form=form)
