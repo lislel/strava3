@@ -8,6 +8,17 @@ from app import db
 import math
 import datetime
 import time
+import asyncio
+import math
+import json
+from aiohttp import ClientSession
+
+
+async def fetch(url, params, headers, session):
+    async with session.get(url, params=params, headers=headers) as response:
+        reply_string = await response.read()
+        reply = json.loads(reply_string.decode('utf-8'))
+        return reply
 
 
 class DataIngest():
@@ -19,16 +30,52 @@ class DataIngest():
         self.oauth = oauth
         self.headers = self.oauth.update_headers(self.user.access_token)
 
+    # def update(self):
+    #     start = datetime.datetime.now()
+    #     print(f'start update {start}')
+    #     done = False
+    #     self.all_act = []
+    #     self.get_activities()
+    #     print('length of all activities ', len(self.all_act))
+    #     print(' ')
+        # for act in self.all_act:
+        # # for page in self.get_activities():
+        #     done = self.parse(act)
+        #     if done is True:
+        #         break
+        # end = datetime.datetime.now()
+        # self.user.last_seen = end
+        # print(f'finished update {end}')
+        # print(f'difference {end-start}')
+        # db.session.commit()
+
     def update(self):
         start = datetime.datetime.now()
         print(f'start update {start}')
-        done = False
-        self.all_act = []
-        self.get_activities()
-        print('length of all activities ', len(self.all_act))
-        print(' ')
-        for act in self.all_act:
-        # for page in self.get_activities():
+
+        # get all known number of pages asynchronously
+        num_pages = self.get_pages()
+        print(f'num pages = {num_pages}')
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        future = asyncio.ensure_future(self.run(num_pages+1, self.headers))
+        self.responses = loop.run_until_complete(future)
+        all_responses = [item for sublist in self.responses for item in sublist]
+        # get rest synchronously
+        sync = []
+        page = num_pages + 2
+        url = self.ACTIVITES_URL
+        page_result = requests.get(url, headers=self.headers, params={'page': page, 'per_page': 200}).json()
+        while len(page_result) > 0:
+            for a in page_result:
+                sync.append(a)
+            page += 1
+            page_result = requests.get(url, headers=self.headers, params={'page': page, 'per_page': 200}).json()
+
+        all_responses.extend(sync)
+        
+        print(len(all_responses))
+        for act in all_responses:
             done = self.parse(act)
             if done is True:
                 break
@@ -37,6 +84,23 @@ class DataIngest():
         print(f'finished update {end}')
         print(f'difference {end-start}')
         db.session.commit()
+
+
+    async def run(self, r, headers):
+        url = "https://www.strava.com/api/v3/activities"
+        headers = headers
+        tasks = []
+        # Fetch all responses within one Client session,
+        # keep connection alive for all requests.
+        async with ClientSession() as session:
+            for i in range(r):
+                print(f'page {i}')
+                task = asyncio.ensure_future(fetch(url, {'page': i, 'per_page': 200}, headers, session))
+                tasks.append(task)
+
+            return await asyncio.gather(*tasks)
+            # you now have all response bodies in this variable
+
 
     @staticmethod
     def get_hypot(pt, lat, lon):
@@ -51,7 +115,7 @@ class DataIngest():
         results = requests.get(url, headers=self.headers).json()
         act_total = int(results['all_run_totals']['count']) +  int(results['all_ride_totals']['count']) + int(results['all_swim_totals']['count'])
         #  Get total number of known pages
-        self.page_num = int(act_total/200)
+        self.page_num = math.ceil(act_total/200)
         return self.page_num
 
     def get_activities(self):
@@ -70,6 +134,7 @@ class DataIngest():
             # yield page_result
             page += 1
             page_result = requests.get(url, headers=self.headers, params={'page': page, 'per_page': 200}).json()
+
         return
 
 
@@ -87,40 +152,39 @@ class DataIngest():
 
 
     def parse(self, item):
-        if item['start_latlng'] is not None:
-            if item['type'] != 'Bike' and item['start_latlng'][0] >= 43.82 and item['start_latlng'][0] <= 44.62 and \
-                    item['start_latlng'][1] >= -71.97 and item['start_latlng'][1] <= -71.012:
-                if item['elev_high'] > 1210:
-                    line = item['map']['summary_polyline']
-                    points = polyline.decode(line)
-                    for mt in Mountain.query.all():
-                        min_dist = 10000000
-                        for pt in points:
-                            hypot = self.get_hypot(pt, mt.lat, mt.lon)
-                            if hypot < min_dist:
-                                min_dist = hypot
-                        if min_dist <= 0.0085:
-                            print('this one has been found', item['id'])
-                            exists = db.session.query(db.exists().where(Activity.activity_id == item['id'])).scalar()
-                            print('does it exist already? ', exists)
-                            if exists is False:
-                                # add id to list of activities that have touched this mountain
-                                act = Activity()
-                                act.name = item['name']
-                                act.polyline = item['map']['summary_polyline']
-                                act.url = item['id']
-                                act.mountains.append(mt)
-                                act.activity_id = item['id']
-                                print('it doesnt exist, add it ', act.activity_id)
-                                self.user.activities.append(act)
-                                db.session.commit()
-                            else:
-                                act = db.session.query(Activity).filter_by(activity_id=item['id']).first()
-                                print(f'act already exists {act}, adding mountain {mt}')
-                                act.mountains.append(mt)
-                                db.session.commit()
+        try:
+            if item['start_latlng'] is not None:
+                if item['type'] != 'Bike' and item['start_latlng'][0] >= 43.82 and item['start_latlng'][0] <= 44.62 and \
+                        item['start_latlng'][1] >= -71.97 and item['start_latlng'][1] <= -71.012:
+                    if item['elev_high'] > 1210:
+                        line = item['map']['summary_polyline']
+                        points = polyline.decode(line)
+                        for mt in Mountain.query.all():
+                            min_dist = 10000000
+                            for pt in points:
+                                hypot = self.get_hypot(pt, mt.lat, mt.lon)
+                                if hypot < min_dist:
+                                    min_dist = hypot
+                            if min_dist <= 0.0085:
+                                exists = db.session.query(db.exists().where(Activity.activity_id == item['id'])).scalar()
+                                if exists is False:
+                                    # add id to list of activities that have touched this mountain
+                                    act = Activity()
+                                    act.name = item['name']
+                                    act.polyline = item['map']['summary_polyline']
+                                    act.url = item['id']
+                                    act.mountains.append(mt)
+                                    act.activity_id = item['id']
+                                    self.user.activities.append(act)
+                                    db.session.commit()
+                                else:
+                                    act = db.session.query(Activity).filter_by(activity_id=item['id']).first()
+                                    act.mountains.append(mt)
+                                    db.session.commit()
+        except Exception as e:
+            print(f'Exception {e} occurred')
 
-            return False
+        return    
 
 
 

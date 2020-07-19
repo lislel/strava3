@@ -34,6 +34,8 @@ Werkzeug==0.14.1
 WTForms==2.1
 polyline
 ratelimit
+aiohttp 
+asyncio
 
 # requirements for Heroku
 psycopg2==2.7.3.1
