@@ -39,3 +39,8 @@ class ResetPasswordForm(FlaskForm):
     password2 = PasswordField(
         'Repeat Password', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Request Password Reset')
+
+class ManualEntryForm(FlaskForm):
+    mountain = StringField('Mountain', validators=[DataRequired()])
+    date = StringField('Date (YYYYMMDD)', validators=[DataRequired()])
+    submit = SubmitField('Save')

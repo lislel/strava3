@@ -5,7 +5,7 @@ from app import app, db
 from app.forms import LoginForm, RegistrationForm
 from app.models import User, Mountain
 from app.oauth import StravaOauth, DataIngest
-from app.forms import ResetPasswordRequestForm, ResetPasswordForm
+from app.forms import ResetPasswordRequestForm, ResetPasswordForm, ManualEntryForm
 from app.email import send_password_reset_email
 
 import time
@@ -168,3 +168,28 @@ def reset_password(token):
         flash('Your password has been reset.')
         return redirect(url_for('login'))
     return render_template('reset_password.html', form=form)
+
+
+@app.route('/manual_entry', methods=['GET', 'POST'])
+def manual_entry():
+    form = ManualEntryForm()
+    print("booty rockn everywhere")
+    if form.validate_on_submit():
+        if manual_entry_data_check(form.mountain.data, form.date.data):
+            flash("Peak Saved!")
+            return render_template('manual_entry.html', form=form, title="Manual Entry")
+        if not manual_entry_data_check(form.mountain.data, form.date.data):
+            flash("Invalid Data")
+            return render_template('manual_entry.html', form=form, title="Manual Entry")            
+
+    return render_template('manual_entry.html', form=form, title="Manual Entry")
+
+def manual_entry_data_check(mountain, date):
+    if len(mountain) < 3:
+        return 0
+    if len(date) != 8:
+        return 0
+    return 1
+
+
+
