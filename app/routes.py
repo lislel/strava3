@@ -3,7 +3,7 @@ from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug.urls import url_parse
 from app import app, db
 from app.forms import LoginForm, RegistrationForm
-from app.models import User, Mountain
+from app.models import User, Mountain, Activity
 from app.oauth import StravaOauth, DataIngest
 from app.forms import ResetPasswordRequestForm, ResetPasswordForm, ManualEntryForm
 from app.email import send_password_reset_email
@@ -176,6 +176,18 @@ def manual_entry():
     print("booty rockn everywhere")
     if form.validate_on_submit():
         if manual_entry_data_check(form.mountain.data, form.date.data):
+
+            act = Activity()
+            act.name = None
+            act.polyline = None
+            act.url = None
+            mt = find_mountain(form.mountain.data)
+            act.mountains.append(mt)
+            act.activity_id = None
+            act.date = form.date.data
+            current_user.activities.append(act)
+            db.session.commit()
+
             flash("Peak Saved!")
             return render_template('manual_entry.html', form=form, title="Manual Entry")
         if not manual_entry_data_check(form.mountain.data, form.date.data):
@@ -190,6 +202,15 @@ def manual_entry_data_check(mountain, date):
     if len(date) != 8:
         return 0
     return 1
+
+def find_mountain(input):
+    for mt in Mountain.query.all():
+        print()
+        print(mt.name, input == mt.name)
+        if input == mt.name:
+            return mt
+        else:
+            return None
 
 
 
