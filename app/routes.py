@@ -22,6 +22,10 @@ def index():
     unfinished = []
     for mt in mts:
         acts = [a for a in mt.activities if a.user_id == current_user.id]
+        print('Here!')
+        for temp in acts:
+            print('now look here: ', temp.url)
+
         if len(acts) > 0:
             finished[mt] = acts
         else:
@@ -178,13 +182,13 @@ def manual_entry():
         if manual_entry_data_check(form.mountain.data, form.date.data):
 
             act = Activity()
-            act.name = None
+            act.name = form.name.data
             act.polyline = None
-            act.url = None
+            act.url = 'https://www.youtube.com/watch?v=p3G5IXn0K7A'
             mt = find_mountain(form.mountain.data)
             act.mountains.append(mt)
             act.activity_id = None
-            act.date = form.date.data
+            act.date = convert_date(form.date.data)
             current_user.activities.append(act)
             db.session.commit()
 
@@ -211,6 +215,13 @@ def find_mountain(input):
             return mt
         else:
             return None
+
+def convert_date(date_str):
+    # convert 'YYYYMMDD' to 'YYYY-DD-MMT00-00-00Z'
+    year = date_str[0:4]
+    month = date_str[4:6]
+    day = date_str[6:8]
+    new_date_str = year + '-' + month + '-' + day + 'T00-00-00Z'
 
 
 

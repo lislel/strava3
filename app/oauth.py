@@ -108,7 +108,7 @@ class DataIngest():
                                 act = Activity()
                                 act.name = item['name']
                                 act.polyline = item['map']['summary_polyline']
-                                act.url = item['id']
+                                act.url = 'https://www.strava.com/activities/' + str(item['id'])
                                 act.mountains.append(mt)
                                 act.activity_id = item['id']
                                 act.date = item['start_date']

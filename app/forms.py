@@ -41,6 +41,8 @@ class ResetPasswordForm(FlaskForm):
     submit = SubmitField('Request Password Reset')
 
 class ManualEntryForm(FlaskForm):
+    name = StringField('Activity Name', validators=[DataRequired()])
     mountain = StringField('Mountain', validators=[DataRequired()])
     date = StringField('Date (YYYYMMDD)', validators=[DataRequired()])
+    description = StringField('Decription')
     submit = SubmitField('Save')
