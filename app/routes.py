@@ -124,22 +124,25 @@ def map():
     for mt in mts:
         mt_dict = {'lat': mt.lat, 'lon': mt.lon, 'name': mt.name}
         acts = [a for a in mt.activities if a.user_id == current_user.id]
-        polylines = [p.polyline for p in acts]
-        act_ids = [a.activity_id for a in acts]
-        print(act_ids)
+        act_names = [a.name for a in acts]
+        polylines = [p.polyline for p in acts if p.polyline != None]
+        urls = [a.url for a in acts]
+
+        if len('act_names') > 0:
+            mt_dict['act_names'] = act_names
+        else:
+            mt_dict['act_names'] = 'missing'
+
         if len(polylines) > 0:
             all_polylines.extend(polylines)
-        if len(acts) > 0:
-            mt_dict['act_ids'] = act_ids
-        else:
-            mt_dict['act_ids'] = 'missing'
-        map_markers.append(mt_dict)
-        print(map_markers)
 
+        mt_dict['urls'] = urls
+        map_markers.append(mt_dict)
 
 
     #unfinished = json.dumps(unfinished)
     polylines = json.dumps(polylines)
+    print(map_markers)
     return render_template('map.html', title='Map', all_polylines=all_polylines, map_markers=map_markers)
 
 
@@ -213,8 +216,9 @@ def find_mountain(input):
         print(mt.name, input == mt.name)
         if input == mt.name:
             return mt
-        else:
-            return None
+    
+    print('Error: Mountain not found')
+    return None
 
 def convert_date(date_str):
     # convert 'YYYYMMDD' to 'YYYY-DD-MMT00-00-00Z'
