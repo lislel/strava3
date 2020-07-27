@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1> {{ act.name }} </h1>
+    <p>
+        Mountain<br>
+        {% for mt in act.mountains %}
+            {{ mt.name }}
+        {% endfor %}
+    </p>
+    <p>
+        Date<br>
+        {{ act.date }}
+    </p>
+    <p>
+        Description<br>
+        {{ act.description }}
+    </p>
+    
+{% endblock %}
