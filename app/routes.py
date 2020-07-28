@@ -5,7 +5,7 @@ from app import app, db
 from app.forms import LoginForm, RegistrationForm
 from app.models import User, Mountain, Activity
 from app.oauth import StravaOauth, DataIngest
-from app.forms import ResetPasswordRequestForm, ResetPasswordForm, ManualEntryForm, ManualEntryEditForm
+from app.forms import ResetPasswordRequestForm, ResetPasswordForm, ManualEntryForm, ManualEntryEditForm, ManualEntryViewForm
 from app.email import send_password_reset_email
 
 import time
@@ -246,18 +246,26 @@ def manual_entry_edit(act_name):
 
     return render_template('manual_entry_edit.html', form=form, title="Manual Entry Edit")
 
-@app.route('/<act_name>', methods=['GET'])
+@app.route('/<act_name>', methods=['GET', 'POST'])
 @login_required
 def manual_entry_view(act_name):
+    form = ManualEntryViewForm()
+
     # find activit that corresponds to act_name
     act = "boobs"
     for a in Activity.query.all():
         if a.name == act_name:
             act = a
             break
-    print("name: ", act.name)
-    print("date: ", act.date)
 
-    return render_template('manual_entry_view.html', title="Big Booty", act=act)
+    if form.validate_on_submit():
+
+        flash("Edit Button: ")
+        flash(form.edit.data)
+        flash("Delete Button: ")
+        flash(form.delete.data)
+        return render_template('manual_entry_view.html', title="8===D", act=act, form=form)
+
+    return render_template('manual_entry_view.html', title="Big Booty", act=act, form=form)
 
 

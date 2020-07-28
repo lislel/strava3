@@ -58,3 +58,8 @@ class ManualEntryEditForm(FlaskForm):
         super(ManualEntryEditForm, self).__init__(*args, **kwargs)
         self.current_activity = current_activity
         """
+
+class ManualEntryViewForm(FlaskForm):
+    edit = SubmitField(label='Edit Activity')
+    delete = SubmitField(label='Delete Activity')
+
