@@ -226,10 +226,11 @@ def convert_date(date_str):
 @login_required
 def manual_entry_edit(act_name):
     #form = ManualEntryEditForm(current_activity)
-    form = ManualEntryEditForm()
+    act = find_act_from_name(act_name)
+    form = ManualEntryEditForm(act)
     if form.validate_on_submit():
         if manual_entry_data_check(form.mountain.data, form.date.data):
-            act = Activity()
+            print("yoooyooooyo ", act)
             act.name = form.name.data
             act.polyline = None
             act.url = 'https://www.youtube.com/watch?v=p3G5IXn0K7A'
@@ -244,7 +245,17 @@ def manual_entry_edit(act_name):
         if not manual_entry_data_check(form.mountain.data, form.date.data):
             flash("Invalid Data")
 
-    return render_template('manual_entry_edit.html', form=form, title="Manual Entry Edit")
+    thing = 'thingy'
+
+    return render_template('manual_entry_edit.html', form=form, title="Manual Entry Edit", thing=thing)
+
+def find_act_from_name(act_name):
+    acts = Activity.query.all()
+    for act in acts:
+        if act.name() == act_name:
+            return act
+    return None
+
 
 @app.route('/<act_name>', methods=['GET', 'POST'])
 @login_required
@@ -252,19 +263,20 @@ def manual_entry_view(act_name):
     form = ManualEntryViewForm()
 
     # find activit that corresponds to act_name
-    act = "boobs"
+    act = "buns"
     for a in Activity.query.all():
         if a.name == act_name:
             act = a
             break
 
     if form.validate_on_submit():
-
-        flash("Edit Button: ")
-        flash(form.edit.data)
-        flash("Delete Button: ")
-        flash(form.delete.data)
-        return render_template('manual_entry_view.html', title="8===D", act=act, form=form)
+        if form.edit.data:
+            flash("Edit Button Clicked")
+            form = ManualEntryEditForm(act)
+            return render_template('manual_entry_edit.html', form=form, title="Manual Entry Edit")
+        if form.delete.data:
+            flash("Delete Button Clicked")
+            return index()
 
     return render_template('manual_entry_view.html', title="Big Booty", act=act, form=form)
 
