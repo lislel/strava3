@@ -180,7 +180,7 @@ class DataIngest():
                     self.all_act.append(a)
             # yield page_result
             page += 1
-            page_result = requests.get(url, headers=self.headers, params={'page': page, 'per_page': 200}).json(
+            page_result = requests.get(url, headers=self.headers, params={'page': page, 'per_page': 200}).json()
 
         return
 
