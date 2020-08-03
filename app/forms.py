@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, SelectField
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
 from app.models import User
 
@@ -28,3 +28,41 @@ class RegistrationForm(FlaskForm):
         user = User.query.filter_by(email=email.data).first()
         if user is not None:
             raise ValidationError('Please use a different email address.')
+
+class ResetPasswordRequestForm(FlaskForm):
+    email = StringField('Email', validators=[DataRequired(), Email()])
+    submit = SubmitField('Request Password Reset')
+
+
+class ResetPasswordForm(FlaskForm):
+    password = PasswordField('Password', validators=[DataRequired()])
+    password2 = PasswordField(
+        'Repeat Password', validators=[DataRequired(), EqualTo('password')])
+    submit = SubmitField('Request Password Reset')
+
+class ManualEntryForm(FlaskForm):
+    name = StringField('Activity Name', validators=[DataRequired()])
+    mountain = StringField('Mountain', validators=[DataRequired()])
+    date = StringField('Date (YYYYMMDD)', validators=[DataRequired()])
+    description = StringField('Decription')
+    submit = SubmitField('Save')
+
+class ManualEntryEditForm(FlaskForm):
+    name = StringField('Activity Name', validators=[DataRequired()])
+    mountain = StringField('Mountain', validators=[DataRequired()])
+    #mountain = SelectField('Mountain', choices=[('Washington', 'Washington'), ('Adams', 'Adams')])
+    date = StringField('Date (YYYYMMDD)', validators=[DataRequired()])
+    description = StringField('Decription')
+    submit = SubmitField('Save')
+    
+    def __init__(self, act, *args, **kwargs):
+        super(ManualEntryEditForm, self).__init__(*args, **kwargs)
+        self.name.data = act.name  
+        self.mountain.data = act.mountains
+        self.date.data = act.date
+        #self.description.data = act.description      
+
+class ManualEntryViewForm(FlaskForm):
+    edit = SubmitField(label='Edit Activity')
+    delete = SubmitField(label='Delete Activity')
+

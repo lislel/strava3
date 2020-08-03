@@ -72,7 +72,6 @@ class DataIngest():
         self.oauth = oauth
         self.headers = self.oauth.update_headers(self.user.access_token)
 
-
     def update(self):
 
         start = datetime.datetime.now()
@@ -92,13 +91,11 @@ class DataIngest():
         # for future in futures:
         #     future.result()
 
-
         end = datetime.datetime.now()
         self.user.last_seen = end
         print(f'finished update {end}')
         print(f'difference {end-start}')
         db.session.commit()
-
 
     def get_activites_from_api(self):
 
@@ -151,8 +148,7 @@ class DataIngest():
 
             return await asyncio.gather(*tasks)
             # you now have all response bodies in this variable
-
-
+            
     @staticmethod
     def get_hypot(pt, lat, lon):
         x_ind = pt[0] - lat
@@ -223,7 +219,6 @@ class DataIngest():
             print(f'Exception {e} occurred, item: {item}')
 
         return    
-
 
 class StravaOauth():
     REDIRECT_URI = 'http://localhost:5000/login'

@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1> {{ act.name }} </h1>
+    <form action="" method="post" novalidate>
+        {{ form.hidden_tag() }}
+        <p>
+            Mountain<br>
+            {% for mt in act.mountains %}
+                {{ mt.name }}
+            {% endfor %}
+        </p>
+        <p>
+            Date<br>
+            {{ act.date }}
+        </p>
+        <p>
+            Description<br>
+            {{ act.description }}
+        </p>
+            <p>{{ form.edit }}
+            {{ form.delete }}
+            </p>
+        </form>
+
+{% endblock %} 

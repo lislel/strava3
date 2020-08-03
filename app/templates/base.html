@@ -1,20 +1,22 @@
 <html>
     <head>
         {% if title %}
-        <title>{{ title }} - Microblog</title>
+        <title>{{ title }} - Peak Bagger</title>
         {% else %}
-        <title>Welcome to Microblog</title>
+        <title>Welcome to Peak Bagger</title>
         {% endif %}
     </head>
     <body>
         <div>
-            Microblog:
+            Peak Bagger:
             <a href="{{ url_for('index') }}">Home</a>
             {% if current_user.is_anonymous %}
             <a href="{{ url_for('login') }}">Login</a>
             {% else %}
             <a href="{{ url_for('map') }}">Map</a>
             <a href="{{ url_for('logout') }}">Logout</a>
+            <a href="{{ url_for('manual_entry') }}">Manual Entry</a>
+
 
             {% endif %}
         </div>

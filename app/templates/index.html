@@ -6,7 +6,7 @@
     <ol>{{mt.name}}</ol>
     <ul>
     	{% for act in finished[mt] %}
-    	    <li><a href="{{ 'https://www.strava.com/activities/%s'%act.activity_id}}"  target="_blank">{{act.name}}</a></li>
+    	    <li><a href="{{ act.url }}"  target="_blank">{{act.name}}</a></li>
          {%endfor%}
     </ul>
     {% endfor %}

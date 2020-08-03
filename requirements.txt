@@ -19,7 +19,7 @@ idna==2.6
 itsdangerous==0.24
 Jinja2==2.10
 Mako==1.0.7
-MarkupSafe==1.0
+MarkupSafe
 PyJWT==1.5.3
 python-dateutil==2.6.1
 python-dotenv==0.7.1
@@ -38,5 +38,5 @@ aiohttp
 asyncio
 
 # requirements for Heroku
-psycopg2==2.7.3.1
+psycopg2
 gunicorn==19.7.1
