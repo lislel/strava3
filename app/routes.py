@@ -91,7 +91,6 @@ def logout():
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     print(f'1 current user authenitcated? {current_user.is_authenticated}')
-    print(session)
     if current_user.is_authenticated:
         logout_user()
         print(f'2 current user authenitcated? {current_user.is_authenticated}')
@@ -108,7 +107,7 @@ def register():
         oauth = StravaOauth()
         return oauth.authorize()
         # return redirect(url_for('login'))
-
+    print('this is a test')
     return render_template('register.html', title='Register', form=form)
 
 @login_required
@@ -248,6 +247,8 @@ def manual_entry_edit(act_name):
     thing = 'thingy'
 
     return render_template('manual_entry_edit.html', form=form, title="Manual Entry Edit", thing=thing)
+    #return render_template('manual_entry_edit.html', form=form, title="Manual Entry Edit")
+
 
 def find_act_from_name(act_name):
     acts = Activity.query.all()
