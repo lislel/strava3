@@ -59,7 +59,8 @@ class ManualEntryEditForm(FlaskForm):
         super(ManualEntryEditForm, self).__init__(*args, **kwargs)
         self.name.data = act.name  
         self.mountain.data = act.mountains
-        self.date.data = act.date
+        date_str = act.date[0:4] + act.date[5:7] + act.date[8:10]
+        self.date.data = date_str
         #self.description.data = act.description      
 
 class ManualEntryViewForm(FlaskForm):
