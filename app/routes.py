@@ -182,7 +182,7 @@ def manual_entry():
             act.name = form.name.data
             act.polyline = None
             act_id = act.id
-            act.url = '/' + act.name 
+            act.url = '/view/' + act.name 
             #act.url = 'https://www.youtube.com/watch?v=p3G5IXn0K7A'
             mt = find_mountain(form.mountain.data)
             act.mountains.append(mt)
@@ -206,8 +206,6 @@ def manual_entry_data_check(mountain, date):
 
 def find_mountain(input):
     for mt in Mountain.query.all():
-        print()
-        print(mt.name, input == mt.name)
         if input == mt.name:
             return mt
     
@@ -222,58 +220,52 @@ def convert_date(date_str):
     new_date_str = year + '-' + month + '-' + day + 'T00-00-00Z'
     return new_date_str
 
-@app.route('/<act_name>/edit', methods=['GET', 'POST'])
+@app.route('/edit/<act_name>', methods=['GET', 'POST'])
 @login_required
 def manual_entry_edit(act_name):
-    #form = ManualEntryEditForm(current_activity)
+    print('HERE123')
     act = find_act_from_name(act_name)
     form = ManualEntryEditForm(act)
     if form.validate_on_submit():
+        print('HERE1234')
         if manual_entry_data_check(form.mountain.data, form.date.data):
-            print("yoooyooooyo ", act)
+            print('HERE12345')
+
             act.name = form.name.data
             act.polyline = None
-            act.url = 'https://www.youtube.com/watch?v=p3G5IXn0K7A'
+            #act.url = 'https://www.youtube.com/watch?v=p3G5IXn0K7A'
+            act.url = '/view/' + act.name
             mt = find_mountain(form.mountain.data)
             act.mountains.append(mt)
             act.activity_id = None
             act.date = convert_date(form.date.data)
-            current_user.activities.append(act)
+            #current_user.activities.append(act)
             db.session.commit()
 
-            flash("Peak Saved!")
+            flash("Edit Saved!")
+            return redirect('/view/' + act.name)
         if not manual_entry_data_check(form.mountain.data, form.date.data):
             flash("Invalid Data")
 
-    thing = 'thingy'
-
-    return render_template('manual_entry_edit.html', form=form, title="Manual Entry Edit", thing=thing)
+    return render_template('manual_entry_edit.html', form=form, title="Manual Entry Edit")
 
 def find_act_from_name(act_name):
-    acts = Activity.query.all()
-    for act in acts:
-        if act.name() == act_name:
+    for act in Activity.query.all():
+        if act.name == act_name:
             return act
     return None
 
 
-@app.route('/<act_name>', methods=['GET', 'POST'])
+@app.route('/view/<act_name>', methods=['GET', 'POST'])
 @login_required
 def manual_entry_view(act_name):
     form = ManualEntryViewForm()
-
-    # find activit that corresponds to act_name
-    act = "buns"
-    for a in Activity.query.all():
-        if a.name == act_name:
-            act = a
-            break
+    act = find_act_from_name(act_name)
 
     if form.validate_on_submit():
         if form.edit.data:
             flash("Edit Button Clicked")
-            form = ManualEntryEditForm(act)
-            return render_template('manual_entry_edit.html', form=form, title="Manual Entry Edit")
+            return redirect('/edit/' + act_name)
         if form.delete.data:
             flash("Delete Button Clicked")
             return index()

@@ -50,15 +50,15 @@ class ManualEntryForm(FlaskForm):
 class ManualEntryEditForm(FlaskForm):
     name = StringField('Activity Name', validators=[DataRequired()])
     mountain = StringField('Mountain', validators=[DataRequired()])
-    #mountain = SelectField('Mountain', choices=[('Washington', 'Washington'), ('Adams', 'Adams')])
     date = StringField('Date (YYYYMMDD)', validators=[DataRequired()])
     description = StringField('Decription')
     submit = SubmitField('Save')
     
     def __init__(self, act, *args, **kwargs):
         super(ManualEntryEditForm, self).__init__(*args, **kwargs)
-        self.name.data = act.name  
-        self.mountain.data = act.mountains
+        self.name.data = act.name
+        mt_list = act.mountains 
+        self.mountain.data = mt_list[0].name
         date_str = act.date[0:4] + act.date[5:7] + act.date[8:10]
         self.date.data = date_str
         #self.description.data = act.description      
