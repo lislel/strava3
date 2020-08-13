@@ -223,20 +223,17 @@ def convert_date(date_str):
 @app.route('/edit/<act_name>', methods=['GET', 'POST'])
 @login_required
 def manual_entry_edit(act_name):
-    print('HERE123')
     act = find_act_from_name(act_name)
-    form = ManualEntryEditForm(act)
+    date_str = act.date[0:4] + act.date[5:7] + act.date[8:10]
+    form = ManualEntryEditForm(name=act.name, mountain=act.mountains[0].name, date=date_str)
     if form.validate_on_submit():
-        print('HERE1234')
         if manual_entry_data_check(form.mountain.data, form.date.data):
-            print('HERE12345')
-
             act.name = form.name.data
             act.polyline = None
             #act.url = 'https://www.youtube.com/watch?v=p3G5IXn0K7A'
             act.url = '/view/' + act.name
             mt = find_mountain(form.mountain.data)
-            act.mountains.append(mt)
+            act.mountains[0] = mt
             act.activity_id = None
             act.date = convert_date(form.date.data)
             #current_user.activities.append(act)
@@ -245,7 +242,7 @@ def manual_entry_edit(act_name):
             flash("Edit Saved!")
             return redirect('/view/' + act.name)
         if not manual_entry_data_check(form.mountain.data, form.date.data):
-            flash("Invalid Data")
+            flash("Invalid Data   ")
 
     return render_template('manual_entry_edit.html', form=form, title="Manual Entry Edit")
 

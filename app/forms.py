@@ -54,14 +54,6 @@ class ManualEntryEditForm(FlaskForm):
     description = StringField('Decription')
     submit = SubmitField('Save')
     
-    def __init__(self, act, *args, **kwargs):
-        super(ManualEntryEditForm, self).__init__(*args, **kwargs)
-        self.name.data = act.name
-        mt_list = act.mountains 
-        self.mountain.data = mt_list[0].name
-        date_str = act.date[0:4] + act.date[5:7] + act.date[8:10]
-        self.date.data = date_str
-        #self.description.data = act.description      
 
 class ManualEntryViewForm(FlaskForm):
     edit = SubmitField(label='Edit Activity')
