@@ -189,6 +189,7 @@ def manual_entry():
             act.activity_id = None
             act.date = convert_date(form.date.data)
             current_user.activities.append(act)
+            act.description = form.description.data
             db.session.commit()
 
             flash("Peak Saved!")
@@ -225,7 +226,7 @@ def convert_date(date_str):
 def manual_entry_edit(act_name):
     act = find_act_from_name(act_name)
     date_str = act.date[0:4] + act.date[5:7] + act.date[8:10]
-    form = ManualEntryEditForm(name=act.name, mountain=act.mountains[0].name, date=date_str)
+    form = ManualEntryEditForm(name=act.name, mountain=act.mountains[0].name, date=date_str, description=act.description)
     if form.validate_on_submit():
         if manual_entry_data_check(form.mountain.data, form.date.data):
             act.name = form.name.data
@@ -236,7 +237,7 @@ def manual_entry_edit(act_name):
             act.mountains[0] = mt
             act.activity_id = None
             act.date = convert_date(form.date.data)
-            #current_user.activities.append(act)
+            act.description = form.description.data
             db.session.commit()
 
             flash("Edit Saved!")
