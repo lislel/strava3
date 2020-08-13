@@ -264,7 +264,9 @@ def manual_entry_view(act_name):
             flash("Edit Button Clicked")
             return redirect('/edit/' + act_name)
         if form.delete.data:
-            flash("Delete Button Clicked")
+            flash("Activity Deleted")
+            db.session.delete(act)
+            db.session.commit()
             return index()
 
     return render_template('manual_entry_view.html', title="Big Booty", act=act, form=form)
