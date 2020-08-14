@@ -44,14 +44,14 @@ class ManualEntryForm(FlaskForm):
     name = StringField('Activity Name', validators=[DataRequired()])
     mountain = StringField('Mountain', validators=[DataRequired()])
     date = StringField('Date (YYYYMMDD)', validators=[DataRequired()])
-    description = StringField('Decription')
+    description = StringField('Description')
     submit = SubmitField('Save')
 
 class ManualEntryEditForm(FlaskForm):
     name = StringField('Activity Name', validators=[DataRequired()])
     mountain = StringField('Mountain', validators=[DataRequired()])
     date = StringField('Date (YYYYMMDD)', validators=[DataRequired()])
-    description = StringField('Decription')
+    description = StringField('Description')
     submit = SubmitField('Save')
     
 

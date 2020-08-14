@@ -2,7 +2,7 @@ import yaml
 import json
 from models import Mountain
 
-with open("/home/lauren/strava3/app/mountains.yml", 'r') as stream:
+with open("C:/Users/cummi/Documents/02-HighPeaks/strava3/app/mountains.yml", 'r') as stream:
 	mt_yaml = yaml.safe_load(stream)
 
 

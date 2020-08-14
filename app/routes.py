@@ -124,7 +124,7 @@ def map():
         polylines = [p.polyline for p in acts if p.polyline != None]
         urls = [a.url for a in acts]
 
-        if len('act_names') > 0:
+        if len(act_names) > 0:
             mt_dict['act_names'] = act_names
         else:
             mt_dict['act_names'] = 'missing'
@@ -138,7 +138,9 @@ def map():
 
     #unfinished = json.dumps(unfinished)
     polylines = json.dumps(polylines)
-    print(map_markers)
+    print('Here are my map markes:\n')
+    for m in map_markers:
+        print('\n', m)
     return render_template('map.html', title='Map', all_polylines=all_polylines, map_markers=map_markers)
 
 
