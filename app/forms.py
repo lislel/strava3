@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, SelectField
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
-from app.models import User
+from app.models import User, Mountain
 
 
 class LoginForm(FlaskForm):
@@ -40,22 +40,35 @@ class ResetPasswordForm(FlaskForm):
         'Repeat Password', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Request Password Reset')
 
+# format mountains to be used by selectfield
+def mountain_choices():
+    choices = []
+    i = 1
+    for mt in Mountain.query.all():
+        choices.append((mt.name, mt.name))
+        i += 1
+    print(choices)
+    return(choices)
+
 class ManualEntryForm(FlaskForm):
     name = StringField('Activity Name', validators=[DataRequired()])
-    mountain = StringField('Mountain', validators=[DataRequired()])
+    mountain = SelectField('Mountain', validators=[DataRequired()], choices=mountain_choices())
     date = StringField('Date (YYYYMMDD)', validators=[DataRequired()])
-    description = StringField('Decription')
+    description = StringField('Description')
     submit = SubmitField('Save')
 
 class ManualEntryEditForm(FlaskForm):
     name = StringField('Activity Name', validators=[DataRequired()])
-    mountain = StringField('Mountain', validators=[DataRequired()])
+    mountain = SelectField('Mountain', validators=[DataRequired()], choices=mountain_choices())
     date = StringField('Date (YYYYMMDD)', validators=[DataRequired()])
-    description = StringField('Decription')
+    description = StringField('Description')
     submit = SubmitField('Save')
     
 
 class ManualEntryViewForm(FlaskForm):
     edit = SubmitField(label='Edit Activity')
     delete = SubmitField(label='Delete Activity')
+
+
+
 

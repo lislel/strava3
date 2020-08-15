@@ -124,7 +124,7 @@ def map():
         polylines = [p.polyline for p in acts if p.polyline != None]
         urls = [a.url for a in acts]
 
-        if len('act_names') > 0:
+        if len(act_names) > 0:
             mt_dict['act_names'] = act_names
         else:
             mt_dict['act_names'] = 'missing'
@@ -138,7 +138,9 @@ def map():
 
     #unfinished = json.dumps(unfinished)
     polylines = json.dumps(polylines)
-    print(map_markers)
+    print('Here are my map markes:\n')
+    for m in map_markers:
+        print('\n', m)
     return render_template('map.html', title='Map', all_polylines=all_polylines, map_markers=map_markers)
 
 
@@ -189,6 +191,7 @@ def manual_entry():
             act.activity_id = None
             act.date = convert_date(form.date.data)
             current_user.activities.append(act)
+            act.description = form.description.data
             db.session.commit()
 
             flash("Peak Saved!")
@@ -225,7 +228,7 @@ def convert_date(date_str):
 def manual_entry_edit(act_name):
     act = find_act_from_name(act_name)
     date_str = act.date[0:4] + act.date[5:7] + act.date[8:10]
-    form = ManualEntryEditForm(name=act.name, mountain=act.mountains[0].name, date=date_str)
+    form = ManualEntryEditForm(name=act.name, mountain=act.mountains[0].name, date=date_str, description=act.description)
     if form.validate_on_submit():
         if manual_entry_data_check(form.mountain.data, form.date.data):
             act.name = form.name.data
@@ -236,7 +239,7 @@ def manual_entry_edit(act_name):
             act.mountains[0] = mt
             act.activity_id = None
             act.date = convert_date(form.date.data)
-            #current_user.activities.append(act)
+            act.description = form.description.data
             db.session.commit()
 
             flash("Edit Saved!")
@@ -264,7 +267,9 @@ def manual_entry_view(act_name):
             flash("Edit Button Clicked")
             return redirect('/edit/' + act_name)
         if form.delete.data:
-            flash("Delete Button Clicked")
+            flash("Activity Deleted")
+            db.session.delete(act)
+            db.session.commit()
             return index()
 
     return render_template('manual_entry_view.html', title="Big Booty", act=act, form=form)
