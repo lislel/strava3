@@ -143,43 +143,43 @@ class DataIngest():
 
     def parse(self, item):
 
-        #try:
-        if isinstance(item, dict):
-            if item['start_latlng'] is not None:
-                if item['type'] != 'Bike' and item['start_latlng'][0] >= 43.82 and item['start_latlng'][0] <= 44.62 and \
-                        item['start_latlng'][1] >= -71.97 and item['start_latlng'][1] <= -71.012:
-                    if item['elev_high'] > 1210:
-                        line = item['map']['summary_polyline']
-                        points = polyline.decode(line)
-                        for mt in Mountain.query.all():
-                            min_dist = 10000000
-                            for pt in points:
-                                hypot = self.get_hypot(pt, mt.lat, mt.lon)
-                                if hypot < min_dist:
-                                    min_dist = hypot
-                            if min_dist <= 0.0085:
-                                print('this one has been found', item['id'])
-                                exists = db.session.query(db.exists().where(Activity.activity_id == item['id'])).scalar()
-                                print('does it exist already? ', exists)
-                                if exists is False:
-                                    # add id to list of activities that have touched this mountain
-                                    act = Activity()
-                                    act.name = item['name']
-                                    act.polyline = item['map']['summary_polyline']
-                                    act.url = 'https://www.strava.com/activities/' + str(item['id'])
-                                    act.mountains.append(mt)
-                                    act.activity_id = item['id']
-                                    act.date = item['start_date']
-                                    print('it doesnt exist, add it ', act.activity_id)
-                                    self.user.activities.append(act)
-                                    db.session.commit()
-                                else:
-                                    act = db.session.query(Activity).filter_by(activity_id=item['id']).first()
-                                    print(f'act already exists {act}, adding mountain {mt}')
-                                    act.mountains.append(mt)
-                                    db.session.commit()
-        #except Exception as e:
-        #    print(f"Exception occurred: {e}")
+        try:
+            if isinstance(item, dict):
+                if item['start_latlng'] is not None:
+                    if item['type'] != 'Bike' and item['start_latlng'][0] >= 43.82 and item['start_latlng'][0] <= 44.62 and \
+                            item['start_latlng'][1] >= -71.97 and item['start_latlng'][1] <= -71.012:
+                        if item['elev_high'] > 1210:
+                            line = item['map']['summary_polyline']
+                            points = polyline.decode(line)
+                            for mt in Mountain.query.all():
+                                min_dist = 10000000
+                                for pt in points:
+                                    hypot = self.get_hypot(pt, mt.lat, mt.lon)
+                                    if hypot < min_dist:
+                                        min_dist = hypot
+                                if min_dist <= 0.0085:
+                                    print('this one has been found', item['id'])
+                                    exists = db.session.query(db.exists().where(Activity.activity_id == item['id'])).scalar()
+                                    print('does it exist already? ', exists)
+                                    if exists is False:
+                                        # add id to list of activities that have touched this mountain
+                                        act = Activity()
+                                        act.name = item['name']
+                                        act.polyline = item['map']['summary_polyline']
+                                        act.url = 'https://www.strava.com/activities/' + str(item['id'])
+                                        act.mountains.append(mt)
+                                        act.activity_id = item['id']
+                                        act.date = item['start_date']
+                                        print('it doesnt exist, add it ', act.activity_id)
+                                        self.user.activities.append(act)
+                                        db.session.commit()
+                                    else:
+                                        act = db.session.query(Activity).filter_by(activity_id=item['id']).first()
+                                        print(f'act already exists {act}, adding mountain {mt}')
+                                        act.mountains.append(mt)
+                                        db.session.commit()
+        except Exception as e:
+            print(f"Exception occurred: {e}")
 
             return False
 
