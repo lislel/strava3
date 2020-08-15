@@ -53,17 +53,17 @@
 
           var i = 0;
           for (var name of m['act_names']) {
-          var aTag = document.createElement('a');
-          urls = m['urls'];
-          aTag.setAttribute('href', urls[i]);
-          aTag.setAttribute('target', "_blank");
-          aTag.innerText = name + "\n";
-          mydiv.appendChild(aTag);
-          i++;
+            var aTag = document.createElement('a');
+            urls = m['urls'];
+            aTag.setAttribute('href', urls[i]);
+            aTag.setAttribute('target', "_blank");
+            aTag.innerText = name + "\n";
+            mydiv.appendChild(aTag);
+            i++;
           }
 
 
-        L.marker([m['lat'], m['lon']]).addTo(map).bindPopup(mydiv);
+          L.marker([m['lat'], m['lon']]).addTo(map).bindPopup(mydiv);
         }
       else {
           console.log('test')
@@ -73,7 +73,7 @@
           markerColor: 'red'
           });
 
-      L.marker([m['lat'], m['lon']], {icon: redMarker}).addTo(map).bindPopup(m['name']);
+        L.marker([m['lat'], m['lon']], {icon: redMarker}).addTo(map).bindPopup(m['name']);
       }
   }
 

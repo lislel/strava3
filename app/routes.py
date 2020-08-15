@@ -136,7 +136,13 @@ def map():
         map_markers.append(mt_dict)
 
     polylines = json.dumps(polylines)
+<<<<<<< HEAD
 
+=======
+    print('Here are my map markes:\n')
+    for m in map_markers:
+        print('\n', m)
+>>>>>>> 63dffea1ae92254e0ad8c0842c3d9ffa12fd6159
     return render_template('map.html', title='Map', all_polylines=all_polylines, map_markers=map_markers)
 
 
@@ -187,6 +193,7 @@ def manual_entry():
             act.activity_id = None
             act.date = convert_date(form.date.data)
             current_user.activities.append(act)
+            act.description = form.description.data
             db.session.commit()
 
             flash("Peak Saved!")
@@ -223,7 +230,7 @@ def convert_date(date_str):
 def manual_entry_edit(act_name):
     act = find_act_from_name(act_name)
     date_str = act.date[0:4] + act.date[5:7] + act.date[8:10]
-    form = ManualEntryEditForm(name=act.name, mountain=act.mountains[0].name, date=date_str)
+    form = ManualEntryEditForm(name=act.name, mountain=act.mountains[0].name, date=date_str, description=act.description)
     if form.validate_on_submit():
         if manual_entry_data_check(form.mountain.data, form.date.data):
             act.name = form.name.data
@@ -234,7 +241,7 @@ def manual_entry_edit(act_name):
             act.mountains[0] = mt
             act.activity_id = None
             act.date = convert_date(form.date.data)
-            #current_user.activities.append(act)
+            act.description = form.description.data
             db.session.commit()
 
             flash("Edit Saved!")
@@ -262,7 +269,9 @@ def manual_entry_view(act_name):
             flash("Edit Button Clicked")
             return redirect('/edit/' + act_name)
         if form.delete.data:
-            flash("Delete Button Clicked")
+            flash("Activity Deleted")
+            db.session.delete(act)
+            db.session.commit()
             return index()
 
     return render_template('manual_entry_view.html', title="Big Booty", act=act, form=form)
