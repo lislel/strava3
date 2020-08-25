@@ -1,19 +1,18 @@
 {% extends "base.html" %}
 
 {% block app_content %}
-<h1> Finished </h1>
-    {% for mt in finished.keys() %}
-    <ol>{{mt.name}}</ol>
-    <ul>
-    	{% for act in finished[mt] %}
-    	    <li><a href="{{ act.url }}"  target="_blank">{{act.name}}</a></li>
-         {%endfor%}
-    </ul>
-    {% endfor %}
+    <h1> Finished </h1>
+        {% for mt in finished.keys() %}
+        <ol>{{mt.name}}</ol>
+        <ul>
+        	{% for act in finished[mt] %}
+        	    <li><a href="{{ act.url }}"  target="_blank">{{act.name}}</a></li>
+             {%endfor%}
+        </ul>
+        {% endfor %}
 
-<h1> Not finished </h1>>
-	{% for u in unfinished %}
-		<ol>{{u.name}}</ol>
-	{% endfor %}
-	
+    <h1> Not finished </h1>>
+    	{% for u in unfinished %}
+    		<ol>{{u.name}}</ol>
+    	{% endfor %}
 {% endblock %}
