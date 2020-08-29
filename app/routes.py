@@ -178,14 +178,14 @@ def reset_password(token):
 def manual_entry():
     form = ManualEntryForm()
     if form.validate_on_submit():
-        if manual_entry_data_check(form.mountain.data, form.date.data):
+        if manual_entry_data_check(form.mtn.data, form.date.data):
             act = Activity()
             act.name = form.name.data
             act.polyline = None
             act_id = act.id
             act.url = '/view/' + act.name 
             #act.url = 'https://www.youtube.com/watch?v=p3G5IXn0K7A'
-            mt = find_mountain(form.mountain.data)
+            mt = find_mountain(form.mtn.data)
             act.mountains.append(mt)
             act.activity_id = None
             act.date = convert_date(form.date.data)
@@ -194,7 +194,8 @@ def manual_entry():
             db.session.commit()
 
             flash("Peak Saved!")
-        if not manual_entry_data_check(form.mountain.data, form.date.data):
+            return redirect(url_for('index'))
+        if not manual_entry_data_check(form.mtn.data, form.date.data):
             flash("Invalid Data")
 
     return render_template('manual_entry.html', form=form, title="Manual Entry")
@@ -229,12 +230,12 @@ def manual_entry_edit(act_name):
     date_str = act.date[0:4] + act.date[5:7] + act.date[8:10]
     form = ManualEntryEditForm(name=act.name, mountain=act.mountains[0].name, date=date_str, description=act.description)
     if form.validate_on_submit():
-        if manual_entry_data_check(form.mountain.data, form.date.data):
+        if manual_entry_data_check(form.mtn.data, form.date.data):
             act.name = form.name.data
             act.polyline = None
             #act.url = 'https://www.youtube.com/watch?v=p3G5IXn0K7A'
             act.url = '/view/' + act.name
-            mt = find_mountain(form.mountain.data)
+            mt = find_mountain(form.mtn.data)
             act.mountains[0] = mt
             act.activity_id = None
             act.date = convert_date(form.date.data)
@@ -242,7 +243,7 @@ def manual_entry_edit(act_name):
             db.session.commit()
 
             flash("Edit Saved!")
-            return redirect('/view/' + act.name)
+            return redirect(url_for('index'))
         if not manual_entry_data_check(form.mountain.data, form.date.data):
             flash("Invalid Data   ")
 

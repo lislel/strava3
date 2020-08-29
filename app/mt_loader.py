@@ -1,6 +1,6 @@
 import yaml
 import json
-from models import Mountain
+from app.models import Mountain
 
 with open("C:/Users/cummi/Documents/02-HighPeaks/strava3/app/mountains.yml", 'r') as stream:
 	mt_yaml = yaml.safe_load(stream)
