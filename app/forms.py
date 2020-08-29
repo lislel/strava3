@@ -40,30 +40,34 @@ class ResetPasswordForm(FlaskForm):
         'Repeat Password', validators=[DataRequired(), EqualTo('password')])
     submit = SubmitField('Request Password Reset')
 
-# format mountains to be used by selectfield
+#format mountains to be used by selectfield
 def mountain_choices():
+
     choices = []
-    i = 1
-    for mt in Mountain.query.all():
-        choices.append((mt.name, mt.name))
-        i += 1
-    print(choices)
-    return(choices)
+    try:
+        i = 1
+        for mt in Mountain.query.all():
+            choices.append((mt.name, mt.name))
+            i += 1
+        print(choices)
+    except Exception as e:
+        print(e)
+    return choices
 
 class ManualEntryForm(FlaskForm):
     name = StringField('Activity Name', validators=[DataRequired()])
-    mountain = SelectField('Mountain', validators=[DataRequired()], choices=mountain_choices())
+    mtn = SelectField('Mountain', validators=[DataRequired()], choices=mountain_choices())
     date = StringField('Date (YYYYMMDD)', validators=[DataRequired()])
     description = StringField('Description')
     submit = SubmitField('Save')
 
 class ManualEntryEditForm(FlaskForm):
     name = StringField('Activity Name', validators=[DataRequired()])
-    mountain = SelectField('Mountain', validators=[DataRequired()], choices=mountain_choices())
+    mtn = SelectField('Mountain', validators=[DataRequired()], choices=mountain_choices())
     date = StringField('Date (YYYYMMDD)', validators=[DataRequired()])
     description = StringField('Description')
     submit = SubmitField('Save')
-    
+
 
 class ManualEntryViewForm(FlaskForm):
     edit = SubmitField(label='Edit Activity')
