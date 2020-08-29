@@ -36,6 +36,7 @@ polyline
 ratelimit
 asyncio
 aiohttp
+pyyaml
 # requirements for Heroku
-psycopg2
-gunicorn==19.7.1
+#psycopg2
+#gunicorn==19.7.1
