@@ -20,6 +20,4 @@ RUN chown -R microblog:microblog ./
 USER microblog
 
 EXPOSE 5000
-RUN "./boot.sh"
-CMD [ "python3", "./app/mt_loader.py" ]
-ENTRYPOINT ["./boot2.sh"]
+ENTRYPOINT "./boot.sh"
