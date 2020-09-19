@@ -98,6 +98,10 @@ def register():
 
         # print('current user is authenticated')
         # return redirect(url_for('index'))
+
+    app.logger.setLevel(logging.INFO)
+    app.logger.info('User Registration Started')
+
     form = RegistrationForm()
     if form.validate_on_submit():
         user = User(username=form.username.data, email=form.email.data)
