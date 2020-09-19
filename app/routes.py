@@ -99,8 +99,7 @@ def register():
         # print('current user is authenticated')
         # return redirect(url_for('index'))
 
-    app.logger.setLevel(logging.INFO)
-    app.logger.info('User Registration Started')
+    print('User Registration Started')
 
     form = RegistrationForm()
     if form.validate_on_submit():
@@ -112,6 +111,8 @@ def register():
         oauth = StravaOauth()
         return oauth.authorize()
         # return redirect(url_for('login'))
+
+    print('User Registration Finished')
 
     return render_template('register.html', title='Register', form=form)
 
