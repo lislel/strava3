@@ -187,7 +187,7 @@ class DataIngest():
 
 
 class StravaOauth():
-    REDIRECT_URI = 'http://http://nhhighpeaks.herokuapp.com/login'
+    REDIRECT_URI = 'http://nhhighpeaks.herokuapp.com/login'
     RESPONSE_TYPE = 'code'
     APPROVAL_PROMPT = "auto"
     SCOPE = "activity:read,profile:read_all"
