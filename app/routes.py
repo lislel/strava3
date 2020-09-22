@@ -91,7 +91,7 @@ def logout():
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     print(f'1 current user authenitcated? {current_user.is_authenticated}')
-    print(session)
+    print('Session: ', session)
     if current_user.is_authenticated:
         logout_user()
         print(f'2 current user authenitcated? {current_user.is_authenticated}')
