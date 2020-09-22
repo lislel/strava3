@@ -52,8 +52,8 @@ class Mountain(db.Model):
 	__tablename__ = 'mountain'
 	id = db.Column(db.Integer, primary_key=True)
 	name = db.Column(db.String(128), index=True, unique=True)
-	lat = db.Column(db.Integer)
-	lon = db.Column(db.Integer)
+	lat = db.Column(db.Float)
+	lon = db.Column(db.Float)
 	users = db.relationship('User', secondary='user_mountain_link')
 	activities = db.relationship('Activity', secondary='activity_mountain_link')
 
