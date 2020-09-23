@@ -187,6 +187,7 @@ class DataIngest():
 
 
 class StravaOauth():
+    #TODO: import REDIRECT_URI from config.py
     REDIRECT_URI = 'http://nhhighpeaks.herokuapp.com/login'
     RESPONSE_TYPE = 'code'
     APPROVAL_PROMPT = "auto"
