@@ -10,7 +10,6 @@ with open("C:/Users/cummi/Documents/02-HighPeaks/strava3/app/mountains.yml", 'r'
 with open("app/mountains.yml", 'r') as stream:
 	mt_yaml = yaml.safe_load(stream)
 
-
 existing = Mountain.query.all()
 existing_names = []
 
