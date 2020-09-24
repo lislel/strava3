@@ -77,7 +77,7 @@ class Activity(db.Model):
 	__tablename__ = 'activity'
 	id = db.Column(db.Integer, primary_key=True)
 	name = db.Column(db.String(1280))
-	activity_id = db.Column(db.Integer, unique=True)
+	activity_id = db.Column(db.BigInteger, unique=True)
 	url = db.Column(db.String(1280))
 	polyline = db.Column(db.String(1280))
 	user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
