@@ -277,6 +277,6 @@ def manual_entry_view(act_name):
             db.session.commit()
             return index()
 
-    return render_template('manual_entry_view.html', title="Big Booty", act=act, form=form)
+    return render_template('manual_entry_view.html', title="Manual Entry View", act=act, form=form)
 
 
