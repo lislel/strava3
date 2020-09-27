@@ -143,7 +143,6 @@ class DataIngest():
 
     def parse(self, item):
 
-        print('act: ', item['name'])
         try:
             if isinstance(item, dict):
                 if item['start_latlng'] is not None:
@@ -159,9 +158,9 @@ class DataIngest():
                                     if hypot < min_dist:
                                         min_dist = hypot
                                 if min_dist <= 0.0085:
-                                    print('this one has been found', item['id'])
+                                    #print('this one has been found', item['id'])
                                     exists = db.session.query(db.exists().where(Activity.activity_id == item['id'])).scalar()
-                                    print('does it exist already? ', exists)
+                                    #print('does it exist already? ', exists)
                                     if exists is False:
                                         # add id to list of activities that have touched this mountain
                                         act = Activity()
@@ -171,12 +170,12 @@ class DataIngest():
                                         act.mountains.append(mt)
                                         act.activity_id = item['id']
                                         act.date = item['start_date']
-                                        print('it doesnt exist, add it ', act.activity_id)
+                                        #print('it doesnt exist, add it ', act.activity_id)
                                         self.user.activities.append(act)
                                         db.session.commit()
                                     else:
                                         act = db.session.query(Activity).filter_by(activity_id=item['id']).first()
-                                        print(f'act already exists {act}, adding mountain {mt}')
+                                        # print(f'act already exists {act}, adding mountain {mt}')
                                         act.mountains.append(mt)
                                         db.session.commit()
         except Exception as e:
@@ -189,7 +188,10 @@ class DataIngest():
 
 class StravaOauth():
     #TODO: import REDIRECT_URI from config.py
+    # Heroku redirect
     REDIRECT_URI = 'http://nhhighpeaks.herokuapp.com/login'
+    # Local redirect
+    # REDIRECT_URI = 'http://localhost:5000/login'
     RESPONSE_TYPE = 'code'
     APPROVAL_PROMPT = "auto"
     SCOPE = "activity:read,profile:read_all"
