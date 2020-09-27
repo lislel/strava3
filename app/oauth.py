@@ -143,7 +143,7 @@ class DataIngest():
 
     def parse(self, item):
 
-        print('act:\n', item)
+        print('act: ', item['name'])
         try:
             if isinstance(item, dict):
                 if item['start_latlng'] is not None:
