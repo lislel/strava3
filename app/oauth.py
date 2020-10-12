@@ -119,7 +119,7 @@ class DataIngest():
         results = requests.get(url, headers=self.headers).json()
         act_total = int(results['all_run_totals']['count']) +  int(results['all_ride_totals']['count']) + int(results['all_swim_totals']['count'])
         #  Get total number of known pages
-        self.page_num = int(act_total/200)
+        self.page_num = int(math.ceil(act_total/200))
         return self.page_num
 
     def get_activities(self):
