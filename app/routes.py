@@ -27,7 +27,9 @@ def index():
         else:
             unfinished.append(mt)
 
-    return render_template('index.html', title='Home', finished=finished, unfinished=unfinished, user_id=current_user.id)
+    n_finished = len(mts) - len(unfinished)
+
+    return render_template('index.html', title='Home', finished=finished, unfinished=unfinished, n_finished=n_finished, user_id=current_user.id)
 
 
 @app.route('/login', methods=['GET', 'POST'])
