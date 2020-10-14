@@ -5,7 +5,7 @@ from app import app, db
 from app.forms import LoginForm, RegistrationForm
 from app.models import User, Mountain, Activity
 from app.oauth import StravaOauth, DataIngest
-from app.forms import ResetPasswordRequestForm, ResetPasswordForm, ManualEntryForm, ManualEntryEditForm, ManualEntryViewForm
+from app.forms import ResetPasswordRequestForm, ResetPasswordForm, ManualEntryForm, ManualEntryEditForm, ManualEntryViewForm, WelcomeForm
 from app.email import send_password_reset_email
 
 import time
@@ -280,5 +280,16 @@ def manual_entry_view(act_name):
             return index()
 
     return render_template('manual_entry_view.html', title="Manual Entry View", act=act, form=form)
+
+@app.route('/welcome', methods=['GET', 'POST'])
+def welcome():
+    form = WelcomeForm()
+    if form.validate_on_submit():
+        if form.create_account.data:
+            return redirect('/register')
+        if form.sign_in.data:
+            return redirect('/login')
+
+    return render_template('welcome.html', title="Welcome to NH High Peaks", form=form)
 
 

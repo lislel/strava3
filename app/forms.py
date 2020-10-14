@@ -73,6 +73,10 @@ class ManualEntryViewForm(FlaskForm):
     edit = SubmitField(label='Edit Activity')
     delete = SubmitField(label='Delete Activity')
 
+class WelcomeForm(FlaskForm):
+    create_account = SubmitField(label='Create Account')
+    sign_in = SubmitField(label='Sign In')
+
 
 
 
