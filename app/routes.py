@@ -13,7 +13,19 @@ import requests
 import json
 
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
+@app.route('/welcome', methods=['GET', 'POST'])
+def welcome():
+    form = WelcomeForm()
+    if form.validate_on_submit():
+        if form.create_account.data:
+            return redirect('/register')
+        if form.sign_in.data:
+            return redirect('/login')
+
+    return render_template('welcome.html', title="Welcome to NH High Peaks", form=form)
+
+
 @app.route('/index')
 @login_required
 def index():
@@ -112,7 +124,6 @@ def register():
         flash('Congratulations, you are now a registered user!')
         oauth = StravaOauth()
         return oauth.authorize()
-        # return redirect(url_for('login'))
 
     print('User Registration Finished')
 
@@ -281,15 +292,6 @@ def manual_entry_view(act_name):
 
     return render_template('manual_entry_view.html', title="Manual Entry View", act=act, form=form)
 
-@app.route('/welcome', methods=['GET', 'POST'])
-def welcome():
-    form = WelcomeForm()
-    if form.validate_on_submit():
-        if form.create_account.data:
-            return redirect('/register')
-        if form.sign_in.data:
-            return redirect('/login')
 
-    return render_template('welcome.html', title="Welcome to NH High Peaks", form=form)
 
 
