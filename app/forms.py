@@ -43,7 +43,7 @@ class ResetPasswordForm(FlaskForm):
 #format mountains to be used by selectfield
 def mountain_choices():
 
-    choices = []
+    choices = [('','')]
     try:
         i = 1
         for mt in Mountain.query.all():
