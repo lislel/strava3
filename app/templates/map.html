@@ -1,66 +1,47 @@
-<!-- {% extends 'bootstrap/base.html' %}
-
-{% block navbar %}
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="{{ url_for('index') }}">NH High Peaks</a>
-            </div>
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <ul class="nav navbar-nav">
-                    <li><a href="{{ url_for('index') }}">Home</a></li>
-                </ul>
-                <ul class="nav navbar-nav navbar-right">
-                    {% if current_user.is_anonymous %}
-                    <li><a href="{{ url_for('login') }}">Login</a></li>
-                    {% else %}
-                    <li><a href="{{ url_for('map') }}">Map</a></li>
-                    <li><a href="{{ url_for('manual_entry') }}">Manual Entry</a></li>
-                    <li><a href="{{ url_for('logout') }}">Logout</a></li>
-
-
-                    {% endif %}
-                </ul>
-            </div>
-        </div>
-    </nav>
-{% endblock %} -->
-
+<head></head>
+{% extends "base.html" %}
 
 {% block content %}
-  <body>
-    <script src="http://cdn.leafletjs.com/leaflet-0.7/leaflet.js"></script>
-    <script type="text/javascript" src="https://rawgit.com/jieter/Leaflet.encoded/master/Polyline.encoded.js"></script>
-    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7/leaflet.css" />
-    <div id="map" style="width: 100%; height: 100%"></div>
-    <script type="text/javascript" src="https://rawgit.com/jieter/Leaflet.encoded/master/Polyline.encoded.js"></script>
-    <link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.0/css/font-awesome.css" rel="stylesheet">
+<head>
+  <!-- for maps -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+  integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
+  crossorigin=""/>
+  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"
+  integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA=="
+  crossorigin=""></script>
+  <!-- for polylines -->
+  <script type="text/javascript" src="https://rawgit.com/jieter/Leaflet.encoded/master/Polyline.encoded.js"></script>
+  <!-- for red markers -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
     <i class="fas fa-mountain"></i>
-    <script>
-      var map = L.map('map').setView([44.2706, -71.3033], 13);
-      L.tileLayer(
-          'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-              maxZoom: 18,
-          }).addTo(map);
+</head>
 
-      var encodedRoutes = {{ all_polylines|safe }}
-      var markers = {{ map_markers|safe }}
+<body>
 
-      console.log('markers')
-      //console.log(markers)
+  <div id="map" style="width: auto; height: 100%;"></div>
+  <script>
 
+    //map stuff
+    var mapboxAttribution = 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+      mapboxUrl = 'https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoianB0Y3VtbWluZ3MiLCJhIjoiY2tnc2tjODEwMDBwbjJxcHRuNGw4NmVyMSJ9.gtMyRwfZ-GumoYQkaGY6Vg';
+
+    var terrain = L.tileLayer(mapboxUrl, {id: 'mapbox/outdoors-v11', tileSize: 512, zoomOffset: -1, attribution: mapboxAttribution}),
+        satellite = L.tileLayer(mapboxUrl, {id: 'mapbox/satellite-v9', tileSize: 512, zoomOffset: -1, attribution: mapboxAttribution});
+
+    var map = L.map('map', {
+        center: [44.2706, -71.3033],
+        zoom: 10,
+        layers: [terrain]
+      });
+
+    //Add polylines to map
+    var tracks = []
+    var encodedRoutes = {{ all_polylines|safe }}    
       for (let encoded of encodedRoutes) {
-        var coordinates = L.Polyline.fromEncoded(encoded).getLatLngs();
-        L.polyline(
-
+          var coordinates = L.Polyline.fromEncoded(encoded).getLatLngs();
+          tracks.push(L.polyline(
             coordinates,
             {
                 color: 'blue',
@@ -68,45 +49,66 @@
                 opacity: .7,
                 lineJoin: 'round'
             }
-        ).addTo(map);
+          ));
       }
 
+      var tracks_layer = L.layerGroup(tracks);
+      tracks_layer.addTo(map);
+
+      //Add markers to map
+      console.log('markers')
+      var peak_markers = [];
+        var markers = {{ map_markers|safe }}
       for (let m of markers) {
+          if (m['act_names'] != 'missing') {
+              var mydiv = document.createElement("myDiv");
+              var aTag = document.createElement('a');
+              aTag.innerText = m['name'] + "\n";
+              mydiv.appendChild(aTag);
 
-        if (m['act_names'] != 'missing') {
-          var mydiv = document.createElement("myDiv");
-          var aTag = document.createElement('a');
-          aTag.innerText = m['name'] + "\n";
-          mydiv.appendChild(aTag);
+              var i = 0;
+              for (var name of m['act_names']) {
+                var aTag = document.createElement('a');
+                urls = m['urls'];
+                aTag.setAttribute('href', urls[i]);
+                aTag.setAttribute('target', "_blank");
+                aTag.innerText = name + "\n";
+                mydiv.appendChild(aTag);
+                i++;
+              }
 
-          var i = 0;
-          for (var name of m['act_names']) {
-            var aTag = document.createElement('a');
-            urls = m['urls'];
-            aTag.setAttribute('href', urls[i]);
-            aTag.setAttribute('target', "_blank");
-            aTag.innerText = name + "\n";
-            mydiv.appendChild(aTag);
-            i++;
+              peak_markers.push(L.marker([m['lat'], m['lon']]).bindPopup(mydiv))
+
+          }
+          else {
+            console.log('test')
+              console.log(m)
+
+            var redMarker = L.AwesomeMarkers.icon({
+            icon: 'fas fa-mountain',
+              markerColor: 'red'
+              });
+
+            peak_markers.push(L.marker([m['lat'], m['lon']], {icon: redMarker}).bindPopup(m['name']))
+
+            }
           }
 
+          var peak_markers_layer = L.layerGroup(peak_markers);
+          peak_markers_layer.addTo(map)
 
-          L.marker([m['lat'], m['lon']]).addTo(map).bindPopup(mydiv);
-        }
-      else {
-          console.log('test')
-          console.log(m)
+        var baseMaps = {
+          "Terrain": terrain,
+          "satellite": satellite
+      };
 
+      var overlayMaps = {
+          "Markers": peak_markers_layer,
+          "Tracks": tracks_layer
+      };
 
-        var redMarker = L.AwesomeMarkers.icon({
-          icon: 'fas fa-mountain',
-          markerColor: 'red'
-          });
+      L.control.layers(baseMaps, overlayMaps).addTo(map);
 
-        L.marker([m['lat'], m['lon']], {icon: redMarker}).addTo(map).bindPopup(m['name']);
-      }
-      }
-
-    </script>
-
+  </script>
+</body>
 {% endblock %}
