@@ -154,10 +154,11 @@ def map():
         map_markers.append(mt_dict)
 
     polylines = json.dumps(polylines)
-
+    """
     print('Here are my map markes:\n')
     for m in map_markers:
         print('\n', m)
+    """
     return render_template('map.html', title='Map', all_polylines=all_polylines, map_markers=map_markers)
 
 
