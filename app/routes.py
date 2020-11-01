@@ -304,20 +304,20 @@ def contactus():
     form = ContactUsForm()
     if form.validate_on_submit():
         message=form.message
-            if user:
-                send_email('[NH High Peaks] Contact Us Submission',
-                    sender=app.config['ADMINS'][0],
-                    recipients=[app.config['ADMINS'][0]],
-                    text_body=render_template('email/contact_us.txt', message=message, username=user.username, email=user.email),
-                    html_body=render_template('email/contact_us.html', message=message, username=user.username, email=user.email))
-            else:
-                send_email('[NH High Peaks] Contact Us Submission',
-                    sender=app.config['ADMINS'][0],
-                    recipients=[app.config['ADMINS'][0]],
-                    text_body=render_template('email/contact_us.txt', message=message, username='NA', email='NA'),
-                    html_body=render_template('email/contact_us.html', message=message, username='NA', email='NA'))
+        if current_user.is_authenticated:
+            send_email('[NH High Peaks] Contact Us Submission',
+                sender=app.config['ADMINS'][0],
+                recipients=[app.config['ADMINS'][0]],
+                text_body=render_template('email/contact_us.txt', message=message, username=current_user.username, email=current_user.email),
+                html_body=render_template('email/contact_us.html', message=message, username=current_user.username, email=current_user.email))
+        else:
+            send_email('[NH High Peaks] Contact Us Submission',
+                sender=app.config['ADMINS'][0],
+                recipients=[app.config['ADMINS'][0]],
+                text_body=render_template('email/contact_us.txt', message=message, username='NA', email='NA'),
+                html_body=render_template('email/contact_us.html', message=message, username='NA', email='NA'))
 
-            
+        flash("Feedback Sent")
         return index()
     return render_template('contactus.html', title="Contact Us",  form=form)
 
