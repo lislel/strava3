@@ -308,14 +308,20 @@ def contactus():
             send_email('[NH High Peaks] Contact Us Submission',
                 sender=app.config['ADMINS'][0],
                 recipients=[app.config['ADMINS'][0]],
-                text_body=render_template('email/contact_us.txt', message=message, username=current_user.username, email=current_user.email),
-                html_body=render_template('email/contact_us.html', message=message, username=current_user.username, email=current_user.email))
+                text_body=render_template('email/contact_us.txt', 
+                    message=message, username=current_user.username, 
+                    email=current_user.email, id=current_user.id),
+                html_body=render_template('email/contact_us.html', 
+                    message=message, username=current_user.username, 
+                    email=current_user.email, id=current_user.id))
         else:
             send_email('[NH High Peaks] Contact Us Submission',
                 sender=app.config['ADMINS'][0],
                 recipients=[app.config['ADMINS'][0]],
-                text_body=render_template('email/contact_us.txt', message=message, username='NA', email='NA'),
-                html_body=render_template('email/contact_us.html', message=message, username='NA', email='NA'))
+                text_body=render_template('email/contact_us.txt', 
+                    message=message, username='NA', email='NA', id='NA'),
+                html_body=render_template('email/contact_us.html', 
+                    message=message, username='NA', email='NA', id='NA'))
 
         flash("Feedback Sent")
         return index()

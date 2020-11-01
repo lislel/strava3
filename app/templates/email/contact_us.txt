@@ -1,5 +1,6 @@
 Contact Us Submission:
 Username: {{ username }}
 Email: {{ email }}
+ID: {{ id }}
 
 {{ message }}
