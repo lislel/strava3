@@ -2,6 +2,7 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, SelectField
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
 from app.models import User, Mountain
+from wtforms.widgets import TextArea
 
 
 class LoginForm(FlaskForm):
@@ -42,7 +43,6 @@ class ResetPasswordForm(FlaskForm):
 
 #format mountains to be used by selectfield
 def mountain_choices():
-
     choices = [('','')]
     try:
         i = 1
@@ -76,6 +76,9 @@ class ManualEntryViewForm(FlaskForm):
 class WelcomeForm(FlaskForm):
     create_account = SubmitField(label='Create Account')
     sign_in = SubmitField(label='Sign In')
+
+class ContactUsForm(FlaskForm):
+    message = StringField(u'Text', widget=TextArea())
 
 
 

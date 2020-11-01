@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+
+{% block content %}
+	<div class="container-fluid">
+		<H1>Contact Us</H1>
+		<form action="" method=post>
+		   {{ form.hidden_tag() }}
+		   <dl>
+		      <dt>Let us know what you think:
+		      <dd>{{ form.message(cols="100", rows="10") }}
+		   </dl>
+		   <input type=submit value="Send">
+		</form>
+	</div>
+{% endblock %}

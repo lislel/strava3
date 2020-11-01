@@ -5,8 +5,8 @@ from app import app, db
 from app.forms import LoginForm, RegistrationForm
 from app.models import User, Mountain, Activity
 from app.oauth import StravaOauth, DataIngest
-from app.forms import ResetPasswordRequestForm, ResetPasswordForm, ManualEntryForm, ManualEntryEditForm, ManualEntryViewForm, WelcomeForm
-from app.email import send_password_reset_email
+from app.forms import ResetPasswordRequestForm, ResetPasswordForm, ManualEntryForm, ManualEntryEditForm, ManualEntryViewForm, WelcomeForm, ContactUsForm
+from app.email import send_password_reset_email, send_email
 
 import time
 import requests
@@ -292,6 +292,20 @@ def manual_entry_view(act_name):
             return index()
 
     return render_template('manual_entry_view.html', title="Manual Entry View", act=act, form=form)
+
+@app.route('/contactus', methods=['GET', 'POST'])
+def contactus():
+    form = ContactUsForm()
+    if form.validate_on_submit():
+        message=form.message
+        send_email('[NH High Peaks] Contact Us Submission',
+            sender=app.config['ADMINS'][0],
+            recipients=app.config['ADMINS'][0],
+            text_body=render_template('email/contact_us.txt', message=message),
+            html_body=render_template('email/contact_us.html', message=message))
+            
+        return index()
+    return render_template('contactus.html', title="Contact Us",  form=form)
 
 
 
