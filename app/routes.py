@@ -171,6 +171,12 @@ def reset_password_request():
         user = User.query.filter_by(email=form.email.data).first()
         if user:
             send_password_reset_email(user)
+        else:
+            send_email('[NH High Peaks] Reset Password request for nonexistent email',
+                sender=app.config['ADMINS'][0],
+                recipients=[app.config['ADMINS'][0]],
+                text_body='',
+                html_body='')
         flash('Check your email for the instructions to reset your password')
         return redirect(url_for('login'))
     return render_template('reset_password_request.html',
@@ -300,7 +306,7 @@ def contactus():
         message=form.message
         send_email('[NH High Peaks] Contact Us Submission',
             sender=app.config['ADMINS'][0],
-            recipients=app.config['ADMINS'][0],
+            recipients=[app.config['ADMINS'][0]],
             text_body=render_template('email/contact_us.txt', message=message),
             html_body=render_template('email/contact_us.html', message=message))
             
