@@ -42,11 +42,13 @@
                 <ul class="nav navbar-nav navbar-right">
                     {% if current_user.is_anonymous %}
                     <li><a href="{{ url_for('login') }}">Login</a></li>
+                    <li><a href="{{ url_for('contactus') }}">Contact Us</a></li>
                     {% else %}
                     <li><a href="{{ url_for('index') }}">List</a></li>
                     <li><a href="{{ url_for('map') }}">Map</a></li>
                     <li><a href="{{ url_for('manual_entry') }}">Manual Entry</a></li>
                     <li><a href="{{ url_for('logout') }}">Logout</a></li>
+                    <li><a href="{{ url_for('contactus') }}">Contact Us</a></li>
                     {% endif %}
                 </ul>
             </div>
