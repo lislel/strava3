@@ -150,8 +150,8 @@ flume:
   act_id: []
 south hancock:
   mt_name: South Hancock
-  lat: 44.08367
-  lon: -71.49368
+  lat: 44.0733
+  lon: -71.4869
   act_name: []
   act_id: []
 pierce:
