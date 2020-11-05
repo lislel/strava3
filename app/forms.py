@@ -46,11 +46,7 @@ def mountain_choices():
     choices = [('','')]
     try:
         mts = Mountain.query.all()
-        print('\nmts = ', mts)
-
         mts.sort(key=lambda x: x.name)
-        print('\nmts = ', mts)
-
         i = 1
         for mt in mts:
             choices.append((mt.name, mt.name))
