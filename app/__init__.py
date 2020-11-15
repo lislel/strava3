@@ -9,11 +9,12 @@ import logging
 from logging.handlers import SMTPHandler, RotatingFileHandler
 from flask_mail import Mail
 import os
-from flask_talisman import Talisman
+from flask_talisman import Talisman, GOOGLE_CSP_POLICY
 
 
 app = Flask(__name__)
-#wrap app with talisman to force https connection
+# wrap app with talisman to force https connection
+# comment the below line out if you are testing locally
 Talisman(app)
 app.config.from_object(Config)
 db = SQLAlchemy(app)
