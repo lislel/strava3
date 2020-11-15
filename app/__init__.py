@@ -9,8 +9,12 @@ import logging
 from logging.handlers import SMTPHandler, RotatingFileHandler
 from flask_mail import Mail
 import os
+from flask_talisman import Talisman
+
 
 app = Flask(__name__)
+#wrap app with talisman to force https connection
+Talisman(app)
 app.config.from_object(Config)
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
