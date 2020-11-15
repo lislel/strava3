@@ -15,7 +15,8 @@ from flask_talisman import Talisman, GOOGLE_CSP_POLICY
 app = Flask(__name__)
 # wrap app with talisman to force https connection
 # comment the below line out if you are testing locally
-Talisman(app)
+# TODO: figure out other security stuff about Talisman
+# Talisman(app)
 app.config.from_object(Config)
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
