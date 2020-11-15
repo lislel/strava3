@@ -9,7 +9,7 @@ import logging
 from logging.handlers import SMTPHandler, RotatingFileHandler
 from flask_mail import Mail
 import os
-from flask_talisman import Talisman, GOOGLE_CSP_POLICY
+# from flask_talisman import Talisman, GOOGLE_CSP_POLICY
 
 
 app = Flask(__name__)
