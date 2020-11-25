@@ -5,7 +5,7 @@ from app import app, db
 from app.forms import LoginForm, RegistrationForm
 from app.models import User, Mountain, Activity
 from app.oauth import StravaOauth, DataIngest
-from app.forms import ResetPasswordRequestForm, ResetPasswordForm, ManualEntryForm, ManualEntryEditForm, ManualEntryViewForm, WelcomeForm, ContactUsForm
+from app.forms import ResetPasswordRequestForm, ResetPasswordForm, ManualEntryForm, ManualEntryEditForm, ManualEntryViewForm, WelcomeForm, ContactUsForm, LinkStravaForm
 from app.email import send_password_reset_email, send_email
 
 import time
@@ -52,11 +52,19 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         user = User.query.filter_by(username=form.username.data).first()
+        # user doesn't exist or password is bad
         if user is None or not user.check_password(form.password.data):
             flash('Invalid username or password')
             return redirect(url_for('login'))
+        # user did not link strava
+        elif user.access_token == 'NA':
+            login_user(user, remember=form.remember_me.data)
+            return redirect(url_for('index'))
+        # user did link strava
         else:
             oauth = StravaOauth()
+            print('user.access_token = ', user.access_token)
+
             if user.social_id is None:
                 # User has never been authenticated with Strava, get authentication information
                 print('new user!')
@@ -84,6 +92,7 @@ def login():
         if not next_page or url_parse(next_page).netloc != '':
             next_page = url_for('index')
         return redirect(next_page)
+
     return render_template('login.html', title='Sign In', form=form)
 
 
@@ -109,11 +118,8 @@ def register():
     if current_user.is_authenticated:
         logout_user()
         print(f'2 current user authenitcated? {current_user.is_authenticated}')
-
         # print('current user is authenticated')
-        # return redirect(url_for('index'))
-
-    print('User Registration Started')
+        return redirect(url_for('index'))
 
     form = RegistrationForm()
     if form.validate_on_submit():
@@ -122,12 +128,29 @@ def register():
         db.session.add(user)
         db.session.commit()
         flash('Congratulations, you are now a registered user!')
+        """
         oauth = StravaOauth()
         return oauth.authorize()
-
-    print('User Registration Finished')
+        """
+        return redirect('/linkstrava/' + user.username)
+        # return render_template('linkstrava.html', title='Link Strava?', user=user, form=LinkStravaForm())
 
     return render_template('register.html', title='Register', form=form)
+
+@app.route('/linkstrava/<username>', methods=['GET', 'POST'])
+def linkstrava(username):
+    form = LinkStravaForm()
+    user = User.query.filter_by(username=username).first()
+    if form.validate_on_submit():
+        if form.yes.data:
+            oauth = StravaOauth()
+            return oauth.authorize()
+        if form.no.data:
+            user.access_token = 'NA'
+            db.session.commit()
+            return redirect(url_for('login'))
+
+    return render_template('linkstrava.html', title='Link Strava Account', form=form)
 
 @login_required
 @app.route('/map')
@@ -327,6 +350,9 @@ def contactus():
         return index()
     return render_template('contactus.html', title="Contact Us",  form=form)
 
+@app.route('/aboutus', methods=['GET'])
+def aboutus():
+    return render_template('aboutus.html', title="About Us")
 
 
 
