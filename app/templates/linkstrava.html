@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+
+{% block content %}
+	<div class="col-md-2">
+	</div>
+	<div class="col-md-8">
+		<div class="container-fluid text-center well">
+			<H1>Would you like to link your Strava Account?</H1>
+			<p> Linking your Strava account will allow NH High Peaks to see what peaks you have already ticked. We will also use your data to plot the trails you took to get to the summit.</p>
+	        {{ wtf.quick_form(form) }}
+		</div>
+	</div>
+{% endblock %}
