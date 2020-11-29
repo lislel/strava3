@@ -365,6 +365,7 @@ def settings():
         for key, value in request.form.items():
             print("key: {0}, value: {1}".format(key, value))
         
+        # Change Username
         if request.form['submit'] == 'change_username':
             all_users = User.query.all()
             all_usernames = []
@@ -378,20 +379,24 @@ def settings():
                 db.session.commit()
                 flash('change_username to %s'%(request.form['new_username']))
                 return redirect(url_for('index'))
-       
+        
+        # Change Password
         if request.form['submit'] == 'change_password':
-            flash('change_password')
             token = current_user.get_reset_password_token()
             return redirect(url_for('reset_password', token=token, _external=True))
        
+        # Delete Account
         if request.form['submit'] == 'delete':
-            flash('delete')
+            delete_account(current_user)
             return redirect(url_for('index'))
 
     return render_template('settings.html', title="Account Settings", form=form)
 
 def boobs():
     flash('dem boobies')
+
+def delete_account(user):
+    flash('%s account deleted'%user.username)
 
 
 
