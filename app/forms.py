@@ -51,7 +51,7 @@ def mountain_choices():
         for mt in mts:
             choices.append((mt.name, mt.name))
             i += 1
-        print(choices)
+        # print(choices)
     except Exception as e:
         print(e)
     return choices
@@ -81,6 +81,14 @@ class WelcomeForm(FlaskForm):
 
 class ContactUsForm(FlaskForm):
     message = StringField(u'Text', widget=TextArea())
+
+class LinkStravaForm(FlaskForm):
+    yes = SubmitField(label='Yes')
+    no = SubmitField(label='No')
+
+class FormTemplate(FlaskForm):
+    pass
+
 
 
 

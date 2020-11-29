@@ -5,7 +5,7 @@ from app import app, db
 from app.forms import LoginForm, RegistrationForm
 from app.models import User, Mountain, Activity
 from app.oauth import StravaOauth, DataIngest
-from app.forms import ResetPasswordRequestForm, ResetPasswordForm, ManualEntryForm, ManualEntryEditForm, ManualEntryViewForm, WelcomeForm, ContactUsForm, LinkStravaForm
+from app.forms import ResetPasswordRequestForm, ResetPasswordForm, ManualEntryForm, ManualEntryEditForm, ManualEntryViewForm, WelcomeForm, ContactUsForm, LinkStravaForm, FormTemplate
 from app.email import send_password_reset_email, send_email
 
 import time
@@ -202,16 +202,16 @@ def reset_password_request():
                 html_body='')
         flash('Check your email for the instructions to reset your password')
         return redirect(url_for('login'))
-    return render_template('reset_password_request.html',
-                           title='Reset Password', form=form)
+    return render_template('reset_password_request.html', title='Reset Password', form=form)
 
 
 @app.route('/reset_password/<token>', methods=['GET', 'POST'])
 def reset_password(token):
-    if current_user.is_authenticated:
-        return redirect(url_for('index'))
+    #if current_user.is_authenticated:
+    #    return redirect(url_for('index'))
     user = User.verify_reset_password_token(token)
     if not user:
+        flash('Not user')
         return redirect(url_for('index'))
     form = ResetPasswordForm()
     if form.validate_on_submit():
@@ -223,6 +223,7 @@ def reset_password(token):
 
 
 @app.route('/manual_entry', methods=['GET', 'POST'])
+@login_required
 def manual_entry():
     form = ManualEntryForm()
     if form.validate_on_submit():
@@ -312,7 +313,7 @@ def manual_entry_view(act_name):
 
     if form.validate_on_submit():
         if form.edit.data:
-            flash("Edit Button Clicked")
+            # flash("Edit Button Clicked")
             return redirect('/edit/' + act_name)
         if form.delete.data:
             flash("Activity Deleted")
@@ -353,6 +354,46 @@ def contactus():
 @app.route('/aboutus', methods=['GET'])
 def aboutus():
     return render_template('aboutus.html', title="About Us")
+
+@app.route('/settings', methods=['GET', 'POST'])
+@login_required
+def settings():
+    form = FormTemplate()
+
+    if request.method == 'POST':
+        # Print form keys and values
+        for key, value in request.form.items():
+            print("key: {0}, value: {1}".format(key, value))
+        
+        if request.form['submit'] == 'change_username':
+            all_users = User.query.all()
+            all_usernames = []
+            for user in all_users:
+                all_usernames.append(user.username)
+            if request.form['new_username'] in all_usernames:
+                flash('Username is already taken')
+                return redirect(url_for('settings'))
+            else:
+                current_user.username = request.form['new_username']
+                db.session.commit()
+                flash('change_username to %s'%(request.form['new_username']))
+                return redirect(url_for('index'))
+       
+        if request.form['submit'] == 'change_password':
+            flash('change_password')
+            token = current_user.get_reset_password_token()
+            return redirect(url_for('reset_password', token=token, _external=True))
+       
+        if request.form['submit'] == 'delete':
+            flash('delete')
+            return redirect(url_for('index'))
+
+    return render_template('settings.html', title="Account Settings", form=form)
+
+def boobs():
+    flash('dem boobies')
+
+
 
 
 
