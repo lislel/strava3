@@ -388,15 +388,22 @@ def settings():
         # Delete Account
         if request.form['submit'] == 'delete':
             delete_account(current_user)
-            return redirect(url_for('index'))
+            return redirect(url_for('welcome'))
 
-    return render_template('settings.html', title="Account Settings", form=form)
+    return render_template('settings.html', title="Account Settings", form=form, username=current_user.username)
 
 def boobs():
     flash('dem boobies')
 
 def delete_account(user):
-    flash('%s account deleted'%user.username)
+    flash('%s, your account has been deleted'%user.username)
+    act = Activity.query.all()
+    for a in act:
+        if a.user_id == current_user.id:
+            db.session.delete(a)
+    db.session.delete(user)
+    db.session.commit()
+
 
 
 
