@@ -1,10 +1,8 @@
 {% extends 'bootstrap/base.html' %}
 
-
 {% block title %}
     {% if title %}{{ title }} - NH High Peaks{% else %}Welcome to NH High Peaks!{% endif %}
 {% endblock %}
-
 
 {% block head %}
     {{ super() }}
@@ -13,7 +11,6 @@
     <meta name="author" content="Jed and Lauren">
     <meta name="keywords" content="NHHighPeaks, NH high peaks, New Hampshire high peaks, NH 4000 footers, New Hampshire 4000 footers, high peak list, white mountains, white mountain list, white mountains map, checklist, grid, the grid, strava, peak tracker, Mt Washington, Washington, Lafayette, Cannon, Wildcat, trail run, peak bagging">
 {% endblock %}
-
 
 {% block navbar %}
     <nav class="navbar navbar-inverse navbar-static-top">
@@ -32,8 +29,7 @@
                 {% endif %}
             </div>
             <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <ul class="nav navbar-nav">
-                </ul>
+                <ul class="nav navbar-nav"></ul>
                 <ul class="nav navbar-nav navbar-right">
                     {% if current_user.is_anonymous %}
                     <li><a href="{{ url_for('login') }}">Login</a></li>
@@ -54,15 +50,16 @@
 
 {% block content %}
     <div class="container">
+        <!-- Flash messages -->
         {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            {% for message in messages %}
-            <div class="alert alert-info" role="alert">{{ message }}</div>
-            {% endfor %}
-        {% endif %}
+            {% if messages %}
+                {% for message in messages %}
+                <div class="alert alert-info" role="alert">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
         {% endwith %}
 
-        {# application content needs to be provided in the app_content block #}
+        <!--application content needs to be provided in the app_content block-->
         {% block app_content %}{% endblock %}
     </div>
 {% endblock %}

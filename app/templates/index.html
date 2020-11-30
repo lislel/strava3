@@ -17,9 +17,9 @@
                     {% for mt in finished.keys() %}
                     <h4>{{mt.name}}</h4>
                     <ul>
-                    	{% for act in finished[mt] %}
-                    	    <li><a href="{{ act.url }}"  target="_blank">{{act.name}}</a></li>
-                         {%endfor%}
+                	{% for act in finished[mt] %}
+                	    <li><a href="{{ act.url }}"  target="_blank">{{act.name}}</a></li>
+                    {%endfor%}
                     </ul>
                     {% endfor %}
                 </div>
@@ -28,9 +28,9 @@
                 <div class='well'>
                     <h2> Not finished </h2>
                     <br>
-                    	{% for u in unfinished %}
-                    		<h4>{{u.name}}</h4>
-                    	{% endfor %}
+                	{% for u in unfinished %}
+                		<h4>{{u.name}}</h4>
+                	{% endfor %}
                 </div>
             </div>
         </div>
