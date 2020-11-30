@@ -327,7 +327,8 @@ def manual_entry_view(act_name):
 def contactus():
     form = ContactUsForm()
     if form.validate_on_submit():
-        message=form.message
+        message=request.form['message']
+        flash(request.form['message'])
         if current_user.is_authenticated:
             send_email('[NH High Peaks] Contact Us Submission',
                 sender=app.config['ADMINS'][0],
