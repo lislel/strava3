@@ -5,7 +5,7 @@ from app import app, db
 from app.forms import LoginForm, RegistrationForm
 from app.models import User, Mountain, Activity
 from app.oauth import StravaOauth, DataIngest
-from app.forms import ResetPasswordRequestForm, ResetPasswordForm, ManualEntryForm, ManualEntryEditForm, ManualEntryViewForm, WelcomeForm, ContactUsForm, LinkStravaForm, FormTemplate
+from app.forms import ResetPasswordRequestForm, ResetPasswordForm, ManualEntryForm, ManualEntryEditForm, ManualEntryViewForm, WelcomeForm, ContactUsForm, LinkStravaForm
 from app.email import send_password_reset_email, send_email
 
 import time
@@ -370,7 +370,10 @@ def settings():
             all_usernames = []
             for user in all_users:
                 all_usernames.append(user.username)
-            if request.form['new_username'] in all_usernames:
+            if request.form['new_username'] == current_user.username:
+                flash('Please choose new username')
+                return redirect(url_for('settings'))
+            elif request.form['new_username'] in all_usernames:
                 flash('Username is already taken')
                 return redirect(url_for('settings'))
             else:
