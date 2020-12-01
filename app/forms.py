@@ -86,10 +86,3 @@ class LinkStravaForm(FlaskForm):
     yes = SubmitField(label='Yes')
     no = SubmitField(label='No')
 
-class FormTemplate(FlaskForm):
-    pass
-
-
-
-
-

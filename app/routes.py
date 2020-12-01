@@ -359,8 +359,6 @@ def aboutus():
 @app.route('/settings', methods=['GET', 'POST'])
 @login_required
 def settings():
-    form = FormTemplate()
-
     if request.method == 'POST':
         # Print form keys and values
         for key, value in request.form.items():
@@ -391,7 +389,7 @@ def settings():
             delete_account(current_user)
             return redirect(url_for('welcome'))
 
-    return render_template('settings.html', title="Account Settings", form=form, username=current_user.username)
+    return render_template('settings.html', title="Account Settings", username=current_user.username)
 
 def boobs():
     flash('dem boobies')
