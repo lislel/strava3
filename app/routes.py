@@ -5,7 +5,7 @@ from app import app, db
 from app.forms import LoginForm, RegistrationForm
 from app.models import User, Mountain, Activity
 from app.oauth import StravaOauth, DataIngest
-from app.forms import ResetPasswordRequestForm, ResetPasswordForm, ManualEntryForm, ManualEntryEditForm, ManualEntryViewForm, WelcomeForm, ContactUsForm, LinkStravaForm
+from app.forms import ResetPasswordRequestForm, ResetPasswordForm, ManualEntryForm, ManualEntryEditForm, ManualEntryViewForm, ContactUsForm, LinkStravaForm
 from app.email import send_password_reset_email, send_email
 
 import time
@@ -16,14 +16,7 @@ import json
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/welcome', methods=['GET', 'POST'])
 def welcome():
-    form = WelcomeForm()
-    if form.validate_on_submit():
-        if form.create_account.data:
-            return redirect('/register')
-        if form.sign_in.data:
-            return redirect('/login')
-
-    return render_template('welcome.html', title="Welcome to NH High Peaks", form=form)
+    return render_template('welcome.html', title="Welcome to NH High Peaks")
 
 
 @app.route('/index')
@@ -373,7 +366,7 @@ def settings():
             if request.form['new_username'] == current_user.username:
                 flash('Please choose new username')
                 return redirect(url_for('settings'))
-            elif request.form['new_username'] in all_usernames:
+            elif request.form['new_username'] in all_usernames or request.form['new_username'] == '':
                 flash('Username is already taken')
                 return redirect(url_for('settings'))
             else:
