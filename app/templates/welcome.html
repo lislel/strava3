@@ -2,28 +2,22 @@
 <html lang="en">
 
 <head>
-
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <meta name="author" content="Jed and Lauren">
   <meta name="descrition" content="Use your strava data to keep track of the 4000 footers you've hiked or ran. View the map of your summit tags, and peak list.">
   <meta name="keywords" content="NHHighPeaks, NH high peaks, New Hampshire high peaks, NH 4000 footers, New Hampshire 4000 footers, high peak list, white mountains, white mountain list, white mountains map, checklist, grid, the grid, strava, peak tracker, Mt Washington, Washington, Lafayette, Cannon, Wildcat, trail run, peak bagging">
   <link rel="icon" type="image/png" href="https://img.icons8.com/windows/32/000000/mountain--v3.png" sizes="32x32">
-
-
   <title>Welcome to NH High Peaks - NH 4000ers Tracker</title>
-
   <!-- Bootstrap core CSS -->
   <link href="{{ url_for('static', filename='vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
-
   <!-- Custom styles for this template -->
   <link href="{{ url_for('static', filename='css/scrolling-nav.css') }}" rel="stylesheet">
-
 </head>
 
 <body id="page-top">
   <!-- Navigation -->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" id="mainNav">
+  <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top" id="mainNav">
     <div class="container">
       <a class="navbar-brand js-scroll-trigger" href="#page-top">Nh High Peaks</a>
       <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
@@ -68,10 +62,11 @@
   </header>
 
   <section id="lineart">
-    <div class="container">
+    <div class="container-fluid">
       <div class="row">
-        <div class="col-lg-8 mx-auto">
-          <img src="static/images/lineart2.png" class="center"/>
+        <div class="col-2"></div>
+        <div class="col-8 mx-auto">
+          <img src="static/images/lineart2.png" class="center img-fluid"/>
         </div>
       </div>
     </div>
@@ -130,10 +125,11 @@
 
   <!-- Footer -->
   <footer class="py-5 bg-dark">
-    <div class="row">
-
-      <div class="col col-sm-5 col-md-5">
-        <a href="https://www.strava.com"><img class="img-fluid w-75" src="static/images/strava api logos/compatible with strava/cptblWith_strava_white/api_logo_cptblWith_strava_horiz_white.png"></a>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-8 col-sm-7 col-md-6 col-lg-5 col-xl-4">
+          <a href="https://www.strava.com"><img class="img-fluid w-75" src="static/images/strava api logos/compatible with strava/cptblWith_strava_white/api_logo_cptblWith_strava_horiz_white.png"></a>
+        </div>
       </div>
     </div>
     <!-- /.container -->
