@@ -1,65 +1,111 @@
-{% extends 'bootstrap/base.html' %}
+<!DOCTYPE html>
+<html lang="en">
 
-{% block head %}
-    {{ super() }}
-    <link rel="icon" type="image/png" href="https://img.icons8.com/windows/32/000000/mountain--v3.png" sizes="32x32">
-    <meta name="descrition" content="Use your strava data to keep track of the 4000 footers you've hiked or ran. View the map of your summit tags, and peak list.">
-    <meta name="author" content="Jed and Lauren">
-    <meta name="keywords" content="NHHighPeaks, NH high peaks, New Hampshire high peaks, NH 4000 footers, New Hampshire 4000 footers, high peak list, white mountains, white mountain list, white mountains map, checklist, grid, the grid, strava, peak tracker, Mt Washington, Washington, Lafayette, Cannon, Wildcat, trail run, peak bagging">
-{% endblock %}
+  <head>
+    {% block head %}
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+      <meta name="author" content="Jed and Lauren">
+      <meta name="descrition" content="Use your strava data to keep track of the 4000 footers you've hiked or ran. View the map of your summit tags, and peak list.">
+      <meta name="keywords" content="NHHighPeaks, NH high peaks, New Hampshire high peaks, NH 4000 footers, New Hampshire 4000 footers, high peak list, white mountains, white mountain list, white mountains map, checklist, grid, the grid, strava, peak tracker, Mt Washington, Washington, Lafayette, Cannon, Wildcat, trail run, peak bagging">
+      <link rel="icon" type="image/png" href="https://img.icons8.com/windows/32/000000/mountain--v3.png" sizes="32x32">
+      <title>{% block title %}{% if title %}{{ title }} - NH High Peaks{% else %}Nh High Peaks{% endif %}{% endblock %}</title>
+      <!-- Bootstrap core CSS -->
+      <link href="{{ url_for('static', filename='vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+      <!-- Custom styles for this template -->
+      <link href="{{ url_for('static', filename='css/scrolling-nav.css') }}" rel="stylesheet">
+    {% endblock %}
+  </head>
 
-{% block title %}
-    {% if title %}{{ title }} - NH High Peaks{% else %}Welcome to NH High Peaks!{% endif %}
-{% endblock %}
+  <body>
+    <div id="page-container">
+        {% block navbar %}
+            <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top" id="mainNav">
+                <div class="container">
+                    <a class="navbar-brand js-scroll-trigger" href="#page-top">Nh High Peaks</a>
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarResponsive">
+                        <ul class="navbar-nav ml-auto">
+                            {% if current_user.is_anonymous %}
+                              <li class="nav-item">
+                                <a class="nav-link js-scroll-trigger" href="{{ url_for('login') }}">Login</a>
+                              </li>
+                              <li class="nav-item">
+                                <a class="nav-link js-scroll-trigger" href="{{ url_for('contactus') }}">Contact Us</a>
+                              </li>
+                            {% else %}
+                              <li class="nav-item">
+                                <a class="nav-link js-scroll-trigger"href="{{ url_for('index') }}">List</a>
+                              </li>
+                              <li class="nav-item">
+                                <a class="nav-link js-scroll-trigger" href="{{ url_for('map') }}">Map</a>
+                              </li>
+                              <li class="nav-item">
+                                <a class="nav-link js-scroll-trigger" href="{{ url_for('manual_entry') }}">Manual Entry</a>
+                              </li>
+                              <li class="nav-item">
+                                <a class="nav-link js-scroll-trigger" href="{{ url_for('contactus') }}">Contact Us</a>
+                              </li>
+                              <li class="nav-item">
+                                <a class="nav-link js-scroll-trigger" href="{{ url_for('settings') }}">Settings</a>
+                              </li>
+                              <li class="nav-item">
+                                <a class="nav-link js-scroll-trigger" href="{{ url_for('logout') }}">Logout</a>
+                              </li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                </div>
+            </nav>
+        {% endblock %} 
 
-{% block navbar %}
-    <nav class="navbar navbar-inverse navbar-static-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                {% if current_user.is_anonymous %}
-                    <a class="navbar-brand" href="{{ url_for('welcome') }}">NH High Peaks</a>
-                {% else %}
-                    <a class="navbar-brand" href="{{ url_for('index') }}">NH High Peaks</a>
-                {% endif %}
+        {% block content %}
+            <div id="content-wrap">
+                <header>
+                  {% block header %}{% endblock %}
+                </header>
+
+                <div class="container">
+                    <!-- Flash messages -->
+                    {% with messages = get_flashed_messages() %}
+                        {% if messages %}
+                            {% for message in messages %}
+                            <div class="alert alert-info" role="alert">{{ message }}</div>
+                            {% endfor %}
+                        {% endif %}
+                    {% endwith %}
+
+                    <!--application content needs to be provided in the app_content block-->
+                    {% block app_content %}{% endblock %}
+                </div>
             </div>
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <ul class="nav navbar-nav"></ul>
-                <ul class="nav navbar-nav navbar-right">
-                    {% if current_user.is_anonymous %}
-                    <li><a href="{{ url_for('login') }}">Login</a></li>
-                    <li><a href="{{ url_for('contactus') }}">Contact Us</a></li>
-                    {% else %}
-                    <li><a href="{{ url_for('index') }}">List</a></li>
-                    <li><a href="{{ url_for('map') }}">Map</a></li>
-                    <li><a href="{{ url_for('manual_entry') }}">Manual Entry</a></li>
-                    <li><a href="{{ url_for('contactus') }}">Contact Us</a></li>
-                    <li><a href="{{ url_for('settings') }}">Settings</a></li>
-                    <li><a href="{{ url_for('logout') }}">Logout</a></li>
-                    {% endif %}
-                </ul>
-            </div>
-        </div>
-    </nav>
-{% endblock %}
+        {% endblock %}
+        
+        {% block footer %}
+              <footer id="footer" class="bg-dark">
+                <div class="container-fluid">
+                  <div class="row">
+                    <div class="col-8 col-sm-7 col-md-6 col-lg-5 col-xl-4" id="strava-image">
+                      <a href="https://www.strava.com"><img class="img-fluid w-75" id="strava-image" src="static/images/strava api logos/compatible with strava/cptblWith_strava_white/api_logo_cptblWith_strava_horiz_white.png"></a>
+                    </div>
+                  </div>
+                </div>
+              </footer>
+        {% endblock %}
 
-{% block content %}
-    <div class="container">
-        <!-- Flash messages -->
-        {% with messages = get_flashed_messages() %}
-            {% if messages %}
-                {% for message in messages %}
-                <div class="alert alert-info" role="alert">{{ message }}</div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
 
-        <!--application content needs to be provided in the app_content block-->
-        {% block app_content %}{% endblock %}
+        <!-- Bootstrap core JavaScript -->
+        <script src="{{ url_for('static', filename='vendor/jquery/jquery.min.js') }}"></script>
+        <script src="{{ url_for('static', filename='vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+
+        <!-- Plugin JavaScript -->
+        <script src="{{ url_for('static', filename='vendor/jquery-easing/jquery.easing.min.js') }}"></script>
+
+        <!-- Custom JavaScript for this theme -->
+        <script src="{{ url_for('static', filename='js/scrolling-nav.js') }}"></script>
     </div>
-{% endblock %}
+  </body>
+
+</html>

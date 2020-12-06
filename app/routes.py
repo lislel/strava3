@@ -212,7 +212,7 @@ def reset_password(token):
         db.session.commit()
         flash('Your password has been reset.')
         return redirect(url_for('login'))
-    return render_template('reset_password.html', form=form)
+    return render_template('reset_password.html', title="Reset Password", form=form)
 
 
 @app.route('/manual_entry', methods=['GET', 'POST'])
@@ -240,7 +240,7 @@ def manual_entry():
         if not manual_entry_data_check(form.mtn.data, form.date.data):
             flash("Invalid Data")
 
-    return render_template('manual_entry.html', form=form, title="Manual Entry")
+    return render_template('manual_entry.html', title="Manual Entry", form=form)
 
 def manual_entry_data_check(mountain, date):
     if len(mountain) < 3:
@@ -289,7 +289,7 @@ def manual_entry_edit(act_name):
         if not manual_entry_data_check(form.mountain.data, form.date.data):
             flash("Invalid Data   ")
 
-    return render_template('manual_entry_edit.html', form=form, title="Manual Entry Edit")
+    return render_template('manual_entry_edit.html', title="Edit Activity", form=form)
 
 def find_act_from_name(act_name):
     for act in Activity.query.all():
