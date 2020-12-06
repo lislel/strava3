@@ -18,6 +18,10 @@ section {
 
 #content-wrap {
   padding-bottom: 10rem;    /* Footer height */
+  padding-right: 0px;
+  padding-left: 0px;
+  width: 100%
+
 }
 
 #footer {
@@ -31,3 +35,9 @@ section {
 	position: absolute;
 	bottom: 0;
 }
+
+#content-row {
+  margin-left: 0px;
+  margin-right: 0px;
+}
+

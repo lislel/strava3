@@ -1,66 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'base.html' %}
 
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta name="author" content="Jed and Lauren">
-  <meta name="descrition" content="Use your strava data to keep track of the 4000 footers you've hiked or ran. View the map of your summit tags, and peak list.">
-  <meta name="keywords" content="NHHighPeaks, NH high peaks, New Hampshire high peaks, NH 4000 footers, New Hampshire 4000 footers, high peak list, white mountains, white mountain list, white mountains map, checklist, grid, the grid, strava, peak tracker, Mt Washington, Washington, Lafayette, Cannon, Wildcat, trail run, peak bagging">
-  <link rel="icon" type="image/png" href="https://img.icons8.com/windows/32/000000/mountain--v3.png" sizes="32x32">
-  <title>Welcome to NH High Peaks - NH 4000ers Tracker</title>
-  <!-- Bootstrap core CSS -->
-  <link href="{{ url_for('static', filename='vendor/bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
-  <!-- Custom styles for this template -->
-  <link href="{{ url_for('static', filename='css/scrolling-nav.css') }}" rel="stylesheet">
-</head>
-
-<body id="page-top">
-  <!-- Navigation -->
-  <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top" id="mainNav">
-    <div class="container">
-      <a class="navbar-brand js-scroll-trigger" href="#page-top">Nh High Peaks</a>
-      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarResponsive">
-        <ul class="navbar-nav ml-auto">
-          <li class="nav-item">
-            <a class="nav-link js-scroll-trigger" href="#about">About</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link js-scroll-trigger" href="#screenshots">Screenshots</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link js-scroll-trigger" href="#contact">Contact</a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </nav>
-
+{% block header %}
   <header class="bg-secondary text-white">
-    <!-- flash messages -->  
-    <div class="container">
-        {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            {% for message in messages %}
-            <div class="alert alert-info" role="alert">{{ message }}</div>
-            {% endfor %}
-        {% endif %}
-        {% endwith %}
-
-        {# application content needs to be provided in the app_content block #}
-        {% block app_content %}{% endblock %}
-    </div>
-    
     <div class="container text-center">
       <h1>Welcome to NH High Peaks!</h1>
       <a class="btn btn-light" href="{{ url_for('login') }}" role="button">Sign In</a>
       <a class="btn btn-light" href="{{ url_for('register') }}" role="button">Create Account</a>
     </div>
   </header>
+{% endblock %}
 
+{% block app_content %}
   <section id="lineart">
     <div class="container-fluid">
       <div class="row">
@@ -122,29 +72,9 @@
       </div>
     </div>
   </section>
+{% endblock %}
 
-  <!-- Footer -->
-  <footer class="py-5 bg-dark">
-    <div class="container-fluid">
-      <div class="row">
-        <div class="col-8 col-sm-7 col-md-6 col-lg-5 col-xl-4">
-          <a href="https://www.strava.com"><img class="img-fluid w-75" src="static/images/strava api logos/compatible with strava/cptblWith_strava_white/api_logo_cptblWith_strava_horiz_white.png"></a>
-        </div>
-      </div>
-    </div>
-    <!-- /.container -->
-  </footer>
 
-  <!-- Bootstrap core JavaScript -->
-  <script src="{{ url_for('static', filename='vendor/jquery/jquery.min.js') }}"></script>
-  <script src="{{ url_for('static', filename='vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
 
-  <!-- Plugin JavaScript -->
-  <script src="{{ url_for('static', filename='vendor/jquery-easing/jquery.easing.min.js') }}"></script>
 
-  <!-- Custom JavaScript for this theme -->
-  <script src="{{ url_for('static', filename='js/scrolling-nav.js') }}"></script>
 
-</body>
-
-</html>

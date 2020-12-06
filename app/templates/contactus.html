@@ -2,17 +2,19 @@
 
 {% block app_content %}
 	<div class="container-fluid">
-		<div class="col-sm-1  col-lg-2"></div>
-		<div class="well col col-sm-10 col-lg-8">
-			<H1>Contact Us</H1>
-			<form action="" method=post>
-			   {{ form.hidden_tag() }}
-			   <dl>
-			      <dt>Let us know what you think:
-			      <dd><textarea class="form-control" id="message" name='message' rows="10"></textarea>
-			   </dl>
-			   <input type=submit value="Send">
-			</form>
+		<div class="row">
+			<div class="col-sm-1 col-lg-2"></div>
+			<div class="col-12 col-sm-10 col-lg-8">
+				<H1>Contact Us</H1>
+				<form action="" method=post>
+				   {{ form.hidden_tag() }}
+				   <dl>
+				      <dt>Let us know what you think:
+				      <dd><textarea class="form-control" id="message" name='message' rows="10"></textarea>
+				   </dl>
+				   <input type=submit value="Send">
+				</form>
+			</div>	
 		</div>
 	</div>
 {% endblock %}

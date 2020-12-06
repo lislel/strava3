@@ -2,7 +2,7 @@
 
 {% block app_content %}
     <!--<div style="background-image: url('static/images/GOS1.jpg');">-->
-    <div class="container-fluid well">
+    <div class="container-fluid">
         <div class="row justify-content-center">
             <br>
             <h1 class="text-center">{{n_finished}} of 48 Peaks Completed</h1>
@@ -10,21 +10,24 @@
         </div>
         <br></br>
         <div class="row">
-            <div class="col col-md-6">
+            <div class="col-lg-1"></div>
+            <div class="col-12 col-md-6 col-lg-5">
                 <div class="card card-body bg-light">
                     <h3> Finished </h3>
                     <br>
                     {% for mt in finished.keys() %}
-                    <h4>{{mt.name}}</h4>
-                    <ul>
-                	{% for act in finished[mt] %}
-                	    <li><a href="{{ act.url }}"  target="_blank">{{act.name}}</a></li>
-                    {%endfor%}
-                    </ul>
+                        <div class="card">
+                            <h4>{{mt.name}}</h4>
+                            <ul>
+                        	{% for act in finished[mt] %}
+                        	    <li><a href="{{ act.url }}"  target="_blank">{{act.name}}</a></li>
+                            {%endfor%}
+                            </ul>
+                        </div>
                     {% endfor %}
                 </div>
             </div>
-            <div class="col-md-6">
+            <div class="col-12 col-md-6 col-lg-5">
                 <div class='card card-body bg-light'>
                     <h3> Not finished </h3>
                     <br>
