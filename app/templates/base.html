@@ -17,6 +17,7 @@
     {% endblock %}
   </head>
 
+{% block body %}
   <body>
     <div id="page-container">
         {% block navbar %}
@@ -109,5 +110,6 @@
         <script src="{{ url_for('static', filename='js/scrolling-nav.js') }}"></script>
     </div>
   </body>
+{% endblock %}  
 
 </html>

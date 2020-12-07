@@ -1,9 +1,7 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>Map - NH High Peaks</title>
-    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" />
-    <link rel="icon" type="image/png" href="https://img.icons8.com/windows/32/000000/mountain--v3.png" sizes="32x32">
+{% extends "base.html" %}
+
+{% block head %}
+  {{ super() }}
     <!-- for maps -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
     integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A=="
@@ -18,59 +16,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
     <i class="fas fa-mountain"></i>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/map_style.css') }}" />
-  </head>
+{% endblock %}
 
-  <body>
-    <!-- you dirty hack you... copied nav bar from base but changed class to fixed from static -->
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                {% if current_user.is_anonymous %}
-                    <a class="navbar-brand" href="{{ url_for('welcome') }}">NH High Peaks</a>
-                {% else %}
-                    <a class="navbar-brand" href="{{ url_for('index') }}">NH High Peaks</a>
-                {% endif %}
-            </div>
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <ul class="nav navbar-nav">
-                </ul>
-                <ul class="nav navbar-nav navbar-right">
-                    {% if current_user.is_anonymous %}
-                    <li><a href="{{ url_for('login') }}">Login</a></li>
-                    <li><a href="{{ url_for('contactus') }}">Contact Us</a></li>
-                    {% else %}
-                    <li><a href="{{ url_for('index') }}">List</a></li>
-                    <li><a href="{{ url_for('map') }}">Map</a></li>
-                    <li><a href="{{ url_for('manual_entry') }}">Manual Entry</a></li>
-                    <li><a href="{{ url_for('logout') }}">Logout</a></li>
-                    <li><a href="{{ url_for('settings') }}">Settings</a></li>
-                    <li><a href="{{ url_for('contactus') }}">Contact Us</a></li>
-                    {% endif %}
-                </ul>
-            </div>
-        </div>
-    </nav>
 
-    <!-- Flash messages -->
-    <div class="container">
-        {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            {% for message in messages %}
-            <div class="alert alert-info" role="alert">{{ message }}</div>
-            {% endfor %}
-        {% endif %}
-        {% endwith %}
-
-        {# application content needs to be provided in the app_content block #}
-        {% block app_content %}{% endblock %}
-    </div>
-
+{% block content %}
     <!-- map stuff -->
     <div id="map"></div>
     <script>
@@ -159,6 +108,10 @@
 
         L.control.layers(baseMaps, overlayMaps).addTo(map);
 
+        // Add scale
+        var scale = L.control.scale();
+        scale.addTo(map); 
+
     </script>
-  </body>
-</html>
+{% endblock %}
+
