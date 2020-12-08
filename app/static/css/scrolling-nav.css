@@ -33,7 +33,7 @@ section {
 #strava-image {
 	position: absolute;
 	bottom: 0;
-  width: 400px;
+  width: 100%;
 }
 
 #content-row {
