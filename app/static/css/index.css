@@ -1,0 +1,24 @@
+.fixed-bg {
+  /* The background image */
+  background-image: url("../images/GOS1.jpg");
+
+  /* Set a specified height, or the minimum height for the background image */
+  min-height: 500px;
+
+  /* Set background image to fixed (don't scroll along with the page) */
+  background-attachment: fixed;
+
+  /* Center the background image */
+  background-position: center;
+
+  /* Set the background image to no repeat */
+  background-repeat: no-repeat;
+
+  /* Scale the background image to be as large as possible */
+  background-size: cover;
+}
+
+.content {
+	background-color: rgba(255, 255, 255, 0); /* Color white with alpha 0.9*/
+	padding: 100px;
+}
