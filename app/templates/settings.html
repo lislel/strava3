@@ -9,7 +9,8 @@
             <br>
             <!-- Settings Form -->
             <form action="" method=post>  
-               	<p>
+               	<p><a href="{{ url_for('linkstrava', username=username) }}"><img class="img" id="strava-cw-image" src="static/images/connect with strava/btn_strava_connectwith_light/btn_strava_connectwith_light.png"></a></p>
+                <p>
                   New Username: 
                   <input type="text" id="new_username" name="new_username" placeholder="{{ username }}">
                   <button type="submit" name="submit" class="btn btn-primary" value="change_username">Change</button>
