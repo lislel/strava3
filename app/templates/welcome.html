@@ -1,5 +1,10 @@
 {% extends 'base.html' %}
 
+{% block head %}
+    {{ super() }}
+    <link href="{{ url_for('static', filename='css/welcome.css') }}" rel="stylesheet">
+{% endblock %}
+
 {% block header %}
   <header class="bg-secondary text-white">
     <div class="container text-center">
@@ -11,16 +16,7 @@
 {% endblock %}
 
 {% block app_content %}
-  <section id="lineart">
-    <div class="container-fluid">
-      <div class="row">
-        <div class="col-2"></div>
-        <div class="col-8 mx-auto">
-          <img src="static/images/lineart2.png" class="center img-fluid"/>
-        </div>
-      </div>
-    </div>
-  </section>
+  <section class="fixed-bg1" id="static_image"></section>
 
   <section id="about" class="bg-light">
     <div class="container">
@@ -39,6 +35,8 @@
       </div>
     </div>
   </section>
+
+  <section class="fixed-bg2" id="static_image"></section>
 
   <section id="screenshots">
     <div class="container">
@@ -61,6 +59,8 @@
     </div>
   </section>
 
+  <section class="fixed-bg3" id="static_image"></section>
+
   <section id="contact" class="bg-light">
     <div class="container">
       <div class="row">
@@ -72,7 +72,12 @@
       </div>
     </div>
   </section>
+
+  <section class="fixed-bg4" id="static_image"></section>
+
 {% endblock %}
+
+
 
 
 

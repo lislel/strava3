@@ -1,15 +1,26 @@
 {% extends "base.html" %}
 {% import 'bootstrap/wtf.html' as wtf %}
 
+{% block head %}
+    {{ super() }}
+    <link href="{{ url_for('static', filename='css/manual_entry.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block header %}{% endblock %}
+
 {% block app_content %}
-	<div class="containter-fluid">
-        <div class="row" id="content-row">
-        	<div class="col-1 col-lg-2"></div>
-            <div class="col-10 col-sm-8 col-md-6 col-lg-4">
-  	  		    <h1>Manual Entry</h1>
-                {{ wtf.quick_form(form) }}
-            </div>
-        </div>
-    </div>
+	<div class="fixed-bg">
+		<div class="content">
+	        <div class="row" id="content-row">
+	        	<div class="col-1 col-lg-2"></div>
+	            <div class="col-10 col-sm-8 col-md-8 col-lg-6">
+	            	<div class="form-content card">
+		  	  		    <h1>Manual Entry</h1>
+		                {{ wtf.quick_form(form) }}
+		            </div>
+	            </div>
+	        </div>
+	    </div>
+	</div>
 {% endblock %}
 

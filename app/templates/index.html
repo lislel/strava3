@@ -12,10 +12,13 @@
     <!--<div style="background-image: url('static/images/GOS1.jpg');">-->
     <div class="fixed-bg">
         <div class="content">
-            <div class="row justify-content-center">
-                <br>
-                <h1 class="text-center">{{n_finished}} of 48 Peaks Completed</h1>
-                <br>
+            <div class="row">
+                <div class="col-lg-1"></div>
+                <div class="col-12 col-lg-10 card card-body bg-light">
+                    <br>
+                    <h1 class="text-center">{{n_finished}} of 48 Peaks Completed</h1>
+                    <br>
+                </div>
             </div>
             <br></br>
             <div class="row">
@@ -41,7 +44,7 @@
                         <h3> Not finished </h3>
                         <br>
                     	{% for u in unfinished %}
-                    		<h4>{{u.name}}</h4>
+                    		<h6>{{u.name}}</h6>
                     	{% endfor %}
                     </div>
                 </div>

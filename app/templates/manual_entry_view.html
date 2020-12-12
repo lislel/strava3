@@ -1,28 +1,47 @@
 {% extends "base.html" %}
 {% import 'bootstrap/wtf.html' as wtf %}
 
+{% block head %}
+    {{ super() }}
+    <link href="{{ url_for('static', filename='css/manual_entry.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block header %}{% endblock %}
+
 {% block app_content %}
-<h1> {{ act.name }} </h1>
-    <form action="" method="post" novalidate>
-        {{ form.hidden_tag() }}
-        <p>
-            Mountain<br>
-            {% for mt in act.mountains %}
-                {{ mt.name }}
-            {% endfor %}
-        </p>
-        <p>
-            Date<br>
-            {{ act.date[0:4] + act.date[5:7] + act.date[8:10] }}
-        </p>
-        <p>
-            Description<br>
-            {{ act.description }}
-        </p>
-            <p>
-                {{ form.edit }}
-                {{ form.delete }}
-            </p>
-        </form>
+    <div class="fixed-bg">
+        <div class="content">
+            <div class="row">
+                <div class="col-1 col-lg-2"></div>
+                    <div class="col-10 col-sm-8 col-md-8 col-lg-6">
+                        <div class="form-content card">
+                            <h1> {{ act.name }} </h1>
+                            <form action="" method="post" novalidate>
+                                {{ form.hidden_tag() }}
+                                <p>
+                                    Mountain<br>
+                                    {% for mt in act.mountains %}
+                                        {{ mt.name }}
+                                    {% endfor %}
+                                </p>
+                                <p>
+                                    Date<br>
+                                    {{ act.date[0:4] + act.date[5:7] + act.date[8:10] }}
+                                </p>
+                                <p>
+                                    Description<br>
+                                    {{ act.description }}
+                                </p>
+                                <p>
+                                    {{ form.edit }}
+                                    {{ form.delete }}
+                                </p>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
 {% endblock %} 

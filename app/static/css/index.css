@@ -1,6 +1,6 @@
 .fixed-bg {
   /* The background image */
-  background-image: url("../images/GOS1.jpg");
+  background-image: url("../images/Cardigan1.jpg");
 
   /* Set a specified height, or the minimum height for the background image */
   min-height: 500px;
@@ -19,6 +19,6 @@
 }
 
 .content {
-	background-color: rgba(255, 255, 255, 0); /* Color white with alpha 0.9*/
+	background-color: rgba(255, 255, 255, 0);
 	padding: 100px;
 }

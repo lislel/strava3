@@ -1,0 +1,16 @@
+.fixed-bg {
+  background-image: url("../images/Bootspur1.jpg");
+  min-height: 100vh;
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.content {
+  padding: 100px;
+}
+
+.form-content {
+  padding: 20px;
+}

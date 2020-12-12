@@ -1,20 +1,31 @@
 {% extends 'base.html' %}
 
+{% block head %}
+    {{ super() }}
+    <link href="{{ url_for('static', filename='css/contactus.css') }}" rel="stylesheet">
+{% endblock %}
+
+{% block header %}{% endblock %}
+
 {% block app_content %}
-	<div class="container-fluid">
-		<div class="row">
-			<div class="col-sm-1 col-lg-2"></div>
-			<div class="col-12 col-sm-10 col-lg-8">
-				<H1>Contact Us</H1>
-				<form action="" method=post>
-				   {{ form.hidden_tag() }}
-				   <dl>
-				      <dt>Let us know what you think:
-				      <dd><textarea class="form-control" id="message" name='message' rows="10"></textarea>
-				   </dl>
-				   <input type=submit value="Send">
-				</form>
-			</div>	
+	<div class="fixed-bg">
+		<div class="content">
+			<div class="row">
+				<div class="col-sm-1 col-lg-2"></div>
+				<div class="col-12 col-sm-10 col-lg-8">
+					<div class="form-content card">
+						<H1>Contact Us</H1>
+						<form action="" method=post>
+						   {{ form.hidden_tag() }}
+						   <dl>
+						      <dt>Let us know what you think:
+						      <dd><textarea class="form-control" id="message" name='message' rows="10"></textarea>
+						   </dl>
+						   <input type=submit value="Send">
+						</form>
+					</div>
+				</div>	
+			</div>
 		</div>
 	</div>
 {% endblock %}
