@@ -101,7 +101,7 @@ def update_access(user, oauth):
 @app.route('/logout')
 def logout():
     logout_user()
-    return redirect(url_for('index'))
+    return redirect(url_for('welcome'))
 
 
 @app.route('/register', methods=['GET', 'POST'])

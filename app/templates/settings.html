@@ -16,21 +16,22 @@
           <div class="form-content card">
             <h1>Account Settings</h1>
             <br>
+            <h6>Update user infomation:</h6>
             <!-- Settings Form -->
             <form action="" method=post>  
                	<p><a href="{{ url_for('linkstrava', username=username) }}"><img class="img" id="strava-cw-image" src="static/images/connect with strava/btn_strava_connectwith_light/btn_strava_connectwith_light.png"></a></p>
+                <p>New Username: </p>
                 <p>
-                  New Username: 
                   <input type="text" id="new_username" name="new_username" placeholder="{{ username }}">
-                  <button type="submit" name="submit" class="btn btn-primary" value="change_username">Change</button>
+                  <button type="submit" name="submit" class="btn btn-dark" value="change_username">Update</button>
                 </p>
                 <br>
                 <p>
-                  <button type="submit" name="submit" class="btn btn-primary" value="change_password">Change Password</button>
+                  <button type="submit" name="submit" class="btn btn-dark" value="change_password">Update Password</button>
                 </p>
                 <br>
                 <!-- Button trigger modal -->
-                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                <button type="button" class="btn btn-dark" data-toggle="modal" data-target="#exampleModal">
                   Delete Account
                 </button>
                 <!-- Modal -->
@@ -47,7 +48,7 @@
                         Are you sure you want to delete your account
                       </div>
                       <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button type="button" class="btn btn-dark" data-dismiss="modal">Cancel</button>
                         <button type="submit" name="submit" class="btn btn-primary" value="delete">Delete Account</button>
                       </div>
                     </div>
