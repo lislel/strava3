@@ -4,7 +4,7 @@
  * Licensed under MIT (https://github.com/StartBootstrap/startbootstrap-scrolling-nav/blob/master/LICENSE)
  */
 header {
-  padding: 100px 0 40px;
+  padding: 40px 0 40px;
   background-color: rgba(255, 255, 255, 0);
 }
 
@@ -17,11 +17,16 @@ section {
   min-height: 100vh;
 }
 
-#content-wrap {
+.content-wrap {
+  background-image: none;
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  padding-top: 56px;       /* Navbar height */
   padding-bottom: 4rem;    /* Footer height */
-  padding-right: 0px;
-  padding-left: 0px;
-  width: 100%
+  min-height: 100vh;
+  
 }
 
 #footer {
@@ -38,6 +43,8 @@ section {
 }
 
 #content-row {
+  padding-top: 15px;
+  padding-bottom: 0px;
   margin-left: 0px;
   margin-right: 0px;
 }

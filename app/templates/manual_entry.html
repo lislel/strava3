@@ -9,18 +9,16 @@
 {% block header %}{% endblock %}
 
 {% block app_content %}
-	<div class="fixed-bg">
-		<div class="content">
-	        <div class="row" id="content-row">
-	        	<div class="col-1 col-lg-2"></div>
-	            <div class="col-10 col-sm-8 col-md-8 col-lg-6">
-	            	<div class="form-content card">
-		  	  		    <h1>Manual Entry</h1>
-		                {{ wtf.quick_form(form) }}
-		            </div>
+    <div class="container-fluid" style="padding: 10vh;">
+        <div class="row" id="content-row">
+        	<div class="col-1 col-lg-2"></div>
+            <div class="col-10 col-sm-8 col-md-8 col-lg-6">
+            	<div class="form-content card">
+	  	  		    <h1>Manual Entry</h1>
+	                {{ wtf.quick_form(form) }}
 	            </div>
-	        </div>
-	    </div>
+            </div>
+        </div>
 	</div>
 {% endblock %}
 

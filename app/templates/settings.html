@@ -8,56 +8,54 @@
 {% block header %}{% endblock %}
 
 {% block app_content %}
-  <div class="fixed-bg">
-    <div class="content">
-      <div class="row" id="content-row">
-      	<div class="col col-sm col-md-2 col-lg-2">
-      	</div>
-          <div class="well col-8 col-sm-8 col-md-6 col-lg-5">
-            <div class="form-content card">
-              <h1>Account Settings</h1>
-              <br>
-              <!-- Settings Form -->
-              <form action="" method=post>  
-                 	<p><a href="{{ url_for('linkstrava', username=username) }}"><img class="img" id="strava-cw-image" src="static/images/connect with strava/btn_strava_connectwith_light/btn_strava_connectwith_light.png"></a></p>
-                  <p>
-                    New Username: 
-                    <input type="text" id="new_username" name="new_username" placeholder="{{ username }}">
-                    <button type="submit" name="submit" class="btn btn-primary" value="change_username">Change</button>
-                  </p>
-                  <br>
-                  <p>
-                    <button type="submit" name="submit" class="btn btn-primary" value="change_password">Change Password</button>
-                  </p>
-                  <br>
-                  <!-- Button trigger modal -->
-                  <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-                    Delete Account
-                  </button>
-                  <!-- Modal -->
-                  <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                    <div class="modal-dialog" role="document">
-                      <div class="modal-content">
-                        <div class="modal-header">
-                          <h5 class="modal-title" id="exampleModalLabel">Delete Account?</h5>
-                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                          </button>
-                        </div>
-                        <div class="modal-body">
-                          Are you sure you want to delete your account
-                        </div>
-                        <div class="modal-footer">
-                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                          <button type="submit" name="submit" class="btn btn-primary" value="delete">Delete Account</button>
-                        </div>
+  <div class="container-fluid" style="padding: 10vh;">
+    <div class="row">
+    	<div class="col col-sm col-md-2 col-lg-2">
+    	</div>
+        <div class="well col-8 col-sm-8 col-md-6 col-lg-5">
+          <div class="form-content card">
+            <h1>Account Settings</h1>
+            <br>
+            <!-- Settings Form -->
+            <form action="" method=post>  
+               	<p><a href="{{ url_for('linkstrava', username=username) }}"><img class="img" id="strava-cw-image" src="static/images/connect with strava/btn_strava_connectwith_light/btn_strava_connectwith_light.png"></a></p>
+                <p>
+                  New Username: 
+                  <input type="text" id="new_username" name="new_username" placeholder="{{ username }}">
+                  <button type="submit" name="submit" class="btn btn-primary" value="change_username">Change</button>
+                </p>
+                <br>
+                <p>
+                  <button type="submit" name="submit" class="btn btn-primary" value="change_password">Change Password</button>
+                </p>
+                <br>
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                  Delete Account
+                </button>
+                <!-- Modal -->
+                <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                  <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Delete Account?</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                          <span aria-hidden="true">&times;</span>
+                        </button>
+                      </div>
+                      <div class="modal-body">
+                        Are you sure you want to delete your account
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                        <button type="submit" name="submit" class="btn btn-primary" value="delete">Delete Account</button>
                       </div>
                     </div>
                   </div>
-              </form>
-            </div>
+                </div>
+            </form>
           </div>
-      </div>
+        </div>
     </div>
   </div>
 {% endblock %}
