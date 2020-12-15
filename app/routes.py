@@ -5,7 +5,7 @@ from app import app, db
 from app.forms import RegistrationForm
 from app.models import User, Mountain, Activity
 from app.oauth import StravaOauth, DataIngest
-from app.forms import ResetPasswordRequestForm, ResetPasswordForm, ManualEntryForm, ManualEntryEditForm, ManualEntryViewForm, ContactUsForm, LinkStravaForm
+from app.forms import ResetPasswordForm, ManualEntryForm, ManualEntryEditForm, ManualEntryViewForm, ContactUsForm, LinkStravaForm
 from app.email import send_password_reset_email, send_email
 
 import time
@@ -43,7 +43,6 @@ def login():
         print(f'current user is {current_user.username}')
         return redirect(url_for('index'))
     if request.method == 'POST':
-
         user = User.query.filter_by(username=request.form['username']).first()
         # user doesn't exist or password is bad
         if user is None or not user.check_password(request.form['username']):
@@ -183,8 +182,9 @@ def reset_password_request():
     if current_user.is_authenticated:
         return redirect(url_for('index'))
     form = ResetPasswordRequestForm()
-    if form.validate_on_submit():
-        user = User.query.filter_by(email=form.email.data).first()
+
+    if request.method == 'POST':
+        user = User.query.filter_by(email=request.form['email']).first()
         if user:
             send_password_reset_email(user)
         else:
