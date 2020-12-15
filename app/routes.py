@@ -2,7 +2,7 @@ from flask import render_template, flash, redirect, url_for, request, session
 from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug.urls import url_parse
 from app import app, db
-from app.forms import LoginForm, RegistrationForm
+from app.forms import RegistrationForm
 from app.models import User, Mountain, Activity
 from app.oauth import StravaOauth, DataIngest
 from app.forms import ResetPasswordRequestForm, ResetPasswordForm, ManualEntryForm, ManualEntryEditForm, ManualEntryViewForm, ContactUsForm, LinkStravaForm
@@ -42,16 +42,16 @@ def login():
     if current_user.is_authenticated:
         print(f'current user is {current_user.username}')
         return redirect(url_for('index'))
-    form = LoginForm()
-    if form.validate_on_submit():
-        user = User.query.filter_by(username=form.username.data).first()
+    if request.method == 'POST':
+
+        user = User.query.filter_by(username=request.form['username']).first()
         # user doesn't exist or password is bad
-        if user is None or not user.check_password(form.password.data):
+        if user is None or not user.check_password(request.form['username']):
             flash('Invalid username or password')
             return redirect(url_for('login'))
         # user did not link strava
         elif user.access_token == 'NA':
-            login_user(user, remember=form.remember_me.data)
+            login_user(user, remember=request.form['password'])
             return redirect(url_for('index'))
         # user did link strava
         else:
@@ -86,7 +86,7 @@ def login():
             next_page = url_for('index')
         return redirect(next_page)
 
-    return render_template('login.html', title='Sign In', form=form)
+    return render_template('login.html', title='Sign In')
 
 
 def update_access(user, oauth):
