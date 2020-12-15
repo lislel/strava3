@@ -2,7 +2,6 @@ from flask import render_template, flash, redirect, url_for, request, session
 from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug.urls import url_parse
 from app import app, db
-from app.forms import RegistrationForm
 from app.models import User, Mountain, Activity
 from app.oauth import StravaOauth, DataIngest
 from app.forms import ResetPasswordForm, ManualEntryForm, ManualEntryEditForm, ManualEntryViewForm, ContactUsForm, LinkStravaForm
@@ -113,10 +112,13 @@ def register():
         # print('current user is authenticated')
         return redirect(url_for('index'))
 
-    form = RegistrationForm()
-    if form.validate_on_submit():
-        user = User(username=form.username.data, email=form.email.data)
-        user.set_password(form.password.data)
+    if request.method == 'POST':
+        user = User.query.filter_by(username=request.form['username']).first()
+        user = User(username=request.form['username'], email=request.form['email'])
+        if request.form['password'] != request.form['repeat_password']:
+            flash('Passwords do not match')
+            return redirect(url_for('register'))
+        user.set_password(request.form['password'])
         db.session.add(user)
         db.session.commit()
         flash('Congratulations, you are now a registered user!')
@@ -127,7 +129,7 @@ def register():
         return redirect('/linkstrava/' + user.username)
         # return render_template('linkstrava.html', title='Link Strava?', user=user, form=LinkStravaForm())
 
-    return render_template('register.html', title='Register', form=form)
+    return render_template('register.html', title='Register')
 
 @app.route('/linkstrava/<username>', methods=['GET', 'POST'])
 def linkstrava(username):
