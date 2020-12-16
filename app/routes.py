@@ -4,7 +4,7 @@ from werkzeug.urls import url_parse
 from app import app, db
 from app.models import User, Mountain, Activity
 from app.oauth import StravaOauth, DataIngest
-from app.forms import ResetPasswordForm, ManualEntryForm, ManualEntryEditForm, ManualEntryViewForm, ContactUsForm, LinkStravaForm
+from app.forms import mountain_choices, ResetPasswordForm, ManualEntryEditForm, ManualEntryViewForm, ContactUsForm, LinkStravaForm
 from app.email import send_password_reset_email, send_email
 
 import time
@@ -220,29 +220,28 @@ def reset_password(token):
 @app.route('/manual_entry', methods=['GET', 'POST'])
 @login_required
 def manual_entry():
-    form = ManualEntryForm()
-    if form.validate_on_submit():
-        if manual_entry_data_check(form.mtn.data, form.date.data):
+    if request.method == 'POST':
+        if manual_entry_data_check(request.form['mountain'], request.form['date']):
             act = Activity()
-            act.name = form.name.data
+            act.name = request.form['act_name']
             act.polyline = None
             act_id = act.id
             act.url = '/view/' + act.name 
             #act.url = 'https://www.youtube.com/watch?v=p3G5IXn0K7A'
-            mt = find_mountain(form.mtn.data)
+            mt = find_mountain(request.form['mountain'])
             act.mountains.append(mt)
             act.activity_id = None
-            act.date = convert_date(form.date.data)
+            act.date = convert_date(request.form['date'])
             current_user.activities.append(act)
-            act.description = form.description.data
+            act.description = request.form['description']
             db.session.commit()
 
             flash("Peak Saved!")
             return redirect(url_for('index'))
-        if not manual_entry_data_check(form.mtn.data, form.date.data):
+        else:
             flash("Invalid Data")
 
-    return render_template('manual_entry.html', title="Manual Entry", form=form)
+    return render_template('manual_entry.html', title="Manual Entry", mt_list=mountain_choices())
 
 def manual_entry_data_check(mountain, date):
     if len(mountain) < 3:
@@ -272,26 +271,27 @@ def convert_date(date_str):
 def manual_entry_edit(act_name):
     act = find_act_from_name(act_name)
     date_str = act.date[0:4] + act.date[5:7] + act.date[8:10]
-    form = ManualEntryEditForm(name=act.name, mountain=act.mountains[0].name, date=date_str, description=act.description)
-    if form.validate_on_submit():
-        if manual_entry_data_check(form.mtn.data, form.date.data):
-            act.name = form.name.data
+    #form = ManualEntryEditForm(name=act.name, mountain=act.mountains[0].name, date=date_str, description=act.description)
+    form_data = {"act_name": act.name, "mountain": act.mountains[0].name, "date": date_str, "description": act.description}
+    if request.method == 'POST':
+        if manual_entry_data_check(request.form['mountain'], request.form['date']):
+            act.name = request.form['act_name']
             act.polyline = None
             #act.url = 'https://www.youtube.com/watch?v=p3G5IXn0K7A'
             act.url = '/view/' + act.name
-            mt = find_mountain(form.mtn.data)
+            mt = find_mountain(request.form['mountain'])
             act.mountains[0] = mt
             act.activity_id = None
-            act.date = convert_date(form.date.data)
-            act.description = form.description.data
+            act.date = convert_date(request.form['date'])
+            act.description = request.form['description']
             db.session.commit()
 
             flash("Edit Saved!")
             return redirect(url_for('index'))
-        if not manual_entry_data_check(form.mountain.data, form.date.data):
+        else:
             flash("Invalid Data   ")
 
-    return render_template('manual_entry_edit.html', title="Edit Activity", form=form)
+    return render_template('manual_entry_edit.html', title="Edit Activity", form_data=form_data, mt_list=mountain_choices())
 
 def find_act_from_name(act_name):
     for act in Activity.query.all():
