@@ -51,11 +51,6 @@ class ManualEntryEditForm(FlaskForm):
     description = StringField('Description')
     submit = SubmitField('Save')
 
-
-class ManualEntryViewForm(FlaskForm):
-    edit = SubmitField(label='Edit Activity')
-    delete = SubmitField(label='Delete Activity')
-
 class ContactUsForm(FlaskForm):
     message = StringField(u'Text', widget=TextArea())
 

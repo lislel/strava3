@@ -4,7 +4,7 @@ from werkzeug.urls import url_parse
 from app import app, db
 from app.models import User, Mountain, Activity
 from app.oauth import StravaOauth, DataIngest
-from app.forms import mountain_choices, ResetPasswordForm, ManualEntryEditForm, ManualEntryViewForm, ContactUsForm, LinkStravaForm
+from app.forms import mountain_choices, ResetPasswordForm, ManualEntryEditForm, ContactUsForm, LinkStravaForm
 from app.email import send_password_reset_email, send_email
 
 import time
@@ -271,7 +271,6 @@ def convert_date(date_str):
 def manual_entry_edit(act_name):
     act = find_act_from_name(act_name)
     date_str = act.date[0:4] + act.date[5:7] + act.date[8:10]
-    #form = ManualEntryEditForm(name=act.name, mountain=act.mountains[0].name, date=date_str, description=act.description)
     form_data = {"act_name": act.name, "mountain": act.mountains[0].name, "date": date_str, "description": act.description}
     if request.method == 'POST':
         if manual_entry_data_check(request.form['mountain'], request.form['date']):
@@ -289,7 +288,7 @@ def manual_entry_edit(act_name):
             flash("Edit Saved!")
             return redirect(url_for('index'))
         else:
-            flash("Invalid Data   ")
+            flash("Invalid Data")
 
     return render_template('manual_entry_edit.html', title="Edit Activity", form_data=form_data, mt_list=mountain_choices())
 
@@ -303,20 +302,19 @@ def find_act_from_name(act_name):
 @app.route('/view/<act_name>', methods=['GET', 'POST'])
 @login_required
 def manual_entry_view(act_name):
-    form = ManualEntryViewForm()
     act = find_act_from_name(act_name)
 
-    if form.validate_on_submit():
-        if form.edit.data:
+    if request.method == 'POST':
+        if request.form['submit'] == 'edit':
             # flash("Edit Button Clicked")
             return redirect('/edit/' + act_name)
-        if form.delete.data:
+        if request.form['submit'] == 'delete':
             flash("Activity Deleted")
             db.session.delete(act)
             db.session.commit()
             return index()
 
-    return render_template('manual_entry_view.html', title="Manual Entry View", act=act, form=form)
+    return render_template('manual_entry_view.html', title="Manual Entry View", act=act)
 
 @app.route('/contactus', methods=['GET', 'POST'])
 def contactus():

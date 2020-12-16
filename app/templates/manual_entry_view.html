@@ -11,29 +11,23 @@
 {% block app_content %}
     <div class="container-fluid" style="padding: 10vh;">
         <div class="row">
-            <div class="col-1 col-lg-2"></div>
-                <div class="col-10 col-sm-8 col-md-8 col-lg-6">
-                    <div class="form-content card">
-                        <h1> {{ act.name }} </h1>
-                        <form action="" method="post" novalidate>
-                            {{ form.hidden_tag() }}
+            <div class="col-sm-1 col-md-2 col-lg-3"></div>
+                <div class="col-10 col-md-8 col-lg-6">
+                    <div class="form-content card" style="padding: 40px;">
+                        <h1>{{ act.name }}</h1>
+                        <br>
+                            <p style="margin-bottom: 4px; margin-top: 20px"><b>Mountain:</b></p>
+                            {% for mt in act.mountains %}
+                                {{ mt.name }}
+                            {% endfor %}
+                            <p style="margin-bottom: 4px; margin-top: 20px"><b>Date:</b></p>
+                            <p>{{ act.date }}
+                            <p style="margin-bottom: 4px; margin-top: 20px"><b>Description:</b></p>
+                            <p>{{ act.description }}</p>
+                        <form action="" method=post>
                             <p>
-                                Mountain<br>
-                                {% for mt in act.mountains %}
-                                    {{ mt.name }}
-                                {% endfor %}
-                            </p>
-                            <p>
-                                Date<br>
-                                {{ act.date[0:4] + act.date[5:7] + act.date[8:10] }}
-                            </p>
-                            <p>
-                                Description<br>
-                                {{ act.description }}
-                            </p>
-                            <p>
-                                {{ form.edit }}
-                                {{ form.delete }}
+                                <button type="submit" name="submit" class="btn btn-dark" value="edit" style="margin-top: 20px;">Edit Activity</button>
+                                <button type="submit" name="submit" class="btn btn-dark" value="delete" style="margin-top: 20px;">Delete Activity</button>
                             </p>
                         </form>
                     </div>
