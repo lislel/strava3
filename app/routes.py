@@ -52,9 +52,7 @@ def login():
             return redirect(url_for('login'))
         # user did not link strava
         elif user.access_token == 'NA':
-            login_user(user, remember=False)
-            print('remember me:')
-            print(request.form['remember_me'])
+            login_user(user, remember=('remember_me' in request.form))
             return redirect(url_for('index'))
         # user did link strava
         else:
@@ -78,7 +76,7 @@ def login():
                 update_access(user, oauth)
             else:
                 pass
-        login_user(user, remember=False)
+        login_user(user, remember=('remember_me' in request.form))
 
         # Get Strava activity
         data_ingest = DataIngest(user, oauth)
