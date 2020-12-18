@@ -4,7 +4,7 @@ from werkzeug.urls import url_parse
 from app import app, db
 from app.models import User, Mountain, Activity
 from app.oauth import StravaOauth, DataIngest
-from app.forms import mountain_choices, ResetPasswordForm, ManualEntryEditForm, ContactUsForm, LinkStravaForm
+from app.forms import mountain_choices, ManualEntryEditForm, ContactUsForm, LinkStravaForm
 from app.email import send_password_reset_email, send_email
 
 import time
@@ -44,12 +44,17 @@ def login():
     if request.method == 'POST':
         user = User.query.filter_by(username=request.form['username']).first()
         # user doesn't exist or password is bad
-        if user is None or not user.check_password(request.form['username']):
-            flash('Invalid username or password')
+        if user is None:
+            flash('Invalid username')
+            return redirect(url_for('login'))
+        elif not user.check_password(request.form['password']):
+            flash('Invalid password')
             return redirect(url_for('login'))
         # user did not link strava
         elif user.access_token == 'NA':
-            login_user(user, remember=request.form['password'])
+            login_user(user, remember=False)
+            print('remember me:')
+            print(request.form['remember_me'])
             return redirect(url_for('index'))
         # user did link strava
         else:
@@ -73,7 +78,7 @@ def login():
                 update_access(user, oauth)
             else:
                 pass
-        login_user(user, remember=form.remember_me.data)
+        login_user(user, remember=False)
 
         # Get Strava activity
         data_ingest = DataIngest(user, oauth)
@@ -183,7 +188,6 @@ def map():
 def reset_password_request():
     if current_user.is_authenticated:
         return redirect(url_for('index'))
-    form = ResetPasswordRequestForm()
 
     if request.method == 'POST':
         user = User.query.filter_by(email=request.form['email']).first()
@@ -197,24 +201,27 @@ def reset_password_request():
                 html_body='')
         flash('Check your email for the instructions to reset your password')
         return redirect(url_for('login'))
-    return render_template('reset_password_request.html', title='Reset Password', form=form)
+    return render_template('reset_password_request.html', title='Reset Password')
 
 
 @app.route('/reset_password/<token>', methods=['GET', 'POST'])
 def reset_password(token):
-    #if current_user.is_authenticated:
-    #    return redirect(url_for('index'))
     user = User.verify_reset_password_token(token)
+    print(user)
     if not user:
         flash('Not user')
         return redirect(url_for('index'))
-    form = ResetPasswordForm()
-    if form.validate_on_submit():
-        user.set_password(form.password.data)
-        db.session.commit()
-        flash('Your password has been reset.')
-        return redirect(url_for('login'))
-    return render_template('reset_password.html', title="Reset Password", form=form)
+
+    if request.method == "POST":
+        if request.form['password'] == request.form['repeat_password']:
+            user.set_password(request.form['password'])
+            db.session.commit()
+            flash('Your password has been reset.')
+            return redirect(url_for('login'))
+        else:
+            flash("Passwords do not match")
+            return redirect(url_for('reset_password', token=token, _external=True))
+    return render_template('reset_password.html', title="Reset Password", token=token)
 
 
 @app.route('/manual_entry', methods=['GET', 'POST'])
@@ -285,7 +292,7 @@ def manual_entry_edit(act_name):
             act.description = request.form['description']
             db.session.commit()
 
-            flash("Edit Saved!")
+            flash("Edits Saved!")
             return redirect(url_for('index'))
         else:
             flash("Invalid Data")
