@@ -1,0 +1,39 @@
+2020-11-27 18:43:10,238 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:70]
+2020-11-27 18:44:36,921 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:70]
+2020-11-27 19:26:38,867 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:70]
+2020-11-27 19:28:11,697 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:70]
+2020-11-28 17:40:47,542 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:70]
+2020-11-28 17:41:22,185 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:70]
+2020-11-28 17:42:40,184 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:70]
+2020-11-28 17:48:19,133 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:70]
+2020-11-28 17:48:58,922 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:70]
+2020-11-28 17:49:23,805 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:70]
+2020-11-28 17:50:37,809 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:70]
+2020-11-28 17:50:43,884 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:70]
+2020-11-28 17:52:23,605 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:70]
+2020-11-28 18:40:16,914 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:70]
+2020-11-28 18:40:53,433 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:70]
+2020-11-28 18:46:31,696 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:70]
+2020-11-28 18:50:35,454 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:70]
+2020-11-28 18:51:24,811 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:70]
+2020-11-28 18:52:43,586 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:70]
+2020-11-28 18:52:47,139 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:70]
+2020-11-28 19:19:11,419 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:70]
+2020-11-28 19:45:03,476 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:70]
+2020-11-28 19:53:53,763 ERROR: Exception on /login [POST] [in /Users/laurenlisle/Library/Python/3.7/lib/python/site-packages/flask/app.py:1761]
+Traceback (most recent call last):
+  File "/Users/laurenlisle/Library/Python/3.7/lib/python/site-packages/flask/app.py", line 2292, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/laurenlisle/Library/Python/3.7/lib/python/site-packages/flask/app.py", line 1815, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/laurenlisle/Library/Python/3.7/lib/python/site-packages/flask/app.py", line 1718, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/laurenlisle/Library/Python/3.7/lib/python/site-packages/flask/_compat.py", line 35, in reraise
+    raise value
+  File "/Users/laurenlisle/Library/Python/3.7/lib/python/site-packages/flask/app.py", line 1813, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/laurenlisle/Library/Python/3.7/lib/python/site-packages/flask/app.py", line 1799, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/Users/laurenlisle/strava3/app/routes.py", line 67, in login
+    oauth.get_refresh_token(user.refresh_token)
+NameError: name 'oauth' is not defined

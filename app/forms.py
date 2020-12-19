@@ -82,6 +82,10 @@ class WelcomeForm(FlaskForm):
 class ContactUsForm(FlaskForm):
     message = StringField(u'Text', widget=TextArea())
 
+class LinkStravaForm(FlaskForm):
+    link_yes = SubmitField(label="Yes")
+    link_no = SubmitField(label='No')
+
 
 
 
