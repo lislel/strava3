@@ -3,15 +3,9 @@ from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug.urls import url_parse
 from app import app, db
 from app.models import User, Mountain, Activity
-<<<<<<< HEAD
-from app.oauth import StravaOauth, DataIngest
 from app.forms import mountain_choices, ManualEntryEditForm, ContactUsForm, LinkStravaForm
-=======
 from app.oauth import StravaOauth
 from app.data_ingest import DataIngest
-from app.forms import ResetPasswordRequestForm, ResetPasswordForm, ManualEntryForm, ManualEntryEditForm, \
-    ManualEntryViewForm, WelcomeForm, ContactUsForm, LinkStravaForm
->>>>>>> oauth
 from app.email import send_password_reset_email, send_email
 import time
 
