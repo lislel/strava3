@@ -3,7 +3,7 @@ from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug.urls import url_parse
 from app import app, db
 from app.models import User, Mountain, Activity
-from app.forms import mountain_choices, ManualEntryEditForm, ContactUsForm, LinkStravaForm
+from app.forms import mountain_choices, ManualEntryEditForm, ContactUsForm
 from app.oauth import StravaOauth
 from app.data_ingest import DataIngest
 from app.email import send_password_reset_email, send_email
@@ -94,24 +94,6 @@ def login():
 
     return render_template('login.html', title='Sign In')
 
-@app.route('/linkstrava/<username>', methods=['GET', 'POST'])
-def linkstrava(username):
-    form = LinkStravaForm()
-    user = User.query.filter_by(username=username).first()
-    if form.validate_on_submit():
-        if form.link_yes.data:
-            user.last_seen = None
-            user.social_id = None
-            db.session.commit()
-            strava = StravaOauth()
-            return strava.authorize()
-        else:
-            user.social_id = 'disabled'
-            db.session.commit()
-            return redirect(url_for('login'))
-
-    return render_template('linkstrava.html', title='Link Strava Account', form=form)
-
 
 @login_required
 @app.route('/logout')
@@ -126,23 +108,38 @@ def register():
         logout_user()
     print('User Registration Started')
     if request.method == 'POST':
+        # Username taken?
         if User.query.filter_by(username=request.form['username']).first():
             flash('Username is taken. Try another')
             return redirect(url_for('register'))
+        # Email taken?
         if User.query.filter_by(email=request.form['email']).first():
             flash('Email address has already been used.')
             return redirect(url_for('register'))
-        user = User(username=request.form['username'], email=request.form['email'])
+        # Passwords don't match?
         if request.form['password'] != request.form['repeat_password']:
             flash('Passwords do not match')
             return redirect(url_for('register'))
+        user = User(username=request.form['username'], email=request.form['email'])
         user.set_password(request.form['password'])
         user.last_seen = None
         db.session.add(user)
         db.session.commit()
         flash('Congratulations, you are now a registered user!')
-        return redirect('/linkstrava/' + user.username)
-        # return render_template('linkstrava.html', title='Link Strava?', user=user, form=LinkStravaForm())
+
+        # Link strava?
+        if request.form['submit'] == 'connect_strava':
+            user.last_seen = None
+            user.social_id = None
+            db.session.commit()
+            strava = StravaOauth()
+            return strava.authorize()
+        else:
+            user.social_id = 'disabled'
+            db.session.commit()
+            return redirect(url_for('login'))
+
+        flash('Congratulations, you are now a registered user!')
 
     return render_template('register.html', title='Register')
 
