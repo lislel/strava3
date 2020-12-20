@@ -126,7 +126,6 @@ class DataIngest:
                 if min_dist <= self.MIN_DISTANCE:
                     exists = db.session.query(Activity).filter_by(activity_id=item['id']).scalar()
                     #exists = db.session.query(Activity).filter_by(activity_id=4213828844).scalar()
-                    print(f'exists {exists}, item: {item["id"]}')
                     if exists is None:
                         # New activity
                         act = self.create_activity(item, mt)
