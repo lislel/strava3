@@ -124,19 +124,19 @@ class DataIngest:
                     if hypot < min_dist:
                         min_dist = hypot
                 if min_dist <= self.MIN_DISTANCE:
-                    exists = db.session.query(Activity).filter_by(activity_id=item['id']).scalar()
-                    #exists = db.session.query(Activity).filter_by(activity_id=4213828844).scalar()
+                    id_string = f"{item['id']}_{mt}"
+                    exists = db.session.query(Activity).filter_by(activity_id=id_string).scalar()
                     if exists is None:
                         # New activity
-                        act = self.create_activity(item, mt)
+                        act = self.create_activity(item, mt, id_string)
                         print(f'activity id {act.activity_id}')
                         self.user.activities.append(act)
                         print('test3')
                         db.session.commit()
                     else:
-                        act_exist_for_user = db.session.query(Activity).filter_by(activity_id=item['id']).filter_by(user_id=self.user.id).scalar()
+                        act_exist_for_user = db.session.query(Activity).filter_by(activity_id=id_string).filter_by(user_id=self.user.id).scalar()
                         if act_exist_for_user is None:
-                            act = db.session.query(Activity).filter_by(activity_id=item['id']).first()
+                            act = db.session.query(Activity).filter_by(activity_id=id_string).first()
                             self.user.activities.append(act)
                             db.session.commit()
             return False
@@ -169,12 +169,12 @@ class DataIngest:
             return False
 
     @staticmethod
-    def create_activity(item, mt):
+    def create_activity(item, mt, id_string):
         act = Activity()
         act.name = item['name']
         act.polyline = item['map']['summary_polyline']
         act.url = f'https://www.strava.com/activities/{item["id"]}'
         act.mountains.append(mt)
-        act.activity_id = item['id']
+        act.activity_id = id_string
         act.date = item['start_date']
         return act
