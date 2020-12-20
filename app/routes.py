@@ -85,7 +85,7 @@ def login():
                 if parse_data:
                     data_ingest = DataIngest(user, oauth)
                     data_ingest.update()
-        login_user(user, remember=form.remember_me.data)
+        login_user(user, remember=('remember_me' in request.form))
         # Get Strava activity
         next_page = request.args.get('next')
         if not next_page or url_parse(next_page).netloc != '':
@@ -112,6 +112,7 @@ def linkstrava(username):
 
     return render_template('linkstrava.html', title='Link Strava Account', form=form)
 
+
 @login_required
 @app.route('/logout')
 def logout():
@@ -124,10 +125,18 @@ def register():
     if current_user.is_authenticated:
         logout_user()
     print('User Registration Started')
-    form = RegistrationForm()
-    if form.validate_on_submit():
-        user = User(username=form.username.data, email=form.email.data)
-        user.set_password(form.password.data)
+    if request.method == 'POST':
+        if User.query.filter_by(username=request.form['username']).first():
+            flash('Username is taken. Try another')
+            return redirect(url_for('register'))
+        if User.query.filter_by(email=request.form['email']).first():
+            flash('Email address has already been used.')
+            return redirect(url_for('register'))
+        user = User(username=request.form['username'], email=request.form['email'])
+        if request.form['password'] != request.form['repeat_password']:
+            flash('Passwords do not match')
+            return redirect(url_for('register'))
+        user.set_password(request.form['password'])
         user.last_seen = None
         db.session.add(user)
         db.session.commit()
@@ -135,7 +144,8 @@ def register():
         return redirect('/linkstrava/' + user.username)
         # return render_template('linkstrava.html', title='Link Strava?', user=user, form=LinkStravaForm())
 
-    return render_template('linkstrava.html', title='Link Strava Account', form=form)
+    return render_template('register.html', title='Register')
+
 
 @login_required
 @app.route('/map')
@@ -392,7 +402,7 @@ def settings():
             elif request.form['submit'] == 'link_strava':
                 flash('This functionality has been temperarily disabled')
                 return redirect(url_for('settings'))
-
+        
         except Exception as e:
             print(e)
             flash('Somthing weird happened. Sorry about that.')

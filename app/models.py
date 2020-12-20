@@ -6,7 +6,6 @@ from time import time
 import jwt
 from app import app
 from app.oauth import StravaOauth
-import time
 
 
 class User(UserMixin, db.Model):
@@ -37,7 +36,6 @@ class User(UserMixin, db.Model):
         return jwt.encode(
             {'reset_password': self.id, 'exp': time() + expires_in},
             app.config['SECRET_KEY'], algorithm='HS256').decode('utf-8')
-
 
     def get_code(self, oauth):
         if self.code is None:
