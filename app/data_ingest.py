@@ -33,26 +33,9 @@ class DataIngest:
         self.headers = self.oauth.update_headers(self.user.access_token)
         self.responses = None
 
-    def create_data_ingest(self):
-        if self.oauth is not None:
-            self.strava_data_ingest = DataIngest(self, self.oauth)
-        else:
-            print('Could not create ingest object, no oauth set')
-
-    def update_strava_data(self):
-        update_result = False
-        try:
-            update_result = self.strava_data_ingest.update()
-        except Exception as e:
-            print(f'Exception occurred {e}')
-        return update_result
 
     def update(self):
-        #try:
         all_responses = self.get_activities_from_api()
-        #except Exception as e:
-        #print(f'Could not get activities from api {e}')
-        #return False
 
         for act in all_responses:
             done = self.parse(act)
@@ -130,9 +113,7 @@ class DataIngest:
         self.page_num = int(math.ceil(act_total / self.REQUESTS_PER_PAGE))
         return self.page_num
 
-
     def parse(self, item):
-        #try:
         if self.validate_item(item):
             line = item['map']['summary_polyline']
             points = polyline.decode(line)
