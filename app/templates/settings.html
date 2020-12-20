@@ -19,10 +19,12 @@
             <h6 style="margin-bottom: 20px;">Update user infomation:</h6>
             <!-- Settings Form -->
             <form action="" method=post>  
-               	<p><a href="{{ url_for('linkstrava', username=username) }}"><img class="img" id="strava-cw-image" src="static/images/connect with strava/btn_strava_connectwith_light/btn_strava_connectwith_light.png"></a></p>
+               	<p>
+                  <input type="image" name="link_strava_submit" src="static/images/connect with strava/btn_strava_connectwith_light/btn_strava_connectwith_light.png" value="link_strava" />
+                </p>
                 <p style="margin-bottom: 0px;">New Username: </p>
                 <p>
-                  <input type="text" id="new_username" name="new_username" placeholder="{{ username }}">
+                  <input type="text" id="new_username" name="new_username" placeholder="{{ username }}"/>
                   <button type="submit" name="submit" class="btn btn-dark" value="change_username">Update</button>
                 </p>
                 <br>

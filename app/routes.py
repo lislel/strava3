@@ -130,7 +130,6 @@ def register():
         return oauth.authorize()
         """
         return redirect('/linkstrava/' + user.username)
-        # return render_template('linkstrava.html', title='Link Strava?', user=user, form=LinkStravaForm())
 
     return render_template('register.html', title='Register')
 
@@ -358,37 +357,54 @@ def aboutus():
 @login_required
 def settings():
     if request.method == 'POST':
-        # Print form keys and values
+        # Print form keys and values, and build form_dict
+        form_dict = dict()
         for key, value in request.form.items():
             print("key: {0}, value: {1}".format(key, value))
-        
-        # Change Username
-        if request.form['submit'] == 'change_username':
-            all_users = User.query.all()
-            all_usernames = []
-            for user in all_users:
-                all_usernames.append(user.username)
-            if request.form['new_username'] == current_user.username:
-                flash('Please choose new username')
+            form_dict[key] = value
+
+       # Link Strava
+        if 'link_strava_submit.x' in form_dict:
+            flash('This functionality has been temperarily disabled')
+            return redirect(url_for('settings'))
+
+        try:
+            # Change Username
+            if request.form['submit'] == 'change_username':
+                all_users = User.query.all()
+                all_usernames = []
+                for user in all_users:
+                    all_usernames.append(user.username)
+                if request.form['new_username'] == current_user.username:
+                    flash('Please choose new username')
+                    return redirect(url_for('settings'))
+                elif request.form['new_username'] in all_usernames or request.form['new_username'] == '':
+                    flash('Username is already taken')
+                    return redirect(url_for('settings'))
+                else:
+                    current_user.username = request.form['new_username']
+                    db.session.commit()
+                    flash('change_username to %s'%(request.form['new_username']))
+                    return redirect(url_for('index'))
+            
+            # Change Password
+            elif request.form['submit'] == 'change_password':
+                token = current_user.get_reset_password_token()
+                return redirect(url_for('reset_password', token=token, _external=True))
+           
+            # Delete Account
+            elif request.form['submit'] == 'delete':
+                delete_account(current_user)
+                return redirect(url_for('welcome'))
+
+            # Link Strava
+            elif request.form['submit'] == 'link_strava':
+                flash('This functionality has been temperarily disabled')
                 return redirect(url_for('settings'))
-            elif request.form['new_username'] in all_usernames or request.form['new_username'] == '':
-                flash('Username is already taken')
-                return redirect(url_for('settings'))
-            else:
-                current_user.username = request.form['new_username']
-                db.session.commit()
-                flash('change_username to %s'%(request.form['new_username']))
-                return redirect(url_for('index'))
-        
-        # Change Password
-        if request.form['submit'] == 'change_password':
-            token = current_user.get_reset_password_token()
-            return redirect(url_for('reset_password', token=token, _external=True))
-       
-        # Delete Account
-        if request.form['submit'] == 'delete':
-            delete_account(current_user)
-            return redirect(url_for('welcome'))
+
+        except Exception as e:
+            print(e)
+            flash('Somthing weird happened. Sorry about that.')
 
     return render_template('settings.html', title="Account Settings", username=current_user.username)
 
