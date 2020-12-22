@@ -3,13 +3,11 @@ from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug.urls import url_parse
 from app import app, db
 from app.models import User, Mountain, Activity
-from app.oauth import StravaOauth, DataIngest
-from app.forms import mountain_choices, ManualEntryEditForm, ContactUsForm, LinkStravaForm
 from app.email import send_password_reset_email, send_email
-
+from app.oauth import StravaOauth
+from app.data_ingest import DataIngest
+import app.forms as appforms
 import time
-import requests
-import json
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -38,6 +36,7 @@ def index():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    parse_data = False
     if current_user.is_authenticated:
         print(f'current user is {current_user.username}')
         return redirect(url_for('index'))
@@ -56,32 +55,39 @@ def login():
             return redirect(url_for('index'))
         # user did link strava
         else:
-            oauth = StravaOauth()
-            print('user.access_token = ', user.access_token)
-
-            if user.social_id is None:
+            if user.social_id != 'disabled':
+                oauth = StravaOauth()
                 # User has never been authenticated with Strava, get authentication information
-                print('new user!')
-                user.last_seen = None
-                oauth.callback()
-                if oauth.social_id is None:
-                    flash('Authentication failed.')
-                    redirect(url_for('login'))
-                user.social_id = oauth.social_id
-                update_access(user, oauth)
-            elif user.expires_at < time.time():
-                # Get new access_token and refresh_token
-                print(f'Expires {user.expires_at}, now {time.time()}')
-                oauth.get_refresh_token(user.refresh_token)
-                update_access(user, oauth)
-            else:
-                pass
+                print(f'user access token {user.access_token}')
+                if user.access_token is None:
+                    print('getting user token first')
+                    token = user.get_token(oauth)
+                    print(f'authenticated {token}')
+                    if token is not None:
+                        user.update_access(token)
+                        flash("Authenticated with strava")
+                        parse_data = True
+                    else:
+                        flash("Strava Authentication failed")
+                else:
+                    print('user seen before, checking if we need to update access')
+                    if user.expires_at is not None and user.expires_at < time.time():
+                        print(f'Expires {user.expires_at}, now {time.time()}, getting refresh token')
+                        token = user.get_refresh_token(oauth)
+                        if token is not None:
+                            user.update_access(token)
+                            parse_data = True
+                        else:
+                            print('error getting refresh token')
+                            flash("There was an error getting updated strava information")
+                    else:
+                        parse_data = True
+                if parse_data:
+                    data_ingest = DataIngest(user, oauth)
+                    data_ingest.update()
         login_user(user, remember=('remember_me' in request.form))
 
         # Get Strava activity
-        data_ingest = DataIngest(user, oauth)
-        data_ingest.update()
-
         next_page = request.args.get('next')
         if not next_page or url_parse(next_page).netloc != '':
             next_page = url_for('index')
@@ -89,14 +95,6 @@ def login():
 
     return render_template('login.html', title='Sign In')
 
-
-def update_access(user, oauth):
-    user.access_token = oauth.access_token
-    user.refresh_token = oauth.refresh_token
-    user.expires_at = oauth.expires_at
-    db.session.commit()
-    print(f'user {user.username}, social_id: {user.social_id}, access token: {user.access_token}, refresh_token: {user.refresh_token}, expires_at: {user.expires_at}')
-    return
 
 @login_required
 @app.route('/logout')
@@ -107,46 +105,45 @@ def logout():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    print(f'1 current user authenitcated? {current_user.is_authenticated}')
-    print('Session: ', session)
     if current_user.is_authenticated:
         logout_user()
-        print(f'2 current user authenitcated? {current_user.is_authenticated}')
-        # print('current user is authenticated')
-        return redirect(url_for('index'))
-
+    print('User Registration Started')
     if request.method == 'POST':
-        user = User.query.filter_by(username=request.form['username']).first()
-        user = User(username=request.form['username'], email=request.form['email'])
+        # Username taken?
+        if User.query.filter_by(username=request.form['username']).first():
+            flash('Username is taken. Try another')
+            return redirect(url_for('register'))
+        # Email taken?
+        if User.query.filter_by(email=request.form['email']).first():
+            flash('Email address has already been used.')
+            return redirect(url_for('register'))
+        # Passwords don't match?
         if request.form['password'] != request.form['repeat_password']:
             flash('Passwords do not match')
             return redirect(url_for('register'))
+        user = User(username=request.form['username'], email=request.form['email'])
         user.set_password(request.form['password'])
+        user.last_seen = None
         db.session.add(user)
         db.session.commit()
         flash('Congratulations, you are now a registered user!')
-        """
-        oauth = StravaOauth()
-        return oauth.authorize()
-        """
-        return redirect('/linkstrava/' + user.username)
 
-    return render_template('register.html', title='Register')
-
-@app.route('/linkstrava/<username>', methods=['GET', 'POST'])
-def linkstrava(username):
-    form = LinkStravaForm()
-    user = User.query.filter_by(username=username).first()
-    if form.validate_on_submit():
-        if form.yes.data:
-            oauth = StravaOauth()
-            return oauth.authorize()
-        if form.no.data:
-            user.access_token = 'NA'
+        # Link strava?
+        if request.form['submit'] == 'connect_strava':
+            user.last_seen = None
+            user.social_id = None
+            db.session.commit()
+            strava = StravaOauth()
+            return strava.authorize()
+        else:
+            user.social_id = 'disabled'
             db.session.commit()
             return redirect(url_for('login'))
 
-    return render_template('linkstrava.html', title='Link Strava Account', form=form)
+        flash('Congratulations, you are now a registered user!')
+
+    return render_template('register.html', title='Register')
+
 
 @login_required
 @app.route('/map')
@@ -172,7 +169,7 @@ def map():
         mt_dict['urls'] = urls
         map_markers.append(mt_dict)
 
-    polylines = json.dumps(polylines)
+
     """
     print('Here are my map markes:\n')
     for m in map_markers:
@@ -245,7 +242,7 @@ def manual_entry():
         else:
             flash("Invalid Data")
 
-    return render_template('manual_entry.html', title="Manual Entry", mt_list=mountain_choices())
+    return render_template('manual_entry.html', title="Manual Entry", mt_list=appforms.mountain_choices())
 
 def manual_entry_data_check(mountain, date):
     if len(mountain) < 3:
@@ -294,7 +291,7 @@ def manual_entry_edit(act_name):
         else:
             flash("Invalid Data")
 
-    return render_template('manual_entry_edit.html', title="Edit Activity", form_data=form_data, mt_list=mountain_choices())
+    return render_template('manual_entry_edit.html', title="Edit Activity", form_data=form_data, mt_list=appforms.mountain_choices())
 
 def find_act_from_name(act_name):
     for act in Activity.query.all():
@@ -322,7 +319,7 @@ def manual_entry_view(act_name):
 
 @app.route('/contactus', methods=['GET', 'POST'])
 def contactus():
-    form = ContactUsForm()
+    form = appforms.ContactUsForm()
     if form.validate_on_submit():
         message=request.form['message']
         flash(request.form['message'])
@@ -384,7 +381,7 @@ def settings():
                 else:
                     current_user.username = request.form['new_username']
                     db.session.commit()
-                    flash('change_username to %s'%(request.form['new_username']))
+                    flash('Username changed to %s'%(request.form['new_username']))
                     return redirect(url_for('index'))
             
             # Change Password
