@@ -15,8 +15,8 @@ class StravaOauth:
     # Heroku redirect
     # REDIRECT_URI = 'http://nhhighpeaks.herokuapp.com/login'
     # Local redirect
-    REDIRECT_URI = 'http://localhost:5000/login'
-    # REDIRECT_URI = 'https://www.nhhighpeaks.com/login'
+    # REDIRECT_URI = 'http://localhost:5000/login'
+    REDIRECT_URI = 'https://www.nhhighpeaks.com/login'
     RESPONSE_TYPE = 'code'
     APPROVAL_PROMPT = "auto"
     SCOPE = "activity:read,profile:read_all"
