@@ -114,7 +114,9 @@
                 <div class="container-fluid">
                   <div class="row">
                     <div class="col-6 col-sm-5 col-md-4 col-lg-3 col-xl-2" id="strava-image">
-                      <a href="https://www.strava.com"><img class="img-fluid" id="strava-comp-image" src="static/images/strava api logos/compatible with strava/cptblWith_strava_white/api_logo_cptblWith_strava_horiz_white.png"></a>
+                      {% block footer_image %}
+                        <a href="https://www.strava.com"><img class="img-fluid" id="strava-comp-image" src="static/images/strava api logos/compatible with strava/cptblWith_strava_white/api_logo_cptblWith_strava_horiz_white.png" alt="Strava"></a>
+                      {% endblock %}
                     </div>
                   </div>
                 </div>

@@ -2,7 +2,7 @@
 
 {% block head %}
     {{ super() }}
-    <link href="{{ url_for('static', filename='css/manual_entry.css') }}" rel="stylesheet">
+    <style>.content-wrap {background-image: url("../static/images/GOS1.jpg");}</style>  
 {% endblock %}
 
 {% block header %}{% endblock %}
@@ -39,4 +39,9 @@
             </div>
         </div>
     </div>
+{% endblock %}
+
+<!-- redo footer to update strava logo file path -->
+{% block footer_image %}
+    <a href="https://www.strava.com"><img class="img-fluid" id="strava-comp-image" src="../static/images/strava api logos/compatible with strava/cptblWith_strava_white/api_logo_cptblWith_strava_horiz_white.png" alt="Strava"></a>
 {% endblock %}
