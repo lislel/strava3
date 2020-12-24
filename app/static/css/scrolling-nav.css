@@ -56,7 +56,11 @@ section {
 }
 
 .textfield {
-  width: 80%;
+  width: 100%;
+}
+
+.container-fluid {
+  padding: 5vh;
 }
 
 
