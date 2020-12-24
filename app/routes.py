@@ -306,7 +306,6 @@ def find_act_from_name(act_name):
 @login_required
 def manual_entry_view(act_name):
     act = find_act_from_name(act_name)
-
     if request.method == 'POST':
         if request.form['submit'] == 'edit':
             # flash("Edit Button Clicked")
@@ -315,7 +314,7 @@ def manual_entry_view(act_name):
             flash("Activity Deleted")
             db.session.delete(act)
             db.session.commit()
-            return index()
+            return redirect(url_for('index'))
 
     return render_template('manual_entry_view.html', title="Manual Entry View", act=act)
 
