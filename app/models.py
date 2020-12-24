@@ -7,7 +7,6 @@ import jwt
 from app import app
 from app.oauth import StravaOauth
 
-
 class User(UserMixin, db.Model):
     __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
@@ -36,6 +35,17 @@ class User(UserMixin, db.Model):
         return jwt.encode(
             {'reset_password': self.id, 'exp': time() + expires_in},
             app.config['SECRET_KEY'], algorithm='HS256').decode('utf-8')
+
+    @staticmethod
+    def verify_reset_password_token(token):
+        try:
+            id = jwt.decode(token, app.config['SECRET_KEY'],
+                            algorithms=['HS256'])['reset_password']
+        except Exception as e:
+            print('verify_reset_password_token failed')
+            print(e)
+            return
+        return User.query.get(id)
 
     def get_code(self, oauth):
         if self.code is None:

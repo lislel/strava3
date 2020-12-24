@@ -2,7 +2,6 @@ from flask import current_app, url_for, request, redirect, session
 import urllib
 import requests
 
-
 class Token:
     def __init__(self, access_token, refresh_token, social_id, expires_at):
         self.access_token = access_token
@@ -18,6 +17,7 @@ class StravaOauth:
     REDIRECT_URI = 'https://nhhighpeaks.com/login'
     # Local redirect
     # REDIRECT_URI = 'http://localhost:5000/login'
+    REDIRECT_URI = 'https://www.nhhighpeaks.com/login'
     RESPONSE_TYPE = 'code'
     APPROVAL_PROMPT = "auto"
     SCOPE = "activity:read,profile:read_all"
@@ -53,11 +53,12 @@ class StravaOauth:
         print(f'Code = {code}')
         return code
 
+
     def get_token(self, code):
         print(f'Grant_type {self.AUTHORIZATION_GRANT},'
-              f'client_id {self.consumer_id},'
-              f'client_secret {self.consumer_secret},'
-              f'code {code}')
+             f'client_id {self.consumer_id},'
+             f'client_secret {self.consumer_secret},'
+             f'code {code}')
         post_data = {"grant_type": self.AUTHORIZATION_GRANT,
                      "client_id": self.consumer_id,
                      "client_secret": self.consumer_secret,
@@ -79,6 +80,7 @@ class StravaOauth:
                               token_json['expires_at'])
                 return token
         return None
+        
 
     def get_athlete_id(self):
         headers = self.base_headers()
@@ -101,6 +103,7 @@ class StravaOauth:
         headers.update({'Authorization': 'Bearer ' + token})
         return headers
 
+
     def get_refresh_token(self, refresh_token, social_id):
         post_data = {"grant_type": self.REFRESH_GRANT,
                      "client_id": self.consumer_id,
@@ -111,7 +114,6 @@ class StravaOauth:
             response = requests.post(self.TOKEN_URL,
                                          headers=headers,
                                          data=post_data)
-
         except Exception as e:
             print(f'Error getting refresh token {e}')
             return None

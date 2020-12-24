@@ -3,10 +3,10 @@ from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug.urls import url_parse
 from app import app, db
 from app.models import User, Mountain, Activity
-from app.forms import mountain_choices, ManualEntryEditForm, ContactUsForm
+from app.email import send_password_reset_email, send_email
 from app.oauth import StravaOauth
 from app.data_ingest import DataIngest
-from app.email import send_password_reset_email, send_email
+import app.forms as appforms
 import time
 
 
@@ -168,6 +168,7 @@ def map():
         mt_dict['urls'] = urls
         map_markers.append(mt_dict)
 
+
     """
     print('Here are my map markes:\n')
     for m in map_markers:
@@ -240,7 +241,7 @@ def manual_entry():
         else:
             flash("Invalid Data")
 
-    return render_template('manual_entry.html', title="Manual Entry", mt_list=mountain_choices())
+    return render_template('manual_entry.html', title="Manual Entry", mt_list=appforms.mountain_choices())
 
 
 def manual_entry_data_check(mountain, date):
@@ -291,7 +292,7 @@ def manual_entry_edit(act_name):
         else:
             flash("Invalid Data")
 
-    return render_template('manual_entry_edit.html', title="Edit Activity", form_data=form_data, mt_list=mountain_choices())
+    return render_template('manual_entry_edit.html', title="Edit Activity", form_data=form_data, mt_list=appforms.mountain_choices())
 
 
 def find_act_from_name(act_name):
@@ -320,7 +321,7 @@ def manual_entry_view(act_name):
 
 @app.route('/contactus', methods=['GET', 'POST'])
 def contactus():
-    form = ContactUsForm()
+    form = appforms.ContactUsForm()
     if form.validate_on_submit():
         message=request.form['message']
         flash(request.form['message'])
@@ -382,7 +383,7 @@ def settings():
                 else:
                     current_user.username = request.form['new_username']
                     db.session.commit()
-                    flash('change_username to %s'%(request.form['new_username']))
+                    flash('Username changed to %s'%(request.form['new_username']))
                     return redirect(url_for('index'))
             
             # Change Password
