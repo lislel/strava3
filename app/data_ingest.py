@@ -33,7 +33,6 @@ class DataIngest:
         self.headers = self.oauth.update_headers(self.user.access_token)
         self.responses = None
 
-
     def update(self):
         all_responses = self.get_activities_from_api()
 
@@ -115,6 +114,7 @@ class DataIngest:
 
     def parse(self, item):
         if self.validate_item(item):
+            print(f'parsing {item["id"]}')
             line = item['map']['summary_polyline']
             points = polyline.decode(line)
             for mt in Mountain.query.all():
@@ -124,32 +124,31 @@ class DataIngest:
                     if hypot < min_dist:
                         min_dist = hypot
                 if min_dist <= self.MIN_DISTANCE:
-                    exists = db.session.query(Activity).filter_by(activity_id=item['id']).scalar()
-                    #exists = db.session.query(Activity).filter_by(activity_id=4213828844).scalar()
+                    id_string = f"{item['id']}_{mt}"
+                    exists = db.session.query(Activity).filter_by(activity_id=id_string).scalar()
                     if exists is None:
                         # New activity
-                        act = self.create_activity(item, mt)
-                        print(f'activity id {act.activity_id}')
+                        act = self.create_activity(item, mt, id_string)
                         self.user.activities.append(act)
-                        print('test3')
                         db.session.commit()
                     else:
-                        act_exist_for_user = db.session.query(Activity).filter_by(activity_id=item['id']).filter_by(user_id=self.user.id).scalar()
+                        act_exist_for_user = db.session.query(Activity).filter_by(activity_id=id_string).filter_by(
+                            user_id=self.user.id).scalar()
                         if act_exist_for_user is None:
-                            act = db.session.query(Activity).filter_by(activity_id=item['id']).first()
+                            act = db.session.query(Activity).filter_by(activity_id=id_string).first()
                             self.user.activities.append(act)
                             db.session.commit()
             return False
 
     def validate_item(self, item):
         if isinstance(item, dict) is False:
-            print(f'Item {item }is not a dict instance, it is {type(item)}')
+            #print(f'Item {item} is not a dict instance, it is {type(item)}')
             return False
         if {'start_latlng', 'type', 'elev_high', 'map'}.issubset(item.keys()) is False:
-            print(f'Item {item} missing data to parse')
+            #print(f'Item {item} missing data to parse')
             return False
         if item['start_latlng'] is None:
-            print(f'{item} No start latlng for activity')
+            #print(f'{item} No start latlng for activity')
             return False
         if item['type'] == 'Bike':
             print('This is a biking activity, not parsing')
@@ -169,12 +168,12 @@ class DataIngest:
             return False
 
     @staticmethod
-    def create_activity(item, mt):
+    def create_activity(item, mt, id_string):
         act = Activity()
         act.name = item['name']
         act.polyline = item['map']['summary_polyline']
         act.url = f'https://www.strava.com/activities/{item["id"]}'
         act.mountains.append(mt)
-        act.activity_id = item['id']
+        act.activity_id = id_string
         act.date = item['start_date']
         return act
