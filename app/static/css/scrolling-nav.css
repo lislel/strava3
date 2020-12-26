@@ -55,4 +55,12 @@ section {
   padding: 10vh;
 }
 
+.textfield {
+  width: 100%;
+}
+
+.container-fluid {
+  padding: 5vh;
+}
+
 
