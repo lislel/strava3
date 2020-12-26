@@ -124,7 +124,7 @@ class DataIngest:
                     if hypot < min_dist:
                         min_dist = hypot
                 if min_dist <= self.MIN_DISTANCE:
-                    id_string = f"{item['id']}_{mt}"
+                    id_string = f"({item['id']}{self.user.id}"
                     exists = db.session.query(Activity).filter_by(activity_id=id_string).scalar()
                     if exists is None:
                         # New activity
