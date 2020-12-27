@@ -36,6 +36,7 @@ def index():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    STRAVA_DISABLED = 0
     parse_data = False
     if current_user.is_authenticated:
         print(f'current user is {current_user.username}')
@@ -55,7 +56,7 @@ def login():
             return redirect(url_for('index'))
         # user did link strava
         else:
-            if user.social_id != 'disabled':
+            if user.social_id != STRAVA_DISABLED:
                 oauth = StravaOauth()
                 # User has never been authenticated with Strava, get authentication information
                 print(f'user access token {user.access_token}')
@@ -105,6 +106,7 @@ def logout():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
+    STRAVA_DISABLED = 0
     if current_user.is_authenticated:
         logout_user()
     print('User Registration Started')
@@ -126,6 +128,7 @@ def register():
         user.last_seen = None
         db.session.add(user)
         db.session.commit()
+        print(f'new user: {user.username}')
         flash('Congratulations, you are now a registered user!')
 
         # Link strava?
@@ -136,7 +139,8 @@ def register():
             strava = StravaOauth()
             return strava.authorize()
         else:
-            user.social_id = 'disabled'
+            user.last_seen = None
+            user.social_id = STRAVA_DISABLED
             db.session.commit()
             return redirect(url_for('login'))
 
