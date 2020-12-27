@@ -172,8 +172,6 @@ def map():
 
         mt_dict['urls'] = urls
         map_markers.append(mt_dict)
-
-
     """
     print('Here are my map markes:\n')
     for m in map_markers:
@@ -259,7 +257,6 @@ def find_mountain(input):
     for mt in Mountain.query.all():
         if input == mt.name:
             return mt
-    
     print('Error: Mountain not found')
     return None
 
@@ -326,7 +323,6 @@ def contactus():
     form = appforms.ContactUsForm()
     if form.validate_on_submit():
         message=request.form['message']
-        flash(request.form['message'])
         if current_user.is_authenticated:
             send_email('[NH High Peaks] Contact Us Submission',
                 sender=app.config['ADMINS'][0],
@@ -347,7 +343,7 @@ def contactus():
                     message=message, username='NA', email='NA', id='NA'))
 
         flash("Feedback Sent")
-        return index()
+        return redirect(url_for('index'))
     return render_template('contactus.html', title="Contact Us",  form=form)
 
 @app.route('/aboutus', methods=['GET'])
