@@ -129,7 +129,7 @@ def register():
         db.session.add(user)
         db.session.commit()
         print(f'new user: {user.username}')
-        flash('Congratulations, you are now a registered user!')
+        flash('Congratulations, you are now a registered user! Please sign in.')
 
         # Link strava?
         if request.form['submit'] == 'connect_strava':
