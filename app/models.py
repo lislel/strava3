@@ -5,7 +5,7 @@ from flask_login import UserMixin
 from time import time
 import jwt
 from app import app
-from app.oauth import StravaOauth
+
 
 class User(UserMixin, db.Model):
     __tablename__ = 'user'
@@ -58,25 +58,25 @@ class User(UserMixin, db.Model):
         return self.code
 
     def get_token(self, oauth):
-            code = self.get_code(oauth)
-            if code is None:
+        code = self.get_code(oauth)
+        if code is None:
+            return None
+        else:
+            try:
+                access_token = oauth.get_token(code, None)
+            except Exception as e:
+                print(f'Error occurred {e}')
                 return None
-            else:
-                try:
-                    access_token = oauth.get_token(code)
-                except Exception as e:
-                    print(f'Error occurred {e}')
-                    return None
-            return access_token
+        return access_token
 
     def get_refresh_token(self, oauth):
-            #try:
-            refresh_token = oauth.get_refresh_token(self.refresh_token, self.social_id)
+        try:
+            refresh_token = oauth.get_token(None, self.refresh_token)
             print(f'got refresh token successfully! Token is: {refresh_token}')
-            #except Exception as e:
-            #    print(f'Error occurred getting token: {e}')
-            #    return None
-            return refresh_token
+        except Exception as e:
+            print(f'Error occurred getting token: {e}')
+            return None
+        return refresh_token
 
     def update_access(self, token):
         self.access_token = token.access_token
@@ -99,57 +99,60 @@ class User(UserMixin, db.Model):
 
 @login.user_loader
 def load_user(id):
-	return User.query.get(int(id)) 
+    return User.query.get(int(id))
+
 
 class Mountain(db.Model):
-	__tablename__ = 'mountain'
-	id = db.Column(db.Integer, primary_key=True)
-	name = db.Column(db.String(128), index=True, unique=True)
-	lat = db.Column(db.Float)
-	lon = db.Column(db.Float)
-	users = db.relationship('User', secondary='user_mountain_link')
-	activities = db.relationship('Activity', secondary='activity_mountain_link')
+    __tablename__ = 'mountain'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(128), index=True, unique=True)
+    lat = db.Column(db.Float)
+    lon = db.Column(db.Float)
+    users = db.relationship('User', secondary='user_mountain_link')
+    activities = db.relationship('Activity', secondary='activity_mountain_link')
+
 
 def __repr__(self):
     return '<Mountain {}>'.format(self.name)
 
 
 class User_Mountain_Link(db.Model):
-	__tablename__ = 'user_mountain_link'
-	user_id = db.Column(
-	  db.Integer, 
-	  db.ForeignKey('user.id'), 
-	  primary_key = True)
+    __tablename__ = 'user_mountain_link'
+    user_id = db.Column(
+      db.Integer,
+      db.ForeignKey('user.id'),
+      primary_key = True)
 
-	mountain_id = db.Column(
-	   db.Integer, 
-	   db.ForeignKey('mountain.id'), 
-	   primary_key = True)
+    mountain_id = db.Column(
+       db.Integer,
+       db.ForeignKey('mountain.id'),
+       primary_key = True)
+
 
 class Activity(db.Model):
-	__tablename__ = 'activity'
-	id = db.Column(db.Integer, primary_key=True)
-	name = db.Column(db.String(1280))
-	activity_id = db.Column(db.BigInteger, unique=True)
-	url = db.Column(db.String(1280))
-	polyline = db.Column(db.String(1280))
-	user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-	mountains = db.relationship('Mountain',  secondary = 'activity_mountain_link')
-	date = db.Column(db.String(1280))
-	description = db.Column(db.String(1280))
+    __tablename__ = 'activity'
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(1280))
+    activity_id = db.Column(db.BigInteger, unique=True)
+    url = db.Column(db.String(1280))
+    polyline = db.Column(db.String(1280))
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    mountains = db.relationship('Mountain',  secondary = 'activity_mountain_link')
+    date = db.Column(db.String(1280))
+    description = db.Column(db.String(1280))
 
-	def __repr__(self):
-		return '<Activity {}>'.format(self.name)
+    def __repr__(self):
+        return '<Activity {}>'.format(self.name)
 
 
 class Activity_Mountain_Link(db.Model):
-	__tablename__ = 'activity_mountain_link'
-	activity_id = db.Column(
-	  db.Integer, 
-	  db.ForeignKey('activity.id'), 
-	  primary_key = True)
+    __tablename__ = 'activity_mountain_link'
+    activity_id = db.Column(
+      db.Integer,
+      db.ForeignKey('activity.id'),
+      primary_key = True)
 
-	mountain_id = db.Column(
-	   db.Integer, 
-	   db.ForeignKey('mountain.id'), 
-	   primary_key = True)
+    mountain_id = db.Column(
+       db.Integer,
+       db.ForeignKey('mountain.id'),
+       primary_key = True)

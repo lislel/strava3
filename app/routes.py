@@ -9,6 +9,9 @@ from app.data_ingest import DataIngest
 import app.forms as appforms
 import time
 
+STRAVA_DISABLED = 0
+NEW_USER = 'new_user'
+RETURNING_USER = 'returning_user'
 
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/welcome', methods=['GET', 'POST'])
@@ -36,7 +39,6 @@ def index():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    STRAVA_DISABLED = 0
     parse_data = False
     if current_user.is_authenticated:
         print(f'current user is {current_user.username}')
@@ -68,6 +70,7 @@ def login():
                         user.update_access(token)
                         flash("Authenticated with strava")
                         parse_data = True
+                        user_type = NEW_USER
                     else:
                         flash("Strava Authentication failed")
                 else:
@@ -78,14 +81,16 @@ def login():
                         if token is not None:
                             user.update_access(token)
                             parse_data = True
+                            user_type = RETURNING_USER
                         else:
                             print('error getting refresh token')
                             flash("There was an error getting updated strava information")
                     else:
                         parse_data = True
+                        user_type = RETURNING_USER
                 if parse_data:
                     data_ingest = DataIngest(user, oauth)
-                    data_ingest.update()
+                    data_ingest.update(user_type)
         login_user(user, remember=('remember_me' in request.form))
 
         # Get Strava activity
@@ -106,7 +111,6 @@ def logout():
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
-    STRAVA_DISABLED = 0
     if current_user.is_authenticated:
         logout_user()
     print('User Registration Started')

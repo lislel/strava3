@@ -15,7 +15,7 @@ class StravaOauth:
     # Heroku redirect
     # REDIRECT_URI = 'http://nhhighpeaks.herokuapp.com/login'
     # Local redirect
-    # REDIRECT_URI = 'http://localhost:5000/login'
+    #REDIRECT_URI = 'http://localhost:5000/login'
     REDIRECT_URI = 'https://www.nhhighpeaks.com/login'
     RESPONSE_TYPE = 'code'
     APPROVAL_PROMPT = "auto"
@@ -24,8 +24,6 @@ class StravaOauth:
     AUTHORIZATION_GRANT = "authorization_code"
     REFRESH_GRANT = "refresh_token"
     TOKEN_URL = "https://www.strava.com/oauth/token"
-
-
 
     def __init__(self):
         # credentials = current_app.config['OAUTH_CREDENTIALS'][provider_name]
@@ -49,22 +47,26 @@ class StravaOauth:
         url = self.AUTHORIZATION_URL + urllib.parse.urlencode(params)
         return url
 
-    def callback(self):
+    @staticmethod
+    def callback():
         code = request.args.get('code')
-        print(f'Code = {code}')
         return code
 
+    def get_token(self, code, refresh_token):
+        if refresh_token is None:
+            # Getting user token for first time
+            post_data = {"grant_type": self.AUTHORIZATION_GRANT,
+                         "client_id": self.consumer_id,
+                         "client_secret": self.consumer_secret,
+                         "code": code,
+                         "redirect_uri": self.REDIRECT_URI}
+        else:
+            # Getting refresh token
+            post_data = {"grant_type": self.REFRESH_GRANT,
+                         "client_id": self.consumer_id,
+                         "client_secret": self.consumer_secret,
+                         "refresh_token": refresh_token}
 
-    def get_token(self, code):
-        print(f'Grant_type {self.AUTHORIZATION_GRANT},'
-             f'client_id {self.consumer_id},'
-             f'client_secret {self.consumer_secret},'
-             f'code {code}')
-        post_data = {"grant_type": self.AUTHORIZATION_GRANT,
-                     "client_id": self.consumer_id,
-                     "client_secret": self.consumer_secret,
-                     "code": code,
-                     "redirect_uri": self.REDIRECT_URI}
         headers = self.base_headers()
         try:
             response = requests.post(self.TOKEN_URL,
@@ -73,23 +75,15 @@ class StravaOauth:
         except Exception as e:
             print(f'Exception occurred accessing strava api {e}')
             return None
-        print('response status code', response.status_code)
+
         if response.status_code == 200:
             token_json = response.json()
+            print(f' Token json = {token_json}')
             if {'access_token', 'expires_at', 'refresh_token', 'athlete'}.issubset(token_json.keys()):
                 token = Token(token_json['access_token'], token_json['refresh_token'], token_json['athlete']['id'],
                               token_json['expires_at'])
                 return token
         return None
-        
-
-    def get_athlete_id(self):
-        headers = self.base_headers()
-        headers.update({'Authorization': 'Bearer ' + self.access_token})
-        url = "https://www.strava.com/api/v3/athlete"
-        results = requests.get(url, headers=headers).json()
-        id = results['id']
-        return id
 
     @staticmethod
     def user_agent():
@@ -99,31 +93,8 @@ class StravaOauth:
     def base_headers(self):
         return {"User-Agent": self.user_agent()}
 
-
     def update_headers(self, token):
         headers = self.base_headers()
         headers.update({'Authorization': 'Bearer ' + token})
         return headers
 
-
-    def get_refresh_token(self, refresh_token, social_id):
-        post_data = {"grant_type": self.REFRESH_GRANT,
-                     "client_id": self.consumer_id,
-                     "client_secret": self.consumer_secret,
-                     "refresh_token": refresh_token}
-        headers = self.base_headers()
-        try:
-            response = requests.post(self.TOKEN_URL,
-                                         headers=headers,
-                                         data=post_data)
-        except Exception as e:
-            print(f'Error getting refresh token {e}')
-            return None
-        if response.status_code == 200:
-            refresh_json = response.json()
-            print(f'refresh_json {refresh_json}')
-            if {'access_token', 'refresh_token', 'expires_at'}.issubset(refresh_json.keys()):
-                token = Token(refresh_json['access_token'], refresh_json['refresh_token'], social_id,
-                              refresh_json['expires_at'])
-                return token
-        return None

@@ -1,9 +1,10 @@
 import yaml
-import json
+import os
 from app.models import Mountain
 
+cwd = os.getcwd()
 # Use for loading locally
-with open("C:/Users/cummi/Documents/02-HighPeaks/strava3/app/mountains.yml", 'r') as stream:
+with open(f"{cwd}/app/mountains.yml", 'r') as stream:
 	mt_yaml = yaml.safe_load(stream)
 
 # Use for loading into heroku
