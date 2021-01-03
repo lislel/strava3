@@ -282,7 +282,6 @@ def manual_entry_edit(act_name):
         if manual_entry_data_check(request.form['mountain'], request.form['date']):
             act.name = request.form['act_name']
             act.polyline = None
-            #act.url = 'https://www.youtube.com/watch?v=p3G5IXn0K7A'
             act.url = '/view/' + act.name
             mt = find_mountain(request.form['mountain'])
             act.mountains[0] = mt
