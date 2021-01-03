@@ -41,7 +41,7 @@ def index():
 def login():
     parse_data = False
     if current_user.is_authenticated:
-        print(f'current user is {current_user.username}')
+        print(f'!!!!!!!! current user is {current_user.username}')
         return redirect(url_for('index'))
     if request.method == 'POST':
         user = User.query.filter_by(username=request.form['username']).first()
@@ -420,6 +420,8 @@ def delete_account(user):
             db.session.delete(a)
     db.session.delete(user)
     db.session.commit()
+    logout_user()
+
 
 
 
