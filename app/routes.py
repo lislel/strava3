@@ -41,7 +41,6 @@ def index():
 def login():
     parse_data = False
     if current_user.is_authenticated:
-        print(f'!!!!!!!! current user is {current_user.username}')
         return redirect(url_for('index'))
     if request.method == 'POST':
         user = User.query.filter_by(username=request.form['username']).first()
@@ -250,12 +249,14 @@ def manual_entry():
 
     return render_template('manual_entry.html', title="Manual Entry", mt_list=appforms.mountain_choices())
 
+
 def manual_entry_data_check(mountain, date):
     if len(mountain) < 3:
         return 0
     if len(date) != 8:
         return 0
     return 1
+
 
 def find_mountain(input):
     for mt in Mountain.query.all():
@@ -264,6 +265,7 @@ def find_mountain(input):
     print('Error: Mountain not found')
     return None
 
+
 def convert_date(date_str):
     # convert 'YYYYMMDD' to 'YYYY-DD-MMT00-00-00Z'
     year = date_str[0:4]
@@ -271,6 +273,7 @@ def convert_date(date_str):
     day = date_str[6:8]
     new_date_str = year + '-' + month + '-' + day + 'T00-00-00Z'
     return new_date_str
+
 
 @app.route('/edit/<act_name>', methods=['GET', 'POST'])
 @login_required
@@ -296,6 +299,7 @@ def manual_entry_edit(act_name):
             flash("Invalid Data")
 
     return render_template('manual_entry_edit.html', title="Edit Activity", form_data=form_data, mt_list=appforms.mountain_choices())
+
 
 def find_act_from_name(act_name):
     for act in Activity.query.all():
@@ -365,46 +369,53 @@ def settings():
 
        # Link Strava
         if 'link_strava_submit.x' in form_dict:
-            flash('This functionality has been temperarily disabled')
-            return redirect(url_for('settings'))
+            strava = StravaOauth()
+            current_user.social_id = None
+            db.session.commit()
+            logout_user()
+            print(f'User logged out. Current user is: {current_user}')
+            return strava.authorize()
 
-        try:
-            # Change Username
-            if request.form['submit'] == 'change_username':
-                all_users = User.query.all()
-                all_usernames = []
-                for user in all_users:
-                    all_usernames.append(user.username)
-                if request.form['new_username'] == current_user.username:
-                    flash('Please choose new username')
-                    return redirect(url_for('settings'))
-                elif request.form['new_username'] in all_usernames or request.form['new_username'] == '':
-                    flash('Username is already taken')
-                    return redirect(url_for('settings'))
-                else:
-                    current_user.username = request.form['new_username']
-                    db.session.commit()
-                    flash('Username changed to %s'%(request.form['new_username']))
-                    return redirect(url_for('index'))
+        if len(form_dict['new_username']) > 0:
+            try:
+                # Change Username
+                if request.form['submit'] == 'change_username':
+                    all_users = User.query.all()
+                    all_usernames = []
+                    for user in all_users:
+                        all_usernames.append(user.username)
+                    if request.form['new_username'] == current_user.username:
+                        flash('Please choose new username')
+                        return redirect(url_for('settings'))
+                    elif request.form['new_username'] in all_usernames or request.form['new_username'] == '':
+                        flash('Username is already taken')
+                        return redirect(url_for('settings'))
+                    else:
+                        current_user.username = request.form['new_username']
+                        db.session.commit()
+                        flash('Username changed to %s'%(request.form['new_username']))
+                        return redirect(url_for('index'))
+            except Exception as e:
+                print(e)
+                flash('Somthing weird happened. Sorry about that.')
             
-            # Change Password
-            elif request.form['submit'] == 'change_password':
+        # Change Password
+        if request.form['submit'] == 'change_password':
+            try:
                 token = current_user.get_reset_password_token()
                 return redirect(url_for('reset_password', token=token, _external=True))
+            except Exception as e:
+                print(e)
+                flash('Somthing weird happened. Sorry about that.')
            
-            # Delete Account
-            elif request.form['submit'] == 'delete':
+        # Delete Account
+        if request.form['submit'] == 'delete':
+            try:
                 delete_account(current_user)
                 return redirect(url_for('welcome'))
-
-            # Link Strava
-            elif request.form['submit'] == 'link_strava':
-                flash('This functionality has been temperarily disabled')
-                return redirect(url_for('settings'))
-
-        except Exception as e:
-            print(e)
-            flash('Somthing weird happened. Sorry about that.')
+            except Exception as e:
+                print(e)
+                flash('Somthing weird happened. Sorry about that.')
 
     return render_template('settings.html', title="Account Settings", username=current_user.username)
 
