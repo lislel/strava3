@@ -39,7 +39,6 @@ def index():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
-    parse_data = False
     if current_user.is_authenticated:
         return redirect(url_for('index'))
     if request.method == 'POST':
@@ -58,36 +57,7 @@ def login():
         # user did link strava
         else:
             if user.social_id != STRAVA_DISABLED:
-                oauth = StravaOauth()
-                user_type = None
-                # User has never been authenticated with Strava, get authentication information
-                print(f'user access token {user.access_token}')
-                if user.access_token is None:
-                    print('getting user token first')
-                    token = user.get_token(oauth)
-                    print(f'authenticated {token}')
-                    if token is not None:
-                        user.update_access(token)
-                        flash("Authenticated with strava")
-                        parse_data = True
-                        user_type = NEW_USER
-                    else:
-                        flash("Strava Authentication failed")
-                else:
-                    print('user seen before, checking if we need to update access')
-                    if user.expires_at is not None and user.expires_at < time.time():
-                        print(f'Expires {user.expires_at}, now {time.time()}, getting refresh token')
-                        token = user.get_refresh_token(oauth)
-                        if token is not None:
-                            user.update_access(token)
-                            parse_data = True
-                            user_type = RETURNING_USER
-                        else:
-                            print('error getting refresh token')
-                            flash("There was an error getting updated strava information")
-                    else:
-                        parse_data = True
-                        user_type = RETURNING_USER
+                parse_data, oauth, user_type = get_strava_data(user)
                 if parse_data:
                     data_ingest = DataIngest(user, oauth)
                     data_ingest.update(user_type)
@@ -99,6 +69,42 @@ def login():
         return redirect(next_page)
 
     return render_template('login.html', title='Sign In')
+
+
+def get_strava_data(user):
+    parse_data = False
+    oauth = StravaOauth()
+    user_type = None
+    # User has never been authenticated with Strava, get authentication information
+    print(f'user access token {user.access_token}')
+    if user.access_token is None:
+        print('getting user token first')
+        token = user.get_token(oauth)
+        print(f'authenticated {token}')
+        if token is not None:
+            user.update_access(token)
+            flash("Authenticated with strava")
+            parse_data = True
+            user_type = NEW_USER
+        else:
+            flash("Strava Authentication failed")
+    else:
+        print('user seen before, checking if we need to update access')
+        if user.expires_at is not None and user.expires_at < time.time():
+            print(f'Expires {user.expires_at}, now {time.time()}, getting refresh token')
+            token = user.get_refresh_token(oauth)
+            if token is not None:
+                user.update_access(token)
+                parse_data = True
+                user_type = RETURNING_USER
+            else:
+                print('error getting refresh token')
+                flash("There was an error getting updated strava information")
+        else:
+            parse_data = True
+            user_type = RETURNING_USER
+
+    return parse_data, oauth, user_type
 
 
 @login_required
