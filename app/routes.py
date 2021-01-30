@@ -52,13 +52,14 @@ def login():
             flash('Invalid password')
             return redirect(url_for('login'))
         # user did not link strava
-        elif user.access_token == 'NA':
+        elif user.social_id == STRAVA_DISABLED:
             login_user(user, remember=('remember_me' in request.form))
             return redirect(url_for('index'))
         # user did link strava
         else:
             if user.social_id != STRAVA_DISABLED:
                 oauth = StravaOauth()
+                user_type = None
                 # User has never been authenticated with Strava, get authentication information
                 print(f'user access token {user.access_token}')
                 if user.access_token is None:
@@ -92,7 +93,6 @@ def login():
                     data_ingest.update(user_type)
         login_user(user, remember=('remember_me' in request.form))
 
-        # Get Strava activity
         next_page = request.args.get('next')
         if not next_page or url_parse(next_page).netloc != '':
             next_page = url_for('index')
@@ -419,8 +419,10 @@ def settings():
 
     return render_template('settings.html', title="Account Settings", username=current_user.username)
 
+
 def boobs():
     flash('dem boobies')
+
 
 def delete_account(user):
     flash('%s, your account has been deleted'%user.username)
