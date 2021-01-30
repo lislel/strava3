@@ -1,7 +1,15 @@
-
 {% extends "base.html" %}
 
+{% block header %}{% endblock %}
+
 {% block app_content %}
-    <h1>Not Found</h1>
-    <p><a href="{{ url_for('index') }}">Back</a></p>
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-sm-1 col-lg-2"></div>
+			<div class="col-12 col-sm-10 col-lg-8">
+			    <h1>Not Found</h1>
+			    <p><a href="{{ url_for('index') }}">Back</a></p>
+			</div>
+		</div>
+	</div>
 {% endblock %}
