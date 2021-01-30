@@ -1,10 +1,11 @@
 import polyline
-from app import db
+from app import db, app
 from app.models import Activity, Mountain
 import math
 import datetime
 import asyncio
 from aiohttp import ClientSession
+from app.email import send_email
 import requests
 import json
 
@@ -18,7 +19,7 @@ async def fetch(url, params, headers, session):
 
 class DataIngest:
     PAGE_URL = "https://www.strava.com/api/v3/athletes/%s/stats"
-    ACTIVITES_URL = "https://www.strava.com/api/v3/activities"
+    ACTIVITIES_URL = "https://www.strava.com/api/v3/activities"
     LAT_MAX = 43.82
     LAT_MIN = 44.62
     LON_MAX = -71.97
@@ -26,6 +27,8 @@ class DataIngest:
     REQUESTS_PER_PAGE = 200
     MIN_ELEVATION = 1210
     MIN_DISTANCE = 0.0085
+    NEW_USER = 'new_user'
+    RETURNING_USER = 'returning_user'
 
     def __init__(self, user, oauth):
         self.user = user
@@ -33,33 +36,81 @@ class DataIngest:
         self.headers = self.oauth.update_headers(self.user.access_token)
         self.responses = None
 
-    def update(self):
-        all_responses = self.get_activities_from_api()
+    def update(self, user_type):
+        errors = []
+        if user_type == self.NEW_USER:
+            errors = self.update_new_user(errors)
+        elif user_type == self.RETURNING_USER:
+            errors = self.update_returning_visitor(errors)
 
-        for act in all_responses:
-            done = self.parse(act)
-            if done is True:
-                break
+        if len(errors) > 1:
+            self.send_error_email(errors)
 
-        end = datetime.datetime.now()
-        self.user.last_seen = end
+        self.user.last_seen = datetime.datetime.now()
         db.session.commit()
         return True
 
+    def update_new_user(self, errors):
+        all_responses = self.get_activities_from_api()
+        for act in all_responses:
+            try:
+                self.parse(act)
+            except Exception as e:
+                print(f'Exception occurred {e}')
+                errors.append(e)
+        return errors
+
+    def update_returning_visitor(self, errors):
+        counter = 1
+        done = False
+        print(f'starting')
+        while done is False:
+            activities = self.get_page(counter)
+            for act in activities:
+                activity_start = datetime.datetime.strptime(act['start_date'], '%Y-%m-%dT%H:%M:%SZ')
+                print(f'activity start_date: {activity_start} user last seen {self.user.last_seen} ')
+                if activity_start < self.user.last_seen:
+                    done = True
+                    print('No new activities!')
+                    break
+                else:
+                    try:
+                        self.parse(act)
+                    except Exception as e:
+                        print(f'Exception occurred {e}')
+                        errors.append(e)
+            counter += 1
+        return errors
+
+    def send_error_email(self, errors):
+        message = f'User id: {self.user.id}\n Errors: {errors}'
+        try:
+            send_email('[NH High Peaks] Error adding activity into database',
+                       sender=app.config['ADMINS'][0],
+                       recipients=[app.config['ADMINS'][0]],
+                       text_body=message,
+                       html_body=message)
+        except Exception as e:
+            print(f'Could not send error email for errors involving user {self.user.id}')
+
     def get_activities_from_api(self):
         # Get all known number of pages asynchronously
-        num_pages = self.get_pages()
+        num_pages = self.get_approximate_number_of_pages()
         all_responses = self.get_known_pages(num_pages)
 
         # Get rest synchronously first time:
         if self.user.last_seen is not None:
-            sync = self.get_unknown_pages(num_pages)
+            synchronous_activities = self.get_unknown_pages(num_pages)
             # Concatenate results
-            all_responses.extend(sync)
+            all_responses.extend(synchronous_activities)
         return all_responses
 
+    def get_page(self, page):
+        page_result = requests.get(self.ACTIVITIES_URL, headers=self.headers,
+                                   params={'page': page, 'per_page': self.REQUESTS_PER_PAGE}).json()
+        return page_result
+
     def get_known_pages(self, num_pages):
-        print(f'num pages = {num_pages}')
         loop = asyncio.new_event_loop()
         asyncio.set_event_loop(loop)
         future = asyncio.ensure_future(self.run(num_pages + 1, self.headers))
@@ -69,15 +120,13 @@ class DataIngest:
 
     def get_unknown_pages(self, num_pages):
         sync = []
-        page = num_pages + 2
-        page_result = requests.get(self.ACTIVITES_URL, headers=self.headers,
-                                   params={'page': page, 'per_page': self.REQUESTS_PER_PAGE}).json()
+        page = num_pages + 1
+        page_result = self.get_page(page)
         while len(page_result) > 0:
             for a in page_result:
                 sync.append(a)
             page += 1
-            page_result = requests.get(self.ACTIVITES_URL, headers=self.headers,
-                                       params={'page': page, 'per_page': self.REQUESTS_PER_PAGE}).json()
+            page_result = self.get_page(page)
         return sync
 
     async def run(self, r, headers):
@@ -88,29 +137,21 @@ class DataIngest:
         async with ClientSession() as session:
             for i in range(r):
                 print(f'page {i}')
-                task = asyncio.ensure_future(fetch(self.ACTIVITES_URL, {'page': i, 'per_page': self.REQUESTS_PER_PAGE},
+                task = asyncio.ensure_future(fetch(self.ACTIVITIES_URL, {'page': i, 'per_page': self.REQUESTS_PER_PAGE},
                                                    headers, session))
                 tasks.append(task)
 
             return await asyncio.gather(*tasks)
-            # you now have all response bodies in this variable
 
-    @staticmethod
-    def get_hypot(pt, lat, lon):
-        x_ind = pt[0] - lat
-        y_ind = pt[1] - lon
-        hypot = math.sqrt(math.pow(x_ind, 2) + math.pow(y_ind, 2))
-        return hypot
-
-    def get_pages(self):
+    def get_approximate_number_of_pages(self):
         url = self.PAGE_URL % self.user.social_id
         results = requests.get(url, headers=self.headers).json()
         print(f'results = {results}')
         act_total = int(results['all_run_totals']['count']) + int(results['all_ride_totals']['count']) + int(
             results['all_swim_totals']['count'])
         #  Get total number of known pages
-        self.page_num = int(math.ceil(act_total / self.REQUESTS_PER_PAGE))
-        return self.page_num
+        page_num = int(math.ceil(act_total / self.REQUESTS_PER_PAGE))
+        return page_num
 
     def parse(self, item):
         if self.validate_item(item):
@@ -138,17 +179,16 @@ class DataIngest:
                             act = db.session.query(Activity).filter_by(activity_id=id_string).first()
                             self.user.activities.append(act)
                             db.session.commit()
-            return False
 
     def validate_item(self, item):
         if isinstance(item, dict) is False:
-            #print(f'Item {item} is not a dict instance, it is {type(item)}')
+            print(f'Item {item} is not a dict instance, it is {type(item)}')
             return False
         if {'start_latlng', 'type', 'elev_high', 'map'}.issubset(item.keys()) is False:
-            #print(f'Item {item} missing data to parse')
+            print(f'Item {item} missing data to parse')
             return False
         if item['start_latlng'] is None:
-            #print(f'{item} No start latlng for activity')
+            print(f'{item} No start latlng for activity')
             return False
         if item['type'] == 'Bike':
             print('This is a biking activity, not parsing')
@@ -177,3 +217,10 @@ class DataIngest:
         act.activity_id = id_string
         act.date = item['start_date']
         return act
+
+    @staticmethod
+    def get_hypot(pt, lat, lon):
+        x_ind = pt[0] - lat
+        y_ind = pt[1] - lon
+        hypot = math.sqrt(math.pow(x_ind, 2) + math.pow(y_ind, 2))
+        return hypot
