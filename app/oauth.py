@@ -52,7 +52,7 @@ class StravaOauth:
         code = request.args.get('code')
         return code
 
-    def get_token(self, code, refresh_token):
+    def get_token(self, code, refresh_token, social_id=None):
         if refresh_token is None:
             # Getting user token for first time
             post_data = {"grant_type": self.AUTHORIZATION_GRANT,
@@ -79,10 +79,16 @@ class StravaOauth:
         if response.status_code == 200:
             token_json = response.json()
             print(f' Token json = {token_json}')
-            if {'access_token', 'expires_at', 'refresh_token', 'athlete'}.issubset(token_json.keys()):
-                token = Token(token_json['access_token'], token_json['refresh_token'], token_json['athlete']['id'],
-                              token_json['expires_at'])
-                return token
+            if refresh_token is None:
+                if {'access_token', 'expires_at', 'refresh_token', 'athlete'}.issubset(token_json.keys()):
+                    token = Token(token_json['access_token'], token_json['refresh_token'], token_json['athlete']['id'],
+                                  token_json['expires_at'])
+                    return token
+            else:
+                if {'access_token', 'expires_at', 'refresh_token'}.issubset(token_json.keys()):
+                    token = Token(token_json['access_token'], token_json['refresh_token'], social_id,
+                                  token_json['expires_at'])
+                    return token
         return None
 
     @staticmethod

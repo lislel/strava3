@@ -73,7 +73,7 @@ class User(UserMixin, db.Model):
 
     def get_refresh_token(self, oauth):
         try:
-            refresh_token = oauth.get_token(None, self.refresh_token)
+            refresh_token = oauth.get_token(None, self.refresh_token, self.social_id)
             print(f'got refresh token successfully! Token is: {refresh_token}')
         except Exception as e:
             print(f'Error occurred getting token: {e}')
