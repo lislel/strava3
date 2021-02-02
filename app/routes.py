@@ -16,6 +16,12 @@ RETURNING_USER = 'returning_user'
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/welcome', methods=['GET', 'POST'])
 def welcome():
+    # send email to notify us about a page visit
+    send_email('[NH High Peaks] Someone just visited the welcome page',
+    sender=app.config['ADMINS'][0],
+    recipients=[app.config['ADMINS'][0]],
+    text_body='EOM',
+    html_body='EOM')
     return render_template('welcome.html', title="Welcome to NH High Peaks")
 
 
