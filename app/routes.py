@@ -167,7 +167,6 @@ def register():
     return render_template('register.html', title='Register')
 
 
-@login_required
 @app.route('/map')
 def map():
     mts = Mountain.query.all()
@@ -175,26 +174,24 @@ def map():
     all_polylines = []
     for mt in mts:
         mt_dict = {'lat': mt.lat, 'lon': mt.lon, 'name': mt.name}
-        acts = [a for a in mt.activities if a.user_id == current_user.id]
-        act_names = [a.name for a in acts]
-        polylines = [p.polyline for p in acts if p.polyline != None]
-        urls = [a.url for a in acts]
+        mt_dict['act_names'] = 'missing'
+        # TODO: search through user activites instead of mt.activities
+        if current_user.is_authenticated:
+            acts = [a for a in mt.activities if a.user_id == current_user.id]
+            act_names = [a.name for a in acts]
+            polylines = [p.polyline for p in acts if p.polyline != None]
+            urls = [a.url for a in acts]
 
-        if len(act_names) > 0:
-            mt_dict['act_names'] = act_names
-        else:
-            mt_dict['act_names'] = 'missing'
+            if len(act_names) > 0:
+                mt_dict['act_names'] = act_names
+                mt_dict['urls'] = urls
 
-        if len(polylines) > 0:
-            all_polylines.extend(polylines)
 
-        mt_dict['urls'] = urls
+            if len(polylines) > 0:
+                all_polylines.extend(polylines)
+
         map_markers.append(mt_dict)
-    """
-    print('Here are my map markes:\n')
-    for m in map_markers:
-        print('\n', m)
-    """
+
     return render_template('map.html', title='Map', all_polylines=all_polylines, map_markers=map_markers)
 
 
