@@ -8,6 +8,7 @@ from app.oauth import StravaOauth
 from app.data_ingest import DataIngest
 import app.forms as appforms
 import time
+from datetime import date
 
 STRAVA_DISABLED = 0
 NEW_USER = 'new_user'
@@ -17,7 +18,9 @@ RETURNING_USER = 'returning_user'
 @app.route('/welcome', methods=['GET', 'POST'])
 def welcome():
     # send email to notify us about a page visit
-    send_email('[NH High Peaks] Someone just visited the welcome page',
+    email_title = '[NH High Peaks] ' + str(date.today()) + ' Someone just visited the welcome page'
+    print(email_title)
+    send_email(email_title,
     sender=app.config['ADMINS'][0],
     recipients=[app.config['ADMINS'][0]],
     text_body='EOM',
