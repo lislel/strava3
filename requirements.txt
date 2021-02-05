@@ -37,7 +37,6 @@ ratelimit
 asyncio
 aiohttp
 pyyaml
-datetime
 
 # requirements for Heroku
 psycopg2==2.7.3.1
