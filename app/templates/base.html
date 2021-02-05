@@ -34,6 +34,9 @@
                       <a class="nav-link js-scroll-trigger" href="#about">About</a>
                     </li>
                     <li class="nav-item">
+                      <a class="nav-link js-scroll-trigger" href="{{ url_for('map') }}">Map</a>
+                    </li>
+                    <li class="nav-item">
                       <a class="nav-link js-scroll-trigger" href="#screenshots">Screenshots</a>
                     </li>
                     <li class="nav-item">
@@ -55,6 +58,9 @@
                             {% if current_user.is_anonymous %}
                               <li class="nav-item">
                                 <a class="nav-link js-scroll-trigger" href="{{ url_for('login') }}">Login</a>
+                              </li>
+                              <li class="nav-item">
+                                <a class="nav-link js-scroll-trigger" href="{{ url_for('map') }}">Map</a>
                               </li>
                               <li class="nav-item">
                                 <a class="nav-link js-scroll-trigger" href="{{ url_for('contactus') }}">Contact Us</a>
