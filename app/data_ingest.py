@@ -67,8 +67,15 @@ class DataIngest:
         while done is False:
             activities = self.get_page(counter)
             for act in activities:
-                activity_start = datetime.datetime.strptime(act['start_date'], '%Y-%m-%dT%H:%M:%SZ')
-                print(f'activity start_date: {activity_start} user last seen {self.user.last_seen} ')
+                try:
+                    activity_start = datetime.datetime.strptime(act['start_date'], '%Y-%m-%dT%H:%M:%SZ')
+                    print(f'activity start_date: {activity_start} user last seen {self.user.last_seen} ')
+                except Exception as e:
+                    error_string = f'There was an error: {e} with activity: {activities}'
+                    print(error_string)
+                    errors.append(error_string)
+                    done = True
+                    break
                 if activity_start < self.user.last_seen:
                     done = True
                     print('No new activities!')
