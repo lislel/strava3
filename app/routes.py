@@ -163,6 +163,14 @@ def register():
             return redirect(url_for('login'))
 
         flash('Congratulations, you are now a registered user!')
+        # send email to notify us about new account
+        email_title = '[NH High Peaks] ' + str(date.today()) + ' New User Account Created!'
+        print(email_title)
+        send_email(email_title,
+        sender=app.config['ADMINS'][0],
+        recipients=[app.config['ADMINS'][0]],
+        text_body='EOM',
+        html_body='EOM')
 
     return render_template('register.html', title='Register')
 
