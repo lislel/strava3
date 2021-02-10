@@ -98,6 +98,11 @@ class DataIngest:
                         done = True
                         break
                 counter += 1
+            else:
+                error_message = f'Strava returned something weird: {activities}'
+                print(error_message)
+                errors.append(error_message)
+                break
         return errors
 
     def send_error_email(self, errors):
