@@ -1,6 +1,7 @@
 import polyline
 from app import db, app
 from app.models import Activity, Mountain
+from collections.abc import Iterable
 import math
 import datetime
 import asyncio
@@ -69,31 +70,34 @@ class DataIngest:
     def update_returning_visitor(self, errors):
         counter = 1
         done = False
+        activities = None
         while done is False:
             try:
                 activities = self.get_page(counter)
+            except Exception as e:
+                errors.append(e)
+            if isinstance(activities, Iterable):
                 for act in activities:
-                    if isinstance(act, dict) and 'start_date' in act.keys():
-                        activity_start = datetime.datetime.strptime(act['start_date'], '%Y-%m-%dT%H:%M:%SZ')
-                        if activity_start < self.user.last_seen:
-                            done = True
-                            print('No new activities!')
-                            break
-                        else:
-                            try:
+                    try:
+                        if isinstance(act, dict) and 'start_date' in act.keys():
+                            activity_start = datetime.datetime.strptime(act['start_date'], '%Y-%m-%dT%H:%M:%SZ')
+                            if activity_start < self.user.last_seen:
+                                done = True
+                                print('No new activities!')
+                                break
+                            else:
                                 self.parse(act)
-                            except Exception as e:
-                                print(f'Exception occurred {e}')
-                                errors.append(e)
-                    else:
-                        error_message = f'There was no data in this activity: {act}'
-                        errors.append(error_message)
-                        print(error_message)
+                        else:
+                            error_message = f'There was no data in this activity: {act}'
+                            errors.append(error_message)
+                            print(error_message)
+                            done = True
+                            break
+                    except Exception as e:
+                        errors.append(e)
                         done = True
                         break
                 counter += 1
-            except Exception as e:
-                errors.append(e)
         return errors
 
     def send_error_email(self, errors):
