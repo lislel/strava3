@@ -90,7 +90,7 @@ def get_strava_data(user):
         print(f'authenticated {token}')
         if token is not None:
             user.update_access(token)
-            flash("Authenticated with strava")
+            flash("Authenticated with Strava")
             parse_data = True
             user_type = NEW_USER
         else:
