@@ -66,10 +66,17 @@ def login():
         # user did link strava
         else:
             if user.social_id != STRAVA_DISABLED:
-                parse_data, oauth, user_type = get_strava_data(user)
-                if parse_data:
-                    data_ingest = DataIngest(user, oauth)
-                    data_ingest.update(user_type)
+                try:
+                    parse_data, oauth, user_type = get_strava_data(user)
+                    if parse_data:
+                        data_ingest = DataIngest(user, oauth)
+                        results = data_ingest.update(user_type)
+                        if results is False:
+                            flash('Error with syncing with Strava')
+                except Exception as e:
+                    print(f'Error occured {e}')
+                    flash('Error with syncing with Strava')
+
         login_user(user, remember=('remember_me' in request.form))
 
         next_page = request.args.get('next')
@@ -92,7 +99,7 @@ def get_strava_data(user):
         print(f'authenticated {token}')
         if token is not None:
             user.update_access(token)
-            flash("Authenticated with strava")
+            flash("Authenticated with Strava")
             parse_data = True
             user_type = NEW_USER
         else:
