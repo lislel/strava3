@@ -1,6 +1,7 @@
 import polyline
 from app import db, app
 from app.models import Activity, Mountain
+from collections.abc import Iterable
 import math
 import datetime
 import asyncio
@@ -45,41 +46,63 @@ class DataIngest:
 
         if len(errors) > 1:
             self.send_error_email(errors)
+            return False
 
         self.user.last_seen = datetime.datetime.now()
         db.session.commit()
         return True
 
     def update_new_user(self, errors):
-        all_responses = self.get_activities_from_api()
-        for act in all_responses:
-            try:
-                self.parse(act)
-            except Exception as e:
-                print(f'Exception occurred {e}')
-                errors.append(e)
+        all_responses = None
+        try:
+            all_responses = self.get_activities_from_api()
+        except Exception as e:
+            errors.append(e)
+        if all_responses is not None:
+            for act in all_responses:
+                try:
+                    self.parse(act)
+                except Exception as e:
+                    print(f'Exception occurred {e}')
+                    errors.append(e)
         return errors
 
     def update_returning_visitor(self, errors):
         counter = 1
         done = False
-        print(f'starting')
+        activities = None
         while done is False:
-            activities = self.get_page(counter)
-            for act in activities:
-                activity_start = datetime.datetime.strptime(act['start_date'], '%Y-%m-%dT%H:%M:%SZ')
-                print(f'activity start_date: {activity_start} user last seen {self.user.last_seen} ')
-                if activity_start < self.user.last_seen:
-                    done = True
-                    print('No new activities!')
-                    break
-                else:
+            try:
+                activities = self.get_page(counter)
+            except Exception as e:
+                errors.append(e)
+            if isinstance(activities, Iterable):
+                for act in activities:
                     try:
-                        self.parse(act)
+                        if isinstance(act, dict) and 'start_date' in act.keys():
+                            activity_start = datetime.datetime.strptime(act['start_date'], '%Y-%m-%dT%H:%M:%SZ')
+                            if activity_start < self.user.last_seen:
+                                done = True
+                                print('No new activities!')
+                                break
+                            else:
+                                self.parse(act)
+                        else:
+                            error_message = f'There was no data in this activity: {act}'
+                            errors.append(error_message)
+                            print(error_message)
+                            done = True
+                            break
                     except Exception as e:
-                        print(f'Exception occurred {e}')
                         errors.append(e)
-            counter += 1
+                        done = True
+                        break
+                counter += 1
+            else:
+                error_message = f'Strava returned something weird: {activities}'
+                print(error_message)
+                errors.append(error_message)
+                break
         return errors
 
     def send_error_email(self, errors):
@@ -98,11 +121,9 @@ class DataIngest:
         num_pages = self.get_approximate_number_of_pages()
         all_responses = self.get_known_pages(num_pages)
 
-        # Get rest synchronously first time:
-        if self.user.last_seen is not None:
-            synchronous_activities = self.get_unknown_pages(num_pages)
-            # Concatenate results
-            all_responses.extend(synchronous_activities)
+        synchronous_activities = self.get_unknown_pages(num_pages)
+        # Concatenate results
+        all_responses.extend(synchronous_activities)
         return all_responses
 
     def get_page(self, page):
@@ -122,6 +143,7 @@ class DataIngest:
         sync = []
         page = num_pages + 1
         page_result = self.get_page(page)
+
         while len(page_result) > 0:
             for a in page_result:
                 sync.append(a)
@@ -136,7 +158,6 @@ class DataIngest:
         # keep connection alive for all requests.
         async with ClientSession() as session:
             for i in range(r):
-                print(f'page {i}')
                 task = asyncio.ensure_future(fetch(self.ACTIVITIES_URL, {'page': i, 'per_page': self.REQUESTS_PER_PAGE},
                                                    headers, session))
                 tasks.append(task)
@@ -146,7 +167,6 @@ class DataIngest:
     def get_approximate_number_of_pages(self):
         url = self.PAGE_URL % self.user.social_id
         results = requests.get(url, headers=self.headers).json()
-        print(f'results = {results}')
         act_total = int(results['all_run_totals']['count']) + int(results['all_ride_totals']['count']) + int(
             results['all_swim_totals']['count'])
         #  Get total number of known pages
@@ -155,7 +175,6 @@ class DataIngest:
 
     def parse(self, item):
         if self.validate_item(item):
-            print(f'parsing {item["id"]}')
             line = item['map']['summary_polyline']
             points = polyline.decode(line)
             for mt in Mountain.query.all():

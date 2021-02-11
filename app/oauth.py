@@ -78,7 +78,6 @@ class StravaOauth:
 
         if response.status_code == 200:
             token_json = response.json()
-            print(f' Token json = {token_json}')
             if refresh_token is None:
                 if {'access_token', 'expires_at', 'refresh_token', 'athlete'}.issubset(token_json.keys()):
                     token = Token(token_json['access_token'], token_json['refresh_token'], token_json['athlete']['id'],
