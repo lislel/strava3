@@ -14,6 +14,7 @@ STRAVA_DISABLED = 0
 NEW_USER = 'new_user'
 RETURNING_USER = 'returning_user'
 
+
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/welcome', methods=['GET', 'POST'])
 def welcome():
@@ -46,8 +47,21 @@ def index():
     return render_template('index.html', title='Home', finished=finished, unfinished=unfinished, n_finished=n_finished, user_id=current_user.id)
 
 
+def check_code():
+    code = None
+    code = request.args.get('code')
+    if code is not None:
+        if 'register_user' in session and session['register_user'] is not None:
+            user_id = session['register_user']
+            user = User.query.filter_by(id=user_id).first()
+            user.code = code
+            db.session.commit()
+            session.pop('register_user', None)
+
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    check_code()
     if current_user.is_authenticated:
         return redirect(url_for('index'))
     if request.method == 'POST':
@@ -153,6 +167,7 @@ def register():
         user.last_seen = None
         db.session.add(user)
         db.session.commit()
+        session['register_user'] = user.id
         print(f'new user: {user.username}')
         flash('Congratulations, you are now a registered user! Please sign in.')
 
