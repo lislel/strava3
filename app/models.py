@@ -47,25 +47,12 @@ class User(UserMixin, db.Model):
             return
         return User.query.get(id)
 
-    def get_code(self, oauth):
-        if self.code is None:
-            try:
-                self.code = oauth.callback()
-                print(f'get code code is {self.code}')
-                db.session.commit()
-            except Exception as e:
-                print(f'error occured getting code, {e}')
-                return None
-        return self.code
-
     def get_token(self, oauth):
-        code = self.get_code(oauth)
-        print(f' Code is : {code}')
-        if code is None:
+        if self.code is None:
             return None
         else:
             try:
-                access_token = oauth.get_token(code, None)
+                access_token = oauth.get_token(self.code, None)
             except Exception as e:
                 print(f'Error occurred {e}')
                 return None
