@@ -34,6 +34,8 @@ export MAIL_USE_TLS=1
 export MAIL_USERNAME=<your-gmail-username>
 export MAIL_PASSWORD=<your-gmail-password>
 """
+
+app.secret_key = app.config['SECRET_KEY']
 if not app.debug:
     if app.config['MAIL_SERVER']:
         auth = None

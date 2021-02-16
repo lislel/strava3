@@ -13,6 +13,8 @@ from datetime import date
 STRAVA_DISABLED = 0
 NEW_USER = 'new_user'
 RETURNING_USER = 'returning_user'
+REGISTERED_USER = 'register_user'
+
 
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/welcome', methods=['GET', 'POST'])
@@ -46,10 +48,34 @@ def index():
     return render_template('index.html', title='Home', finished=finished, unfinished=unfinished, n_finished=n_finished, user_id=current_user.id)
 
 
+def check_code():
+    code = None
+    try:
+        code = request.args.get('code')
+    except Exception as e:
+        print(f'error getting code {e}')
+
+    if code is not None:
+        if REGISTERED_USER in session and session[REGISTERED_USER] is not None:
+            user_id = session[REGISTERED_USER]
+            user = User.query.filter_by(id=user_id).first()
+            user.code = code
+            db.session.commit()
+        elif current_user.is_anonymous is False:
+            current_user.code = code
+            db.session.commit()
+    if REGISTERED_USER in session:
+        session.pop(REGISTERED_USER, None)
+
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    check_code()
     if current_user.is_authenticated:
+        if current_user.social_id != STRAVA_DISABLED:
+            update_strava(current_user)
         return redirect(url_for('index'))
+
     if request.method == 'POST':
         user = User.query.filter_by(username=request.form['username']).first()
         # user doesn't exist or password is bad
@@ -65,20 +91,9 @@ def login():
             return redirect(url_for('index'))
         # user did link strava
         else:
-            if user.social_id != STRAVA_DISABLED:
-                try:
-                    parse_data, oauth, user_type = get_strava_data(user)
-                    if parse_data:
-                        data_ingest = DataIngest(user, oauth)
-                        results = data_ingest.update(user_type)
-                        if results is False:
-                            flash('Error with syncing with Strava')
-                except Exception as e:
-                    print(f'Error occured {e}')
-                    flash('Error with syncing with Strava')
+            update_strava(user)
 
         login_user(user, remember=('remember_me' in request.form))
-
         next_page = request.args.get('next')
         if not next_page or url_parse(next_page).netloc != '':
             next_page = url_for('index')
@@ -86,6 +101,18 @@ def login():
 
     return render_template('login.html', title='Sign In')
 
+
+def update_strava(user):
+    try:
+        parse_data, oauth, user_type = get_strava_data(user)
+        if parse_data:
+            data_ingest = DataIngest(user, oauth)
+            results = data_ingest.update(user_type)
+            if results is False:
+                flash('Error with syncing with Strava')
+    except Exception as e:
+        print(f'Error occured {e}')
+        flash('Error with syncing with Strava')
 
 def get_strava_data(user):
     parse_data = False
@@ -153,6 +180,7 @@ def register():
         user.last_seen = None
         db.session.add(user)
         db.session.commit()
+        session[REGISTERED_USER] = user.id
         print(f'new user: {user.username}')
         flash('Congratulations, you are now a registered user! Please sign in.')
 
@@ -257,9 +285,7 @@ def manual_entry():
             act = Activity()
             act.name = request.form['act_name']
             act.polyline = None
-            act_id = act.id
-            act.url = '/view/' + act.name 
-            #act.url = 'https://www.youtube.com/watch?v=p3G5IXn0K7A'
+            act.url = '/view/' + act.name
             mt = find_mountain(request.form['mountain'])
             act.mountains.append(mt)
             act.activity_id = None
@@ -398,8 +424,12 @@ def settings():
             strava = StravaOauth()
             current_user.social_id = None
             db.session.commit()
-            logout_user()
-            print(f'User logged out. Current user is: {current_user}')
+            session[REGISTERED_USER] = current_user.id
+
+            print(f'session variables after linking strava = {session}')
+            print(f'current user token = {current_user.access_token}')
+            # logout_user()
+            # print(f'User logged out. Current user is: {current_user}')
             return strava.authorize()
 
         if len(form_dict['new_username']) > 0:

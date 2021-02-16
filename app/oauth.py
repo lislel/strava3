@@ -47,11 +47,6 @@ class StravaOauth:
         url = self.AUTHORIZATION_URL + urllib.parse.urlencode(params)
         return url
 
-    @staticmethod
-    def callback():
-        code = request.args.get('code')
-        return code
-
     def get_token(self, code, refresh_token, social_id=None):
         if refresh_token is None:
             # Getting user token for first time
