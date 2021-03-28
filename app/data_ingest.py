@@ -6,7 +6,7 @@ import math
 import datetime
 import asyncio
 from aiohttp import ClientSession
-from app.email import send_email
+from app.app_email import send_email
 import requests
 import json
 
