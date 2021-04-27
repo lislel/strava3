@@ -9,6 +9,8 @@ import logging
 from logging.handlers import SMTPHandler, RotatingFileHandler
 from flask_mail import Mail
 import os
+from redis import Redis
+import rq
 # from flask_talisman import Talisman, GOOGLE_CSP_POLICY
 
 
@@ -34,7 +36,8 @@ export MAIL_USE_TLS=1
 export MAIL_USERNAME=<your-gmail-username>
 export MAIL_PASSWORD=<your-gmail-password>
 """
-
+app.redis = Redis.from_url(app.config['REDIS_URL'])
+app.task_queue = rq.Queue('microblog-tasks', connection=app.redis)
 app.secret_key = app.config['SECRET_KEY']
 if not app.debug:
     if app.config['MAIL_SERVER']:

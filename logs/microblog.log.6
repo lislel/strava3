@@ -1,0 +1,106 @@
+2021-03-29 19:08:23,866 INFO: NHHighPeaks startup [in ./app/__init__.py:75]
+2021-03-29 19:18:24,806 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:75]
+2021-03-29 19:20:52,370 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:75]
+2021-03-29 19:21:12,837 INFO: NHHighPeaks startup [in ./app/__init__.py:75]
+2021-03-29 19:50:45,333 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:75]
+2021-03-29 19:51:26,652 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:75]
+2021-03-29 19:51:32,875 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:75]
+2021-03-29 19:52:03,800 INFO: NHHighPeaks startup [in ./app/__init__.py:75]
+2021-03-29 19:53:25,939 INFO: NHHighPeaks startup [in ./app/__init__.py:75]
+2021-04-03 20:02:05,031 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:75]
+2021-04-03 20:02:16,558 ERROR: Exception on /welcome [GET] [in /Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py:1758]
+Traceback (most recent call last):
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 2292, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 1815, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 1718, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/_compat.py", line 35, in reraise
+    raise value
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 1813, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 1799, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/Users/laurenlisle/strava3/app/routes.py", line 31, in welcome
+    return render_template('welcome.html', title="Welcome to NH High Peaks")
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/templating.py", line 134, in render_template
+    return _render(ctx.app.jinja_env.get_or_select_template(template_name_or_list),
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/templating.py", line 117, in _render
+    rv = template.render(context)
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/jinja2/asyncsupport.py", line 76, in render
+    return original_render(self, *args, **kwargs)
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/jinja2/environment.py", line 1008, in render
+    return self.environment.handle_exception(exc_info, True)
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/jinja2/environment.py", line 780, in handle_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/jinja2/_compat.py", line 37, in reraise
+    raise value.with_traceback(tb)
+  File "/Users/laurenlisle/strava3/app/templates/welcome.html", line 1, in <module>
+    {% extends 'base.html' %}
+  File "/Users/laurenlisle/strava3/app/templates/base.html", line 20, in <module>
+    {% block body %}
+  File "/Users/laurenlisle/strava3/app/templates/base.html", line 144, in <module>
+    {% block scripts %}
+  File "/Users/laurenlisle/strava3/app/templates/base.html", line 145, in <module>
+    {{ super() }}
+jinja2.exceptions.UndefinedError: there is no parent block called 'scripts'.
+2021-04-03 20:02:16,720 ERROR: Exception on /favicon.ico [GET] [in /Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py:1758]
+Traceback (most recent call last):
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 1813, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 1791, in dispatch_request
+    self.raise_routing_exception(req)
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 1774, in raise_routing_exception
+    raise request.routing_exception
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/ctx.py", line 336, in match_request
+    self.url_adapter.match(return_rule=True)
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/werkzeug/routing.py", line 1581, in match
+    raise NotFound()
+werkzeug.exceptions.NotFound: 404 Not Found: The requested URL was not found on the server.  If you entered the URL manually please check your spelling and try again.
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 2292, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 1815, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 1713, in handle_user_exception
+    return self.handle_http_exception(e)
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 1644, in handle_http_exception
+    return handler(e)
+  File "/Users/laurenlisle/strava3/app/errors.py", line 6, in not_found_error
+    return render_template('404.html'), 404
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/templating.py", line 134, in render_template
+    return _render(ctx.app.jinja_env.get_or_select_template(template_name_or_list),
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/templating.py", line 117, in _render
+    rv = template.render(context)
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/jinja2/asyncsupport.py", line 76, in render
+    return original_render(self, *args, **kwargs)
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/jinja2/environment.py", line 1008, in render
+    return self.environment.handle_exception(exc_info, True)
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/jinja2/environment.py", line 780, in handle_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/jinja2/_compat.py", line 37, in reraise
+    raise value.with_traceback(tb)
+  File "/Users/laurenlisle/strava3/app/templates/404.html", line 1, in <module>
+    {% extends "base.html" %}
+  File "/Users/laurenlisle/strava3/app/templates/base.html", line 20, in <module>
+    {% block body %}
+  File "/Users/laurenlisle/strava3/app/templates/base.html", line 144, in <module>
+    {% block scripts %}
+  File "/Users/laurenlisle/strava3/app/templates/base.html", line 145, in <module>
+    {{ super() }}
+jinja2.exceptions.UndefinedError: there is no parent block called 'scripts'.
+2021-04-12 20:00:28,854 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:75]
+2021-04-12 20:01:31,482 INFO: NHHighPeaks startup [in ./app/__init__.py:75]
+2021-04-12 20:02:48,036 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:75]
+2021-04-12 20:03:08,050 INFO: NHHighPeaks startup [in ./app/__init__.py:75]
+2021-04-12 21:17:59,610 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:75]
+2021-04-12 21:18:24,476 INFO: NHHighPeaks startup [in ./app/__init__.py:75]
+2021-04-12 21:20:27,089 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:75]
+2021-04-12 21:22:23,695 INFO: NHHighPeaks startup [in ./app/__init__.py:75]
+2021-04-12 21:24:55,678 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:75]
+2021-04-12 21:25:28,465 INFO: NHHighPeaks startup [in ./app/__init__.py:75]
+2021-04-13 18:18:01,152 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:75]

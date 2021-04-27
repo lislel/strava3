@@ -1,14 +1,15 @@
-from flask import render_template, flash, redirect, url_for, request, session
+from flask import render_template, flash, redirect, url_for, request, session, jsonify
 from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug.urls import url_parse
 from app import app, db
-from app.models import User, Mountain, Activity
+from app.models import User, Mountain, Activity, Notification
 from app.email import send_password_reset_email, send_email
 from app.oauth import StravaOauth
 from app.data_ingest import DataIngest
 import app.forms as appforms
 import time
 from datetime import date
+from rq import get_current_job
 
 STRAVA_DISABLED = 0
 NEW_USER = 'new_user'
@@ -44,6 +45,20 @@ def index():
             unfinished.append(mt)
 
     n_finished = len(mts) - len(unfinished)
+
+    print(f'Tasks in progress: {current_user.get_tasks_in_progress()}')
+    tasks = current_user.get_tasks_in_progress()
+    for t in tasks:
+        job = t.get_rq_job()
+        print(f'job: {job}, {t.get_progress()}')
+    if len(current_user.get_tasks_in_progress()) == 0:
+        current_user.launch_task('example', 'let us count...', 15)
+        db.session.commit()
+    else:
+        tasks = current_user.get_tasks_in_progress()
+        for t in tasks:
+            print('task name', t.name)
+            current_user.get_task_in_progress(t.name)
 
     return render_template('index.html', title='Home', finished=finished, unfinished=unfinished, n_finished=n_finished, user_id=current_user.id)
 
@@ -113,6 +128,7 @@ def update_strava(user):
     except Exception as e:
         print(f'Error occured {e}')
         flash('Error with syncing with Strava')
+
 
 def get_strava_data(user):
     parse_data = False
@@ -491,6 +507,18 @@ def delete_account(user):
     db.session.commit()
     logout_user()
 
+
+@app.route('/notifications')
+@login_required
+def notifications():
+    since = request.args.get('since', 0.0, type=float)
+    notifications = current_user.notifications.filter(
+        Notification.timestamp > since).order_by(Notification.timestamp.asc())
+    return jsonify([{
+        'name': n.name,
+        'data': n.get_data(),
+        'timestamp': n.timestamp
+    } for n in notifications])
 
 
 

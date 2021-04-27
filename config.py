@@ -19,6 +19,7 @@ class Config(object):
     MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
     MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
     ADMINS = ['jptcummings@gmail.com']
+    REDIS_URL = os.environ.get('REDIS_URL') or 'redis://'
 
     LOG_TO_STDOUT = os.environ.get('LOG_TO_STDOUT')
 
