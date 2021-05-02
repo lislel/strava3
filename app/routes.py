@@ -52,6 +52,7 @@ def index():
         job = t.get_rq_job()
         print(f'job: {job}, {t.get_progress()}')
     if len(current_user.get_tasks_in_progress()) == 0:
+        print('no tasks, starting a new one!')
         current_user.launch_task('example', 'let us count...', 15)
         db.session.commit()
     else:
