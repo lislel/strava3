@@ -109,20 +109,6 @@
                     {% endif %}
                     {% endwith %}
                 {% endif %}
-                <!-- Flash messages -->
-                {% with messages = get_flashed_messages() %}
-                    {% if messages %}
-                        {% for message in messages %}
-                        <div class="row" id="content-row">
-                          <div class="col-1 col-md-2 col-lg-3"></div>
-                          <div class="col-10 col-md-8 col-lg-6">
-                            <div class="alert alert-info" role="alert">
-                                {{ message }}</div>
-                          </div>
-                        </div>
-                        {% endfor %}
-                    {% endif %}
-                {% endwith %}
                 <!--application content needs to be provided in the app_content block-->
                 {% block app_content %}{% endblock %}
             </div>
