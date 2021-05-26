@@ -1,4 +1,4 @@
-2021-03-28 18:58:02,669 ERROR: Exception on /index [GET] [in /Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py:1758]
+2021-05-24 19:51:45,445 ERROR: Exception on /notifications [GET] [in /Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py:1758]
 Traceback (most recent call last):
   File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 2292, in wsgi_app
     response = self.full_dispatch_request()
@@ -14,47 +14,10 @@ Traceback (most recent call last):
     return self.view_functions[rule.endpoint](**req.view_args)
   File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask_login/utils.py", line 228, in decorated_view
     return func(*args, **kwargs)
-  File "/Users/laurenlisle/strava3/app/routes.py", line 57, in index
-    current_user.get_task_in_progress(t)
-  File "/Users/laurenlisle/strava3/app/models.py", line 107, in get_task_in_progress
-    return Task.query.filter_by(name=name, user=self,
-  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/sqlalchemy/orm/query.py", line 1789, in filter_by
-    clauses = [
-  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/sqlalchemy/orm/query.py", line 1790, in <listcomp>
-    _entity_descriptor(self._joinpoint_zero(), key) == value
-  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/sqlalchemy/sql/operators.py", line 365, in __eq__
-    return self.operate(eq, other)
-  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/sqlalchemy/orm/attributes.py", line 211, in operate
-    return op(self.comparator, *other, **kwargs)
-  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/sqlalchemy/sql/operators.py", line 365, in __eq__
-    return self.operate(eq, other)
-  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/sqlalchemy/orm/properties.py", line 315, in operate
-    return op(self.__clause_element__(), *other, **kwargs)
-  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/sqlalchemy/sql/annotation.py", line 104, in __eq__
-    return self.__element.__class__.__eq__(self, other)
-  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/sqlalchemy/sql/operators.py", line 365, in __eq__
-    return self.operate(eq, other)
-  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/sqlalchemy/sql/elements.py", line 727, in operate
-    return op(self.comparator, *other, **kwargs)
-  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/sqlalchemy/sql/operators.py", line 365, in __eq__
-    return self.operate(eq, other)
-  File "<string>", line 1, in <lambda>
-  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/sqlalchemy/sql/type_api.py", line 67, in operate
-    return o[0](self.expr, op, *(other + o[1:]), **kwargs)
-  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/sqlalchemy/sql/default_comparator.py", line 105, in _boolean_compare
-    obj = _check_literal(expr, op, obj)
-  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/sqlalchemy/sql/default_comparator.py", line 368, in _check_literal
-    return expr._bind_param(operator, other, type_=bindparam_type)
-  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/sqlalchemy/sql/elements.py", line 4020, in _bind_param
-    return BindParameter(
-  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/sqlalchemy/sql/elements.py", line 1171, in __init__
-    self.type = _compared_to_type.coerce_compared_value(
-  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/sqlalchemy/sql/type_api.py", line 553, in coerce_compared_value
-    _coerced_type = _resolve_value_to_type(value)
-  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/sqlalchemy/sql/sqltypes.py", line 2836, in _resolve_value_to_type
-    raise exc.ArgumentError(
-sqlalchemy.exc.ArgumentError: Object <Task 25dddd89-4488-419d-8af1-ebb32a6c91a4> is not legal as a SQL literal value
-2021-03-28 18:59:19,880 ERROR: Exception on /index [GET] [in /Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py:1758]
+  File "/Users/laurenlisle/strava3/app/routes.py", line 523, in notifications
+    for n in notifications:
+TypeError: object of type 'BaseQuery' has no len()
+2021-05-24 19:51:46,452 ERROR: Exception on /notifications [GET] [in /Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py:1758]
 Traceback (most recent call last):
   File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 2292, in wsgi_app
     response = self.full_dispatch_request()
@@ -70,56 +33,101 @@ Traceback (most recent call last):
     return self.view_functions[rule.endpoint](**req.view_args)
   File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask_login/utils.py", line 228, in decorated_view
     return func(*args, **kwargs)
-  File "/Users/laurenlisle/strava3/app/routes.py", line 57, in index
-    current_user.get_task_in_progress(t)
-  File "/Users/laurenlisle/strava3/app/models.py", line 107, in get_task_in_progress
-    return Task.query.filter_by(name=name, user=self,
-  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/sqlalchemy/orm/query.py", line 1789, in filter_by
-    clauses = [
-  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/sqlalchemy/orm/query.py", line 1790, in <listcomp>
-    _entity_descriptor(self._joinpoint_zero(), key) == value
-  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/sqlalchemy/sql/operators.py", line 365, in __eq__
-    return self.operate(eq, other)
-  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/sqlalchemy/orm/attributes.py", line 211, in operate
-    return op(self.comparator, *other, **kwargs)
-  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/sqlalchemy/sql/operators.py", line 365, in __eq__
-    return self.operate(eq, other)
-  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/sqlalchemy/orm/properties.py", line 315, in operate
-    return op(self.__clause_element__(), *other, **kwargs)
-  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/sqlalchemy/sql/annotation.py", line 104, in __eq__
-    return self.__element.__class__.__eq__(self, other)
-  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/sqlalchemy/sql/operators.py", line 365, in __eq__
-    return self.operate(eq, other)
-  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/sqlalchemy/sql/elements.py", line 727, in operate
-    return op(self.comparator, *other, **kwargs)
-  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/sqlalchemy/sql/operators.py", line 365, in __eq__
-    return self.operate(eq, other)
-  File "<string>", line 1, in <lambda>
-  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/sqlalchemy/sql/type_api.py", line 67, in operate
-    return o[0](self.expr, op, *(other + o[1:]), **kwargs)
-  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/sqlalchemy/sql/default_comparator.py", line 105, in _boolean_compare
-    obj = _check_literal(expr, op, obj)
-  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/sqlalchemy/sql/default_comparator.py", line 368, in _check_literal
-    return expr._bind_param(operator, other, type_=bindparam_type)
-  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/sqlalchemy/sql/elements.py", line 4020, in _bind_param
-    return BindParameter(
-  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/sqlalchemy/sql/elements.py", line 1171, in __init__
-    self.type = _compared_to_type.coerce_compared_value(
-  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/sqlalchemy/sql/type_api.py", line 553, in coerce_compared_value
-    _coerced_type = _resolve_value_to_type(value)
-  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/sqlalchemy/sql/sqltypes.py", line 2836, in _resolve_value_to_type
-    raise exc.ArgumentError(
-sqlalchemy.exc.ArgumentError: Object <Task 25dddd89-4488-419d-8af1-ebb32a6c91a4> is not legal as a SQL literal value
-2021-03-28 18:59:43,275 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:75]
-2021-03-28 19:33:51,471 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:75]
-2021-03-29 18:42:22,205 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:75]
-2021-03-29 18:47:53,418 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:75]
-2021-03-29 18:48:27,692 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:75]
-2021-03-29 18:50:40,391 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:75]
-2021-03-29 18:51:06,851 INFO: NHHighPeaks startup [in ./app/__init__.py:75]
-2021-03-29 18:56:49,190 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:75]
-2021-03-29 18:57:16,327 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:75]
-2021-03-29 18:59:07,402 INFO: NHHighPeaks startup [in ./app/__init__.py:75]
-2021-03-29 19:01:26,111 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:75]
-2021-03-29 19:01:46,106 INFO: NHHighPeaks startup [in ./app/__init__.py:75]
-2021-03-29 19:03:36,864 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:75]
+  File "/Users/laurenlisle/strava3/app/routes.py", line 523, in notifications
+    for n in notifications:
+TypeError: object of type 'BaseQuery' has no len()
+2021-05-24 19:51:47,449 ERROR: Exception on /notifications [GET] [in /Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py:1758]
+Traceback (most recent call last):
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 2292, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 1815, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 1718, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/_compat.py", line 35, in reraise
+    raise value
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 1813, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 1799, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask_login/utils.py", line 228, in decorated_view
+    return func(*args, **kwargs)
+  File "/Users/laurenlisle/strava3/app/routes.py", line 523, in notifications
+    for n in notifications:
+TypeError: object of type 'BaseQuery' has no len()
+2021-05-24 19:51:48,451 ERROR: Exception on /notifications [GET] [in /Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py:1758]
+Traceback (most recent call last):
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 2292, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 1815, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 1718, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/_compat.py", line 35, in reraise
+    raise value
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 1813, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 1799, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask_login/utils.py", line 228, in decorated_view
+    return func(*args, **kwargs)
+  File "/Users/laurenlisle/strava3/app/routes.py", line 523, in notifications
+    for n in notifications:
+TypeError: object of type 'BaseQuery' has no len()
+2021-05-24 19:51:49,467 ERROR: Exception on /notifications [GET] [in /Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py:1758]
+Traceback (most recent call last):
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 2292, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 1815, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 1718, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/_compat.py", line 35, in reraise
+    raise value
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 1813, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 1799, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask_login/utils.py", line 228, in decorated_view
+    return func(*args, **kwargs)
+  File "/Users/laurenlisle/strava3/app/routes.py", line 523, in notifications
+    for n in notifications:
+TypeError: object of type 'BaseQuery' has no len()
+2021-05-24 19:51:50,451 ERROR: Exception on /notifications [GET] [in /Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py:1758]
+Traceback (most recent call last):
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 2292, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 1815, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 1718, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/_compat.py", line 35, in reraise
+    raise value
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 1813, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 1799, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask_login/utils.py", line 228, in decorated_view
+    return func(*args, **kwargs)
+  File "/Users/laurenlisle/strava3/app/routes.py", line 523, in notifications
+    for n in notifications:
+TypeError: object of type 'BaseQuery' has no len()
+2021-05-24 19:51:51,448 ERROR: Exception on /notifications [GET] [in /Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py:1758]
+Traceback (most recent call last):
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 2292, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 1815, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 1718, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/_compat.py", line 35, in reraise
+    raise value
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 1813, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 1799, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask_login/utils.py", line 228, in decorated_view
+    return func(*args, **kwargs)
+  File "/Users/laurenlisle/strava3/app/routes.py", line 523, in notifications
+    for n in notifications:
+TypeError: object of type 'BaseQuery' has no len()

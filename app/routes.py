@@ -30,6 +30,26 @@ def welcome():
     html_body='EOM')
     return render_template('welcome.html', title="Welcome to NH High Peaks")
 
+@app.route('/waiting')
+@login_required
+def waiting():
+    tasks = current_user.get_tasks_in_progress()
+    print('tasks in progress', tasks)
+    for t in tasks:
+        job = t.get_rq_job()
+        print('job =', job)
+    if len(current_user.get_tasks_in_progress()) == 0:
+        print('no tasks, starting a new one!')
+        current_user.launch_task('example', 'let us count...', 15)
+        db.session.commit()
+    else:
+        tasks = current_user.get_tasks_in_progress()
+        for t in tasks:
+            print('task name', t.name)
+            current_user.get_task_in_progress(t.name)
+
+    return render_template('waiting.html', user_id=current_user.id)
+
 
 @app.route('/index')
 @login_required
@@ -45,23 +65,7 @@ def index():
             unfinished.append(mt)
 
     n_finished = len(mts) - len(unfinished)
-
-    print(f'Tasks in progress: {current_user.get_tasks_in_progress()}')
-    tasks = current_user.get_tasks_in_progress()
-    for t in tasks:
-        job = t.get_rq_job()
-        print(f'job: {job}, {t.get_progress()}')
-    if len(current_user.get_tasks_in_progress()) == 0:
-        print('no tasks, starting a new one!')
-        current_user.launch_task('example', 'let us count...', 15)
-        db.session.commit()
-    else:
-        tasks = current_user.get_tasks_in_progress()
-        for t in tasks:
-            print('task name', t.name)
-            current_user.get_task_in_progress(t.name)
-
-    return render_template('index.html', title='Home', finished=finished, unfinished=unfinished, n_finished=n_finished, user_id=current_user.id)
+    return render_template('index.html', title='Home', finished=finished, unfinished=unfinished, n_finished=n_finished)
 
 
 def check_code():
@@ -112,7 +116,7 @@ def login():
         login_user(user, remember=('remember_me' in request.form))
         next_page = request.args.get('next')
         if not next_page or url_parse(next_page).netloc != '':
-            next_page = url_for('index')
+            next_page = url_for('waiting')
         return redirect(next_page)
 
     return render_template('login.html', title='Sign In')
@@ -508,19 +512,18 @@ def delete_account(user):
     db.session.commit()
     logout_user()
 
-
 @app.route('/notifications')
 @login_required
 def notifications():
-    since = request.args.get('since', 0.0, type=float)
-    notifications = current_user.notifications.filter(
-        Notification.timestamp > since).order_by(Notification.timestamp.asc())
-    return jsonify([{
-        'name': n.name,
-        'data': n.get_data(),
-        'timestamp': n.timestamp
-    } for n in notifications])
+    # print('current tasks', current_user.get_tasks_in_progress(), data['task_id'])
+    current_tasks = current_user.get_tasks_in_progress()
+    for t in current_tasks:
+        print('task', t, t.id)
 
+    return jsonify([{
+        'id': n.id,
+        'progress': n.get_progress(),
+    } for n in current_tasks])
 
 
 

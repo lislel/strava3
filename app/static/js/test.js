@@ -12,6 +12,7 @@
 //    });
 //            }, 10000)(jQuery); // End of use strict
 function set_task_progress(task_id, progress) {
+    console.log('!!!!!', progress)
     $('#' + task_id + '-progress').text(progress);
     }
 
@@ -23,6 +24,7 @@ $(function() {
                 for (var i = 0; i < notifications.length; i++) {
                     set_task_progress(notifications[i].data.task_id, notifications[i].data.progress);
                     since = notifications[i].timestamp;
+
                 }
             }
         );

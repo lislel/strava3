@@ -1,4 +1,4 @@
-2021-04-15 20:48:20,080 ERROR: Exception on /index [GET] [in /Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py:1758]
+2021-05-24 20:12:43,112 ERROR: Exception on /notifications [GET] [in /Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py:1758]
 Traceback (most recent call last):
   File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 2292, in wsgi_app
     response = self.full_dispatch_request()
@@ -14,116 +14,114 @@ Traceback (most recent call last):
     return self.view_functions[rule.endpoint](**req.view_args)
   File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask_login/utils.py", line 228, in decorated_view
     return func(*args, **kwargs)
-  File "/Users/laurenlisle/strava3/app/routes.py", line 63, in index
-    return render_template('index.html', title='Home', finished=finished, unfinished=unfinished, n_finished=n_finished, user_id=current_user.id)
-  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/templating.py", line 134, in render_template
-    return _render(ctx.app.jinja_env.get_or_select_template(template_name_or_list),
-  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/templating.py", line 117, in _render
-    rv = template.render(context)
-  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/jinja2/asyncsupport.py", line 76, in render
-    return original_render(self, *args, **kwargs)
-  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/jinja2/environment.py", line 1008, in render
-    return self.environment.handle_exception(exc_info, True)
-  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/jinja2/environment.py", line 780, in handle_exception
-    reraise(exc_type, exc_value, tb)
-  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/jinja2/_compat.py", line 37, in reraise
-    raise value.with_traceback(tb)
-  File "/Users/laurenlisle/strava3/app/templates/index.html", line 1, in <module>
-    {% extends "base.html" %}
-  File "/Users/laurenlisle/strava3/app/templates/base.html", line 19, in <module>
-    {% block body %}
-  File "/Users/laurenlisle/strava3/app/templates/base.html", line 162, in <module>
-    $.ajax('{{ url_for('main.notifications') }}?since=' + since).done(
-  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/helpers.py", line 356, in url_for
-    return appctx.app.handle_url_build_error(error, endpoint, values)
-  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 2061, in handle_url_build_error
-    reraise(exc_type, exc_value, tb)
-  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/_compat.py", line 35, in reraise
-    raise value
-  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/helpers.py", line 344, in url_for
-    rv = url_adapter.build(endpoint, values, method=method,
-  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/werkzeug/routing.py", line 1776, in build
-    raise BuildError(endpoint, values, method, self)
-werkzeug.routing.BuildError: Could not build url for endpoint 'main.notifications'. Did you mean 'notifications' instead?
-2021-04-15 20:48:20,282 ERROR: Exception on /favicon.ico [GET] [in /Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py:1758]
-Traceback (most recent call last):
-  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 1813, in full_dispatch_request
-    rv = self.dispatch_request()
-  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 1791, in dispatch_request
-    self.raise_routing_exception(req)
-  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 1774, in raise_routing_exception
-    raise request.routing_exception
-  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/ctx.py", line 336, in match_request
-    self.url_adapter.match(return_rule=True)
-  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/werkzeug/routing.py", line 1581, in match
-    raise NotFound()
-werkzeug.exceptions.NotFound: 404 Not Found: The requested URL was not found on the server.  If you entered the URL manually please check your spelling and try again.
-
-During handling of the above exception, another exception occurred:
-
+  File "/Users/laurenlisle/strava3/app/routes.py", line 523, in notifications
+    for n in notifications:
+TypeError: object of type 'BaseQuery' has no len()
+2021-05-24 20:12:43,568 ERROR: Exception on /notifications [GET] [in /Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py:1758]
 Traceback (most recent call last):
   File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 2292, in wsgi_app
     response = self.full_dispatch_request()
   File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 1815, in full_dispatch_request
     rv = self.handle_user_exception(e)
-  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 1713, in handle_user_exception
-    return self.handle_http_exception(e)
-  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 1644, in handle_http_exception
-    return handler(e)
-  File "/Users/laurenlisle/strava3/app/errors.py", line 6, in not_found_error
-    return render_template('404.html'), 404
-  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/templating.py", line 134, in render_template
-    return _render(ctx.app.jinja_env.get_or_select_template(template_name_or_list),
-  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/templating.py", line 117, in _render
-    rv = template.render(context)
-  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/jinja2/asyncsupport.py", line 76, in render
-    return original_render(self, *args, **kwargs)
-  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/jinja2/environment.py", line 1008, in render
-    return self.environment.handle_exception(exc_info, True)
-  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/jinja2/environment.py", line 780, in handle_exception
-    reraise(exc_type, exc_value, tb)
-  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/jinja2/_compat.py", line 37, in reraise
-    raise value.with_traceback(tb)
-  File "/Users/laurenlisle/strava3/app/templates/404.html", line 1, in <module>
-    {% extends "base.html" %}
-  File "/Users/laurenlisle/strava3/app/templates/base.html", line 19, in <module>
-    {% block body %}
-  File "/Users/laurenlisle/strava3/app/templates/base.html", line 162, in <module>
-    $.ajax('{{ url_for('main.notifications') }}?since=' + since).done(
-  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/helpers.py", line 356, in url_for
-    return appctx.app.handle_url_build_error(error, endpoint, values)
-  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 2061, in handle_url_build_error
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 1718, in handle_user_exception
     reraise(exc_type, exc_value, tb)
   File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/_compat.py", line 35, in reraise
     raise value
-  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/helpers.py", line 344, in url_for
-    rv = url_adapter.build(endpoint, values, method=method,
-  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/werkzeug/routing.py", line 1776, in build
-    raise BuildError(endpoint, values, method, self)
-werkzeug.routing.BuildError: Could not build url for endpoint 'main.notifications'. Did you mean 'notifications' instead?
-2021-04-15 20:48:20,412 INFO: NHHighPeaks startup [in ./app/__init__.py:75]
-2021-04-15 20:48:33,889 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:75]
-2021-04-15 20:48:38,019 INFO: NHHighPeaks startup [in ./app/__init__.py:75]
-2021-04-15 20:49:21,049 INFO: NHHighPeaks startup [in ./app/__init__.py:75]
-2021-04-21 20:13:31,976 INFO: NHHighPeaks startup [in ./app/__init__.py:75]
-2021-04-21 20:14:25,924 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:75]
-2021-04-21 20:14:47,421 INFO: NHHighPeaks startup [in ./app/__init__.py:75]
-2021-04-21 20:15:23,707 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:75]
-2021-04-21 20:15:48,782 INFO: NHHighPeaks startup [in ./app/__init__.py:75]
-2021-04-21 20:16:24,629 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:75]
-2021-04-21 20:16:27,836 INFO: NHHighPeaks startup [in ./app/__init__.py:75]
-2021-04-21 20:20:26,445 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:75]
-2021-04-21 20:20:54,057 INFO: NHHighPeaks startup [in ./app/__init__.py:75]
-2021-04-21 20:57:09,267 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:75]
-2021-04-21 20:58:58,569 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:75]
-2021-04-21 20:59:49,446 INFO: NHHighPeaks startup [in ./app/__init__.py:75]
-2021-04-21 21:00:18,078 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:75]
-2021-04-21 21:00:35,034 INFO: NHHighPeaks startup [in ./app/__init__.py:75]
-2021-04-21 21:01:42,664 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:75]
-2021-04-21 21:02:25,265 INFO: NHHighPeaks startup [in ./app/__init__.py:75]
-2021-04-21 21:02:57,376 INFO: NHHighPeaks startup [in ./app/__init__.py:75]
-2021-04-26 19:29:03,170 INFO: NHHighPeaks startup [in ./app/__init__.py:75]
-2021-04-26 19:34:22,845 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:75]
-2021-04-26 19:35:00,393 INFO: NHHighPeaks startup [in ./app/__init__.py:75]
-2021-04-26 19:39:10,768 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:75]
-2021-04-26 19:39:46,559 INFO: NHHighPeaks startup [in ./app/__init__.py:75]
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 1813, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 1799, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask_login/utils.py", line 228, in decorated_view
+    return func(*args, **kwargs)
+  File "/Users/laurenlisle/strava3/app/routes.py", line 523, in notifications
+    for n in notifications:
+TypeError: object of type 'BaseQuery' has no len()
+2021-05-24 20:12:44,572 ERROR: Exception on /notifications [GET] [in /Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py:1758]
+Traceback (most recent call last):
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 2292, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 1815, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 1718, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/_compat.py", line 35, in reraise
+    raise value
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 1813, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 1799, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask_login/utils.py", line 228, in decorated_view
+    return func(*args, **kwargs)
+  File "/Users/laurenlisle/strava3/app/routes.py", line 523, in notifications
+    for n in notifications:
+TypeError: object of type 'BaseQuery' has no len()
+2021-05-24 20:12:45,576 ERROR: Exception on /notifications [GET] [in /Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py:1758]
+Traceback (most recent call last):
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 2292, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 1815, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 1718, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/_compat.py", line 35, in reraise
+    raise value
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 1813, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 1799, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask_login/utils.py", line 228, in decorated_view
+    return func(*args, **kwargs)
+  File "/Users/laurenlisle/strava3/app/routes.py", line 523, in notifications
+    for n in notifications:
+TypeError: object of type 'BaseQuery' has no len()
+2021-05-24 20:12:59,356 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:75]
+2021-05-24 20:13:10,516 INFO: NHHighPeaks startup [in ./app/__init__.py:75]
+2021-05-24 20:13:35,248 INFO: NHHighPeaks startup [in ./app/__init__.py:75]
+2021-05-24 20:14:55,249 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:75]
+2021-05-24 20:14:59,680 INFO: NHHighPeaks startup [in ./app/__init__.py:75]
+2021-05-24 20:15:36,941 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:75]
+2021-05-24 20:15:44,092 INFO: NHHighPeaks startup [in ./app/__init__.py:75]
+2021-05-24 20:16:30,353 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:75]
+2021-05-24 20:16:42,143 INFO: NHHighPeaks startup [in ./app/__init__.py:75]
+2021-05-24 20:17:11,627 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:75]
+2021-05-24 20:17:14,359 INFO: NHHighPeaks startup [in ./app/__init__.py:75]
+2021-05-24 20:51:53,433 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:75]
+2021-05-24 20:51:59,508 INFO: NHHighPeaks startup [in ./app/__init__.py:75]
+2021-05-24 20:52:11,690 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:75]
+2021-05-24 20:52:21,021 INFO: NHHighPeaks startup [in ./app/__init__.py:75]
+2021-05-24 20:57:57,450 INFO: NHHighPeaks startup [in ./app/__init__.py:75]
+2021-05-24 20:59:08,325 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:75]
+2021-05-24 20:59:29,548 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:75]
+2021-05-24 21:00:48,469 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:75]
+2021-05-24 21:02:19,089 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:75]
+2021-05-24 21:03:01,452 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:75]
+2021-05-24 21:04:45,174 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:75]
+2021-05-24 21:08:20,375 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:75]
+2021-05-24 21:09:16,792 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:75]
+2021-05-24 21:09:31,824 INFO: NHHighPeaks startup [in ./app/__init__.py:75]
+2021-05-24 21:11:19,928 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:75]
+2021-05-24 21:11:22,771 INFO: NHHighPeaks startup [in ./app/__init__.py:75]
+2021-05-24 21:13:23,706 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:75]
+2021-05-24 21:13:27,259 INFO: NHHighPeaks startup [in ./app/__init__.py:75]
+2021-05-24 21:14:25,636 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:75]
+2021-05-24 21:14:28,145 INFO: NHHighPeaks startup [in ./app/__init__.py:75]
+2021-05-24 21:16:15,216 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:75]
+2021-05-24 21:16:16,841 INFO: NHHighPeaks startup [in ./app/__init__.py:75]
+2021-05-24 21:16:55,232 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:75]
+2021-05-24 21:16:57,322 INFO: NHHighPeaks startup [in ./app/__init__.py:75]
+2021-05-24 21:18:00,762 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:75]
+2021-05-24 21:18:04,356 INFO: NHHighPeaks startup [in ./app/__init__.py:75]
+2021-05-25 19:29:25,418 INFO: NHHighPeaks startup [in ./app/__init__.py:75]
+2021-05-25 19:30:44,850 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:75]
+2021-05-25 19:30:48,253 INFO: NHHighPeaks startup [in ./app/__init__.py:75]
+2021-05-25 19:32:01,440 INFO: NHHighPeaks startup [in ./app/__init__.py:75]
+2021-05-25 20:09:15,751 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:75]
+2021-05-25 20:09:18,880 INFO: NHHighPeaks startup [in ./app/__init__.py:75]
+2021-05-25 20:09:59,571 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:75]
+2021-05-25 20:10:05,658 INFO: NHHighPeaks startup [in ./app/__init__.py:75]
+2021-05-25 20:11:39,656 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:75]
+2021-05-25 20:11:44,110 INFO: NHHighPeaks startup [in ./app/__init__.py:75]
+2021-05-25 20:12:07,193 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:75]
+2021-05-25 20:12:14,978 INFO: NHHighPeaks startup [in ./app/__init__.py:75]
+2021-05-25 20:13:05,751 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:75]
+2021-05-25 20:13:09,879 INFO: NHHighPeaks startup [in ./app/__init__.py:75]

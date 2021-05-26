@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+{% extends 'bootstrap/base.html' %}
 <html lang="en">
 <head>
 {% block head %}
@@ -96,19 +97,19 @@
                 {% block header %}
                   <header></header>
                 {% endblock %}
-                {% if current_user.is_authenticated %}
-                    {% with tasks = current_user.get_tasks_in_progress() %}
-                    {% if tasks %}
-                        {% for task in tasks %}
-                            <script>console.log({{task.get_progress()}})</script>
-                            <div class="alert alert-success" role="alert">
-                                    {{ task.description }}
-                                <span id="{{ task.id }}-progress">{{ task.get_progress() }}</span>%
-                            </div>
-                        {% endfor %}
-                    {% endif %}
-                    {% endwith %}
-                {% endif %}
+<!--                {% if current_user.is_authenticated %}-->
+<!--                    {% with tasks = current_user.get_tasks_in_progress() %}-->
+<!--                    {% if tasks %}-->
+<!--                        {% for task in tasks %}-->
+<!--                            <script>console.log({{task.get_progress()}})</script>-->
+<!--                            <div class="alert alert-success" role="alert">-->
+<!--                                    {{ task.description }}-->
+<!--                                <span id="{{ task.id }}-progress">{{ task.get_progress() }}</span>%-->
+<!--                            </div>-->
+<!--                        {% endfor %}-->
+<!--                    {% endif %}-->
+<!--                    {% endwith %}-->
+<!--                {% endif %}-->
                 <!--application content needs to be provided in the app_content block-->
                 {% block app_content %}{% endblock %}
             </div>
@@ -127,47 +128,23 @@
                 </div>
               </footer>
         {% endblock %}
-
-
-        <!-- Bootstrap core JavaScript -->
-        <script src="{{ url_for('static', filename='vendor/jquery/jquery.min.js') }}"></script>
-        <script src="{{ url_for('static', filename='vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-
-        <!-- Plugin JavaScript -->
-        <script src="{{ url_for('static', filename='vendor/jquery-easing/jquery.easing.min.js') }}"></script>
-
-        <!-- Custom JavaScript for this theme -->
-        <script src="{{ url_for('static', filename='js/scrolling-nav.js') }}"></script>
-<!--        <script src="{{ url_for('static', filename='js/test.js') }}"></script>-->
-        <script>
-        function set_task_progress(task_id, progress) {
-            $('#' + task_id + '-progress').text(progress);
-            }
-
-        $(function() {
-            var since = 0;
-            setInterval(function() {
-                $.ajax('{{ url_for('notifications') }}?since=' + since).done(
-                    function(notifications) {
-                        for (var i = 0; i < notifications.length; i++) {
-                            set_task_progress(notifications[i].data.task_id, notifications[i].data.progress);
-                            since = notifications[i].timestamp;
-                            try {
-                            console.log('progress!', notifications[i].data.progress)
-                            } catch (error) {
-                                console.error(error);
-                            }
-                        }
-                    }
-                );
-            }, 1000);
-        });
-        (jQuery);
-
-        </script>
-
     </div>
   </body>
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    <!-- Bootstrap core JavaScript -->
+    <script src="{{ url_for('static', filename='vendor/jquery/jquery.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='vendor/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+
+    <!-- Plugin JavaScript -->
+    <script src="{{ url_for('static', filename='vendor/jquery-easing/jquery.easing.min.js') }}"></script>
+
+    <!-- Custom JavaScript for this theme -->
+    <script src="{{ url_for('static', filename='js/scrolling-nav.js') }}"></script>
+
+
 {% endblock %}
 
 </html>

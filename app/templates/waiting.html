@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block head %}
+    {{ super() }}
+    <style>.content-wrap {background-image: url("../static/images/Cardigan1.jpg");}</style>
+{% endblock %}
+
+{% block header %}{% endblock %}
+{% block app_content %}
+    <div class="container-fluid" style="padding: 0px;">
+        <div class="form-content" style="background-color: #ffffff00; padding: 3vh;">
+            <div class="row">
+                <div class="col-lg-1"></div>
+                <div class="col-12 col-lg-10">
+                    <div class="card card-body" style="background-color: #ffffffcc">
+                        <h1 class="text-center">48 Peaks Completed</h1>
+                    </div>
+                </div>
+            </div>
+            {% if current_user.is_authenticated %}
+    {% with tasks = current_user.get_tasks_in_progress() %}
+        {% if tasks %}
+            {% for task in tasks %}
+                <div class="alert alert-success" role="alert">
+                    {{ task.description }}
+                    <span id="{{ task.id }}-progress">{{ task.get_progress() }}</span>%
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+{% endif %}
+        </div>
+    </div>
+
+{% block scripts %}
+    {{ super() }}
+
+<script>
+    function set_task_progress(task_id, progress) {
+            $('#' + task_id + '-progress').text(progress);
+            }
+
+        $(function() {
+            var since = 0;
+            setInterval(function() {
+                $.ajax('{{ url_for('notifications') }}').done(
+                    function(notifications) {
+                        for (var i = 0; i < notifications.length; i++) {
+                            set_task_progress(notifications[i].id, notifications[i].progress);
+                            console.log(notifications[i].id, notifications[i].progress)
+                            since = notifications[i].timestamp;
+                            try {
+                            } catch (error) {
+                                console.error(error);
+                            }
+                            if (typeof(notifications[i].data) != undefined && notifications[i].progress == 100) {
+                                window.location.href = "index";
+                            }
+                        }
+                    }
+                )
+            }, 1000);
+        });
+        (jQuery);
+
+</script>
+
+
+{% endblock %}
+
+{% endblock %}
+
+
+
+
+
+
+
+
+

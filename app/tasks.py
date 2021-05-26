@@ -13,16 +13,13 @@ def example(id, seconds):
         progress = 100.0 * i / seconds
         job.meta['progress'] = progress
         job.save_meta()
-        print(i, job.meta['progress'])
         time.sleep(1)
         _set_task_progress(progress)
-        print('set progress')
     job.save_meta()
     print('Task completed')
 
 
 def _set_task_progress(progress):
-    print(f'progress = {progress}')
     job = get_current_job()
     if job:
         job.meta['progress'] = progress
@@ -30,7 +27,7 @@ def _set_task_progress(progress):
         task = Task.query.get(job.get_id())
         task.user.add_notification('task_progress', {'task_id': job.get_id(),
                                                      'progress': progress})
-        print(f'compare progress {progress >= 100}')
+
         if progress >= 100:
             task.complete = True
             print('task is done')

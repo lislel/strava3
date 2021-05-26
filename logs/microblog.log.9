@@ -1,72 +1,4 @@
-2021-03-02 19:45:26,640 ERROR: Exception on /favicon.ico [GET] [in /Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py:1758]
-Traceback (most recent call last):
-  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 1813, in full_dispatch_request
-    rv = self.dispatch_request()
-  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 1791, in dispatch_request
-    self.raise_routing_exception(req)
-  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 1774, in raise_routing_exception
-    raise request.routing_exception
-  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/ctx.py", line 336, in match_request
-    self.url_adapter.match(return_rule=True)
-  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/werkzeug/routing.py", line 1581, in match
-    raise NotFound()
-werkzeug.exceptions.NotFound: 404 Not Found: The requested URL was not found on the server.  If you entered the URL manually please check your spelling and try again.
-
-During handling of the above exception, another exception occurred:
-
-Traceback (most recent call last):
-  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 2292, in wsgi_app
-    response = self.full_dispatch_request()
-  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 1815, in full_dispatch_request
-    rv = self.handle_user_exception(e)
-  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 1713, in handle_user_exception
-    return self.handle_http_exception(e)
-  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 1644, in handle_http_exception
-    return handler(e)
-  File "/Users/laurenlisle/strava3/app/errors.py", line 6, in not_found_error
-    return render_template('404.html'), 404
-  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/templating.py", line 134, in render_template
-    return _render(ctx.app.jinja_env.get_or_select_template(template_name_or_list),
-  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/templating.py", line 117, in _render
-    rv = template.render(context)
-  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/jinja2/asyncsupport.py", line 76, in render
-    return original_render(self, *args, **kwargs)
-  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/jinja2/environment.py", line 1008, in render
-    return self.environment.handle_exception(exc_info, True)
-  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/jinja2/environment.py", line 780, in handle_exception
-    reraise(exc_type, exc_value, tb)
-  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/jinja2/_compat.py", line 37, in reraise
-    raise value.with_traceback(tb)
-  File "/Users/laurenlisle/strava3/app/templates/404.html", line 1, in <module>
-    {% extends "base.html" %}
-  File "/Users/laurenlisle/strava3/app/templates/base.html", line 20, in <module>
-    {% block body %}
-  File "/Users/laurenlisle/strava3/app/templates/base.html", line 144, in <module>
-    {% block scripts %}
-  File "/Users/laurenlisle/strava3/app/templates/base.html", line 145, in <module>
-    {{ super() }}
-jinja2.exceptions.UndefinedError: there is no parent block called 'scripts'.
-2021-03-02 19:57:34,027 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:75]
-2021-03-02 19:59:21,431 INFO: NHHighPeaks startup [in ./app/__init__.py:75]
-2021-03-08 20:04:48,894 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:75]
-2021-03-08 20:05:12,644 INFO: NHHighPeaks startup [in ./app/__init__.py:75]
-2021-03-18 20:16:20,803 INFO: NHHighPeaks startup [in ./app/__init__.py:75]
-2021-03-28 17:16:30,083 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:75]
-2021-03-28 17:17:34,519 INFO: NHHighPeaks startup [in ./app/__init__.py:75]
-2021-03-28 17:18:01,505 INFO: NHHighPeaks startup [in ./app/__init__.py:75]
-2021-03-28 17:21:01,158 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:75]
-2021-03-28 17:27:57,471 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:75]
-2021-03-28 17:28:02,715 INFO: NHHighPeaks startup [in ./app/__init__.py:75]
-2021-03-28 17:28:29,954 INFO: NHHighPeaks startup [in ./app/__init__.py:75]
-2021-03-28 17:28:57,063 INFO: NHHighPeaks startup [in ./app/__init__.py:75]
-2021-03-28 17:29:24,238 INFO: NHHighPeaks startup [in ./app/__init__.py:75]
-2021-03-28 17:29:51,619 INFO: NHHighPeaks startup [in ./app/__init__.py:75]
-2021-03-28 17:30:18,722 INFO: NHHighPeaks startup [in ./app/__init__.py:75]
-2021-03-28 17:30:29,372 INFO: NHHighPeaks startup [in ./app/__init__.py:75]
-2021-03-28 17:30:40,035 INFO: NHHighPeaks startup [in ./app/__init__.py:75]
-2021-03-28 17:30:50,710 INFO: NHHighPeaks startup [in ./app/__init__.py:75]
-2021-03-28 17:31:52,437 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:75]
-2021-03-28 17:32:23,183 ERROR: Exception on /index [GET] [in /Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py:1758]
+2021-05-24 19:51:31,450 ERROR: Exception on /notifications [GET] [in /Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py:1758]
 Traceback (most recent call last):
   File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 2292, in wsgi_app
     response = self.full_dispatch_request()
@@ -82,17 +14,120 @@ Traceback (most recent call last):
     return self.view_functions[rule.endpoint](**req.view_args)
   File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask_login/utils.py", line 228, in decorated_view
     return func(*args, **kwargs)
-  File "/Users/laurenlisle/strava3/app/routes.py", line 48, in index
-    if current_user.get_tasks_in_progress('export_posts'):
-TypeError: get_tasks_in_progress() takes 1 positional argument but 2 were given
-2021-03-28 17:32:59,614 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:75]
-2021-03-28 17:38:41,324 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:75]
-2021-03-28 17:49:15,146 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:75]
-2021-03-28 17:59:09,533 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:75]
-2021-03-28 18:08:10,932 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:75]
-2021-03-28 18:09:06,052 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:75]
-2021-03-28 18:18:40,705 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:75]
-2021-03-28 18:30:04,898 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:75]
-2021-03-28 18:40:10,193 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:75]
-2021-03-28 18:43:17,872 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:75]
-2021-03-28 18:44:34,002 INFO: NHHighPeaks startup [in /Users/laurenlisle/strava3/app/__init__.py:75]
+  File "/Users/laurenlisle/strava3/app/routes.py", line 523, in notifications
+    for n in notifications:
+TypeError: object of type 'BaseQuery' has no len()
+2021-05-24 19:51:32,452 ERROR: Exception on /notifications [GET] [in /Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py:1758]
+Traceback (most recent call last):
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 2292, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 1815, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 1718, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/_compat.py", line 35, in reraise
+    raise value
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 1813, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 1799, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask_login/utils.py", line 228, in decorated_view
+    return func(*args, **kwargs)
+  File "/Users/laurenlisle/strava3/app/routes.py", line 523, in notifications
+    for n in notifications:
+TypeError: object of type 'BaseQuery' has no len()
+2021-05-24 19:51:33,452 ERROR: Exception on /notifications [GET] [in /Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py:1758]
+Traceback (most recent call last):
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 2292, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 1815, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 1718, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/_compat.py", line 35, in reraise
+    raise value
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 1813, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 1799, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask_login/utils.py", line 228, in decorated_view
+    return func(*args, **kwargs)
+  File "/Users/laurenlisle/strava3/app/routes.py", line 523, in notifications
+    for n in notifications:
+TypeError: object of type 'BaseQuery' has no len()
+2021-05-24 19:51:34,451 ERROR: Exception on /notifications [GET] [in /Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py:1758]
+Traceback (most recent call last):
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 2292, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 1815, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 1718, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/_compat.py", line 35, in reraise
+    raise value
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 1813, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 1799, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask_login/utils.py", line 228, in decorated_view
+    return func(*args, **kwargs)
+  File "/Users/laurenlisle/strava3/app/routes.py", line 523, in notifications
+    for n in notifications:
+TypeError: object of type 'BaseQuery' has no len()
+2021-05-24 19:51:35,449 ERROR: Exception on /notifications [GET] [in /Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py:1758]
+Traceback (most recent call last):
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 2292, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 1815, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 1718, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/_compat.py", line 35, in reraise
+    raise value
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 1813, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 1799, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask_login/utils.py", line 228, in decorated_view
+    return func(*args, **kwargs)
+  File "/Users/laurenlisle/strava3/app/routes.py", line 523, in notifications
+    for n in notifications:
+TypeError: object of type 'BaseQuery' has no len()
+2021-05-24 19:51:36,453 ERROR: Exception on /notifications [GET] [in /Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py:1758]
+Traceback (most recent call last):
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 2292, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 1815, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 1718, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/_compat.py", line 35, in reraise
+    raise value
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 1813, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 1799, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask_login/utils.py", line 228, in decorated_view
+    return func(*args, **kwargs)
+  File "/Users/laurenlisle/strava3/app/routes.py", line 523, in notifications
+    for n in notifications:
+TypeError: object of type 'BaseQuery' has no len()
+2021-05-24 19:51:37,452 ERROR: Exception on /notifications [GET] [in /Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py:1758]
+Traceback (most recent call last):
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 2292, in wsgi_app
+    response = self.full_dispatch_request()
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 1815, in full_dispatch_request
+    rv = self.handle_user_exception(e)
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 1718, in handle_user_exception
+    reraise(exc_type, exc_value, tb)
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/_compat.py", line 35, in reraise
+    raise value
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 1813, in full_dispatch_request
+    rv = self.dispatch_request()
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask/app.py", line 1799, in dispatch_request
+    return self.view_functions[rule.endpoint](**req.view_args)
+  File "/Users/laurenlisle/strava3/venv/lib/python3.8/site-packages/flask_login/utils.py", line 228, in decorated_view
+    return func(*args, **kwargs)
+  File "/Users/laurenlisle/strava3/app/routes.py", line 523, in notifications
+    for n in notifications:
+TypeError: object of type 'BaseQuery' has no len()
