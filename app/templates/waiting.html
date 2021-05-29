@@ -1,5 +1,18 @@
 {% extends "base.html" %}
 
+<style>
+#myProgress {
+  width: 100%;
+  background-color: #ddd;
+}
+
+#myBar {
+  width: 1%;
+  height: 30px;
+  background-color: #04AA6D;
+}
+</style>
+
 {% block head %}
     {{ super() }}
     <style>.content-wrap {background-image: url("../static/images/Cardigan1.jpg");}</style>
@@ -7,38 +20,58 @@
 
 {% block header %}{% endblock %}
 {% block app_content %}
-    <div class="container-fluid" style="padding: 0px;">
-        <div class="form-content" style="background-color: #ffffff00; padding: 3vh;">
-            <div class="row">
-                <div class="col-lg-1"></div>
-                <div class="col-12 col-lg-10">
-                    <div class="card card-body" style="background-color: #ffffffcc">
-                        <h1 class="text-center">48 Peaks Completed</h1>
-                    </div>
-                </div>
-            </div>
-            {% if current_user.is_authenticated %}
-    {% with tasks = current_user.get_tasks_in_progress() %}
-        {% if tasks %}
-            {% for task in tasks %}
-                <div class="alert alert-success" role="alert">
-                    {{ task.description }}
-                    <span id="{{ task.id }}-progress">{{ task.get_progress() }}</span>%
-                </div>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
-{% endif %}
-        </div>
+<style>
+    #myProgress {
+      width: 100%;
+      background-color: #ddd;
+    }
+
+    #myBar {
+      width: 1%;
+      height: 30px;
+      background-color: #04AA6D;
+    }
+    </style>
+    <body>
+
+
+    <div id="myProgress">
+      <div id="myBar"></div>
     </div>
+
+    <br>
+    </body>
+    </div>
+
+<!--    <script>-->
+<!--    var i = 0;-->
+<!--    function move() {-->
+<!--      if (i == 0) {-->
+<!--        i = 1;-->
+<!--        var elem = document.getElementById("myBar");-->
+<!--        var width = 1;-->
+<!--        var id = setInterval(frame, 10);-->
+<!--        function frame() {-->
+<!--          if (width >= 100) {-->
+<!--            clearInterval(id);-->
+<!--            i = 0;-->
+<!--          } else {-->
+<!--            width++;-->
+<!--            elem.style.width = width + "%";-->
+<!--          }-->
+<!--        }-->
+<!--      }-->
+<!--    }-->
+<!--    </script>-->
 
 {% block scripts %}
     {{ super() }}
 
-<script>
+    <script>
     function set_task_progress(task_id, progress) {
-            $('#' + task_id + '-progress').text(progress);
-            }
+        var elem = document.getElementById("myBar");
+        elem.style.width = progress + "%";
+        }
 
         $(function() {
             var since = 0;
@@ -64,11 +97,13 @@
         (jQuery);
 
 </script>
+    {% endblock %}
+
 
 
 {% endblock %}
 
-{% endblock %}
+
 
 
 
